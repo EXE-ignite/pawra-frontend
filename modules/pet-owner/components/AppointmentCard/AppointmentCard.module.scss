@@ -1,0 +1,84 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.card {
+  @include card;
+  @include flex-between;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  border-left: 4px solid $primary-500;
+
+  &:hover {
+    box-shadow: $shadow-md;
+  }
+}
+
+.appointmentInfo {
+  flex: 1;
+}
+
+.appointmentHeader {
+  @include flex-start;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-sm;
+}
+
+.petName {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $text-primary;
+}
+
+.appointmentType {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $radius-full;
+  text-transform: uppercase;
+
+  &.checkup {
+    background-color: $primary-100;
+    color: $primary-500;
+  }
+
+  &.vaccination {
+    background-color: lighten($color-success, 40%);
+    color: $color-success;
+  }
+
+  &.emergency {
+    background-color: lighten($color-error, 40%);
+    color: $color-error;
+  }
+
+  &.surgery {
+    background-color: lighten($color-warning, 40%);
+    color: $color-warning;
+  }
+}
+
+.appointmentDetails {
+  @include flex-column;
+  gap: $spacing-xs;
+}
+
+.detail {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  @include flex-start;
+  gap: $spacing-xs;
+}
+
+.detailIcon {
+  color: $primary-500;
+}
+
+.appointmentActions {
+  display: flex;
+  gap: $spacing-sm;
+
+  @include mobile {
+    flex-direction: column;
+    width: 100%;
+  }
+}

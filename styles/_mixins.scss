@@ -1,0 +1,333 @@
+@import './variables';
+
+// ============================================
+// RESPONSIVE BREAKPOINTS
+// ============================================
+@mixin mobile {
+  @media (max-width: #{$breakpoint-sm - 1px}) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: $breakpoint-sm) and (max-width: #{$breakpoint-md - 1px}) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: $breakpoint-md) {
+    @content;
+  }
+}
+
+@mixin large-desktop {
+  @media (min-width: $breakpoint-lg) {
+    @content;
+  }
+}
+
+@mixin xl-desktop {
+  @media (min-width: $breakpoint-xl) {
+    @content;
+  }
+}
+
+// ============================================
+// FLEXBOX UTILITIES
+// ============================================
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-start {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-column-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+// ============================================
+// BUTTON VARIANTS
+// ============================================
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: $font-family-base;
+  font-weight: $font-weight-medium;
+  line-height: $line-height-tight;
+  border: none;
+  cursor: pointer;
+  transition: all $transition-base;
+  white-space: nowrap;
+  user-select: none;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-400;
+    outline-offset: 2px;
+  }
+}
+
+@mixin button-primary {
+  background-color: $primary-500;
+  color: $bg-default;
+
+  &:hover:not(:disabled) {
+    background-color: darken($primary-500, 8%);
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+}
+
+@mixin button-secondary {
+  background-color: $primary-100;
+  color: $primary-500;
+
+  &:hover:not(:disabled) {
+    background-color: $primary-300;
+  }
+}
+
+@mixin button-outline {
+  background-color: transparent;
+  color: $primary-500;
+  border: 1px solid $primary-500;
+
+  &:hover:not(:disabled) {
+    background-color: $primary-100;
+  }
+}
+
+// ============================================
+// CARD STYLES
+// ============================================
+@mixin card {
+  background-color: $bg-default;
+  border: 1px solid $border-default;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-sm;
+  transition: box-shadow $transition-base;
+}
+
+@mixin card-hover {
+  @include card;
+
+  &:hover {
+    box-shadow: $shadow-md;
+  }
+}
+
+@mixin card-interactive {
+  @include card-hover;
+  cursor: pointer;
+  transition: all $transition-base;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: $shadow-sm;
+  }
+}
+
+// ============================================
+// TEXT UTILITIES
+// ============================================
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin text-clamp($lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@mixin heading-1 {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  color: $text-primary;
+
+  @include mobile {
+    font-size: $font-size-3xl;
+  }
+}
+
+@mixin heading-2 {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  color: $text-primary;
+
+  @include mobile {
+    font-size: $font-size-2xl;
+  }
+}
+
+@mixin heading-3 {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+  color: $text-primary;
+
+  @include mobile {
+    font-size: $font-size-xl;
+  }
+}
+
+// ============================================
+// CONTAINER & LAYOUT
+// ============================================
+@mixin container {
+  width: 100%;
+  max-width: $breakpoint-xl;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: $spacing-md;
+  padding-right: $spacing-md;
+
+  @include desktop {
+    padding-left: $spacing-lg;
+    padding-right: $spacing-lg;
+  }
+}
+
+@mixin section-spacing {
+  padding-top: $spacing-2xl;
+  padding-bottom: $spacing-2xl;
+
+  @include desktop {
+    padding-top: $spacing-3xl;
+    padding-bottom: $spacing-3xl;
+  }
+}
+
+// ============================================
+// FORM ELEMENTS
+// ============================================
+@mixin input-base {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  line-height: $line-height-normal;
+  color: $text-primary;
+  background-color: $bg-default;
+  border: 1px solid $border-default;
+  border-radius: $radius-md;
+  transition: all $transition-base;
+
+  &::placeholder {
+    color: $text-muted;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $primary-400;
+    box-shadow: 0 0 0 3px rgba($primary-400, 0.1);
+  }
+
+  &:disabled {
+    background-color: $bg-muted;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  &.error {
+    border-color: $color-error;
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba($color-error, 0.1);
+    }
+  }
+}
+
+// ============================================
+// ANIMATION UTILITIES
+// ============================================
+@mixin fade-in($duration: $transition-base) {
+  animation: fadeIn $duration ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@mixin slide-up($duration: $transition-base) {
+  animation: slideUp $duration ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// ============================================
+// ACCESSIBILITY
+// ============================================
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+@mixin focus-ring {
+  &:focus-visible {
+    outline: 2px solid $primary-400;
+    outline-offset: 2px;
+  }
+}

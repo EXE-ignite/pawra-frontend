@@ -1,0 +1,49 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.card {
+  @include card-interactive;
+  @include flex-start;
+  gap: $spacing-lg;
+  padding: $spacing-lg;
+}
+
+.petImage {
+  width: 80px;
+  height: 80px;
+  border-radius: $radius-xl;
+  background: linear-gradient(135deg, $primary-300, $primary-400);
+  @include flex-center;
+  font-size: $font-size-2xl;
+  flex-shrink: 0;
+}
+
+.petInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.petName {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  color: $text-primary;
+  margin-bottom: $spacing-xs;
+}
+
+.petDetails {
+  display: flex;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+  margin-top: $spacing-xs;
+}
+
+.petDetail {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  @include flex-start;
+  gap: $spacing-xs;
+}
+
+.detailIcon {
+  color: $primary-500;
+}

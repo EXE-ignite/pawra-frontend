@@ -1,0 +1,76 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.button {
+  @include button-base;
+  gap: $spacing-sm;
+
+  &.fullWidth {
+    width: 100%;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $primary-400;
+    outline-offset: 2px;
+  }
+}
+
+// VARIANTS
+.primary {
+  @include button-primary;
+}
+
+.secondary {
+  @include button-secondary;
+}
+
+.outline {
+  @include button-outline;
+}
+
+// SIZES
+.sm {
+  padding: $spacing-xs $spacing-md;
+  font-size: $font-size-sm;
+  border-radius: $radius-md;
+}
+
+.md {
+  padding: $spacing-sm $spacing-lg;
+  font-size: $font-size-base;
+  border-radius: $radius-lg;
+}
+
+.lg {
+  padding: $spacing-md $spacing-xl;
+  font-size: $font-size-lg;
+  border-radius: $radius-lg;
+}
+
+// LOADING STATE
+.loading {
+  position: relative;
+  color: transparent;
+  pointer-events: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

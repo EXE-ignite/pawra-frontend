@@ -1,0 +1,110 @@
+@import './variables';
+@import './mixins';
+
+// ============================================
+// RESET & BASE STYLES
+// ============================================
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  line-height: $line-height-normal;
+  color: $text-primary;
+  background-color: $bg-default;
+  min-height: 100vh;
+}
+
+// ============================================
+// TYPOGRAPHY
+// ============================================
+h1, h2, h3, h4, h5, h6 {
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+  color: $text-primary;
+}
+
+h1 {
+  @include heading-1;
+}
+
+h2 {
+  @include heading-2;
+}
+
+h3 {
+  @include heading-3;
+}
+
+p {
+  margin-bottom: $spacing-md;
+  color: $text-secondary;
+}
+
+a {
+  color: $primary-500;
+  text-decoration: none;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: darken($primary-500, 10%);
+  }
+}
+
+// ============================================
+// FORM ELEMENTS
+// ============================================
+button {
+  font-family: inherit;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+// ============================================
+// UTILITY CLASSES
+// ============================================
+.container {
+  @include container;
+}
+
+.sr-only {
+  @include visually-hidden;
+}
+
+// ============================================
+// SCROLLBAR STYLING (Optional)
+// ============================================
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $bg-subtle;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $border-dark;
+  border-radius: $radius-full;
+
+  &:hover {
+    background: darken($border-dark, 10%);
+  }
+}
