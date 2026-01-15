@@ -40,6 +40,23 @@
   }
 }
 
+.navButton {
+  color: $text-secondary;
+  font-weight: $font-weight-medium;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-md;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all $transition-fast;
+  font-size: $font-size-base;
+
+  &:hover {
+    color: $primary-500;
+    background-color: $primary-100;
+  }
+}
+
 .navLink {
   color: $text-secondary;
   font-weight: $font-weight-medium;
