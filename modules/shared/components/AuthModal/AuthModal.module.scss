@@ -153,6 +153,17 @@
   }
 }
 
+.error {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  background-color: #fee;
+  color: #c33;
+  border-radius: 4px;
+  font-size: 14px;
+  text-align: center;
+}
+
 .submitButton {
   width: 100%;
   max-width: 200px;

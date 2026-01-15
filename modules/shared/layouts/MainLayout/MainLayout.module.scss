@@ -40,6 +40,13 @@
   }
 }
 
+.welcomeText {
+  color: $text-primary;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-base;
+  padding: $spacing-sm $spacing-md;
+}
+
 .navButton {
   color: $text-secondary;
   font-weight: $font-weight-medium;

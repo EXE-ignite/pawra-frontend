@@ -2,10 +2,17 @@
 
 import React, { useState } from 'react';
 import { AuthModalProps } from './AuthModal.types';
+import { authService } from '../../services';
+import { useAuth } from '../../contexts';
 import styles from './AuthModal.module.scss';
 
 export function AuthModal({ isOpen, onClose, initialMode = 'signin' }: AuthModalProps) {
   const [mode, setMode] = useState<'signin' | 'signup'>(initialMode);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { updateUser } = useAuth();
 
   if (!isOpen) return null;
 
@@ -17,6 +24,43 @@ export function AuthModal({ isOpen, onClose, initialMode = 'signin' }: AuthModal
 
   const toggleMode = () => {
     setMode(mode === 'signin' ? 'signup' : 'signin');
+    setError('');
+  };
+
+  const handleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('🚀 [MODAL] Form submitted');
+    console.log('📧 Email:', email);
+    setError('');
+    setLoading(true);
+
+    try {
+      const result = await authService.login({ email, password });
+      console.log('📬 [MODAL] Login result:', result);
+      
+      if (result.success && result.data) {
+        console.log('✅ [MODAL] Login successful, updating context...');
+        const userData = {
+          email: result.data.email,
+          fullName: result.data.fullName,
+          role: result.data.role,
+          expiresAt: result.data.expiresAt,
+        };
+        console.log('👤 [MODAL] User data to update:', userData);
+        updateUser(userData);
+        console.log('🎉 [MODAL] Context updated, closing modal...');
+        alert(`Welcome ${result.data.fullName}!`);
+        onClose();
+      } else {
+        console.warn('⚠️ [MODAL] Login failed:', result.message);
+        setError(result.message);
+      }
+    } catch (err: any) {
+      console.error('❌ [MODAL] Exception:', err);
+      setError(err.message || 'Đã có lỗi xảy ra');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -38,24 +82,36 @@ export function AuthModal({ isOpen, onClose, initialMode = 'signin' }: AuthModal
 
               <p className={styles.divider}>or use your account</p>
 
-              <form className={styles.form}>
+              {error && <div className={styles.error}>{error}</div>}
+
+              <form className={styles.form} onSubmit={handleSignIn}>
                 <input
                   type="email"
                   placeholder="Email"
                   className={styles.input}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
                 <input
                   type="password"
                   placeholder="Password"
                   className={styles.input}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
 
                 <div className={styles.forgotPassword}>
                   <a href="#">Forgot your password?</a>
                 </div>
 
-                <button type="submit" className={styles.submitButton}>
-                  Sign In
+                <button 
+                  type="submit" 
+                  className={styles.submitButton}
+                  disabled={loading}
+                >
+                  {loading ? 'Signing In...' : 'Sign In'}
                 </button>
               </form>
             </div>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { MainLayout } from "@/modules/shared";
+import { MainLayout, AuthProvider } from "@/modules/shared";
 import "@/styles/globals.scss";
 
 export const metadata: Metadata = {
@@ -15,7 +15,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <MainLayout>{children}</MainLayout>
+        <AuthProvider>
+          <MainLayout>{children}</MainLayout>
+        </AuthProvider>
       </body>
     </html>
   );
