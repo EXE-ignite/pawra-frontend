@@ -3,6 +3,10 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface GoogleLoginRequest {
+  idToken: string;
+}
+
 export interface LoginResponse {
   success: boolean;
   message: string;
@@ -18,7 +22,7 @@ export interface LoginResponse {
 export interface RegisterRequest {
   email: string;
   password: string;
-  name?: string;
+  fullName: string;
 }
 
 export interface User {

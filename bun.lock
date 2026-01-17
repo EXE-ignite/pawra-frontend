@@ -5,6 +5,7 @@
     "": {
       "name": "pawra-front-end",
       "dependencies": {
+        "@react-oauth/google": "^0.13.4",
         "axios": "^1.13.2",
         "next": "16.0.10",
         "react": "19.2.1",
@@ -208,6 +209,8 @@
     "@parcel/watcher-win32-ia32": ["@parcel/watcher-win32-ia32@2.5.1", "", { "os": "win32", "cpu": "ia32" }, "sha512-c2KkcVN+NJmuA7CGlaGD1qJh1cLfDnQsHjE89E60vUEMlqduHGCdCLJCID5geFVM0dOtA3ZiIO8BoEQmzQVfpQ=="],
 
     "@parcel/watcher-win32-x64": ["@parcel/watcher-win32-x64@2.5.1", "", { "os": "win32", "cpu": "x64" }, "sha512-9lHBdJITeNR++EvSQVUcaZoWupyHfXe1jZvGZ06O/5MflPcuPLtEphScIBL+AiCWBO46tDSHzWyD0uDmmZqsgA=="],
+
+    "@react-oauth/google": ["@react-oauth/google@0.13.4", "", { "peerDependencies": { "react": ">=16.8.0", "react-dom": ">=16.8.0" } }, "sha512-hGKyNEH+/PK8M0sFEuo3MAEk0txtHpgs94tDQit+s2LXg7b6z53NtzHfqDvoB2X8O6lGB+FRg80hY//X6hfD+w=="],
 
     "@rtsao/scc": ["@rtsao/scc@1.1.0", "", {}, "sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g=="],
 

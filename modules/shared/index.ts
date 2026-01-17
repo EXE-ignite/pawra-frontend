@@ -10,6 +10,9 @@ export { AuthProvider, useAuth } from './contexts';
 // API Service
 export { apiService, api, authService } from './services';
 
+// Constants
+export * from './constants/routes';
+
 // API Types
 export type { 
   ApiResponse, 

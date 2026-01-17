@@ -1,4 +1,6 @@
 export { Button } from './Button';
-export type { ButtonProps } from './Button.types';
+export type { ButtonProps } from './Button/Button.types';
 export { AuthModal } from './AuthModal';
-export type { AuthModalProps } from './AuthModal.types';
+export type { AuthModalProps } from './AuthModal/AuthModal.types';
+export { Toast } from './Toast';
+export type { ToastProps } from './Toast/Toast.types';
