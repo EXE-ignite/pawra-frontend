@@ -1,0 +1,158 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: $bg-subtle;
+}
+
+.sidebar {
+  width: 260px;
+  background-color: $bg-default;
+  border-right: 1px solid $border-default;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  z-index: $z-sticky;
+}
+
+.sidebarHeader {
+  padding: $spacing-xl;
+  border-bottom: 1px solid $border-default;
+}
+
+.logo {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $primary-500;
+  margin: 0;
+}
+
+.nav {
+  flex: 1;
+  padding: $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  overflow-y: auto;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-md $spacing-lg;
+  border-radius: $radius-md;
+  color: $text-secondary;
+  text-decoration: none;
+  font-weight: $font-weight-medium;
+  transition: all $transition-fast;
+  
+  &:hover {
+    background-color: $primary-100;
+    color: $primary-500;
+  }
+  
+  &.active {
+    background-color: $primary-100;
+    color: $primary-500;
+  }
+}
+
+.sidebarFooter {
+  padding: $spacing-lg;
+  border-top: 1px solid $border-default;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.userCard {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-md;
+  background-color: $bg-subtle;
+  border-radius: $radius-md;
+}
+
+.userAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: $primary-500;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-lg;
+  flex-shrink: 0;
+}
+
+.userDetails {
+  flex: 1;
+  min-width: 0;
+}
+
+.userName {
+  margin: 0;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $text-primary;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userRole {
+  margin: 0;
+  font-size: $font-size-xs;
+  color: $text-secondary;
+  text-transform: capitalize;
+}
+
+.logoutButton {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  background-color: transparent;
+  border: 1px solid $border-default;
+  border-radius: $radius-md;
+  color: $text-secondary;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: all $transition-fast;
+  
+  &:hover {
+    background-color: $color-error;
+    border-color: $color-error;
+    color: white;
+  }
+}
+
+.main {
+  flex: 1;
+  margin-left: 260px;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+  padding: $spacing-2xl;
+}
+
+@include mobile {
+  .sidebar {
+    width: 100%;
+    transform: translateX(-100%);
+  }
+  
+  .main {
+    margin-left: 0;
+  }
+}

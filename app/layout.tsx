@@ -1,21 +1,25 @@
-import type { Metadata } from "next";
-import { MainLayout } from "@/modules/shared";
-import "@/styles/globals.scss";
+'use client';
 
-export const metadata: Metadata = {
-  title: "Pawra - Pet Healthcare Management",
-  description: "Comprehensive pet healthcare management platform",
-};
+import type { Metadata } from "next";
+import { GoogleOAuthProvider } from '@react-oauth/google';
+import { AuthProvider } from "@/modules/shared";
+import "@/styles/globals.scss";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
+  
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <MainLayout>{children}</MainLayout>
+        <GoogleOAuthProvider clientId={googleClientId}>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </GoogleOAuthProvider>
       </body>
     </html>
   );
