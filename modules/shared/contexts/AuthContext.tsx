@@ -37,12 +37,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
+  const authed = !!user;
+
   return (
     <AuthContext.Provider
       value={{
         user,
         isLoading,
-        isAuthenticated: isAuthenticated(),
+        isAuthenticated: authed,
         updateUser,
         logout,
       }}

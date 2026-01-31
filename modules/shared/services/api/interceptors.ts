@@ -21,10 +21,11 @@ export function setupInterceptors(client: AxiosInstance): void {
   client.interceptors.response.use(
     (response) => response,
     async (error) => {
-      if (error.response?.status === 401) {
+      const status = error.response?.status;
+      if (status === 401) {
         tokenService.clearToken();
         if (typeof window !== 'undefined') {
-          window.location.href = '/';
+          window.location.href = '/auth';
         }
       }
       return Promise.reject(handleApiError(error));

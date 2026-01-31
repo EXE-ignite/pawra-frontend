@@ -7,7 +7,7 @@ import { useAuth } from '../../contexts';
 import { getRouteByRole } from '../../constants/routes';
 import { SignInForm } from './SignInForm';
 import { SignUpForm } from './SignUpForm';
-import { WelcomePanel } from './WelcomePanel';
+import { Illustration } from './Illustration';
 import styles from './AuthModal.module.scss';
 
 export function AuthModal({ isOpen, onClose, initialMode = 'signin' }: AuthModalProps) {
@@ -51,21 +51,16 @@ export function AuthModal({ isOpen, onClose, initialMode = 'signin' }: AuthModal
           ×
         </button>
 
-        {mode === 'signin' ? (
-          <>
-            <div className={styles.formSection}>
-              <SignInForm onSuccess={handleAuthSuccess} />
-            </div>
-            <WelcomePanel mode="signin" onToggle={toggleMode} />
-          </>
-        ) : (
-          <>
-            <WelcomePanel mode="signup" onToggle={toggleMode} />
-            <div className={styles.formSection}>
-              <SignUpForm onSuccess={handleAuthSuccess} />
-            </div>
-          </>
-        )}
+        <div className={styles.formSection}>
+          {mode === 'signin' ? (
+            <SignInForm onSuccess={handleAuthSuccess} onToggleMode={toggleMode} />
+          ) : (
+            <SignUpForm onSuccess={handleAuthSuccess} onToggleMode={toggleMode} />
+          )}
+        </div>
+        <div className={styles.illustrationSection}>
+          <Illustration mode={mode} />
+        </div>
       </div>
     </div>
   );

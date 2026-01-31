@@ -1,0 +1,1 @@
+export { ForgotPasswordIllustration } from './ForgotPasswordIllustration';

@@ -5,4 +5,5 @@ export interface SignInFormProps {
     role: string;
     expiresAt: string;
   }) => void;
+  onToggleMode?: () => void;
 }

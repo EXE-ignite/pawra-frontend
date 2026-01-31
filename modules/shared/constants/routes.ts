@@ -1,6 +1,9 @@
 export const ROUTES = {
   HOME: '/',
-  LOGIN: '/',
+  LOGIN: '/auth?mode=signin',
+  SIGNUP: '/auth?mode=signup',
+  AUTH: '/auth',
+  FORGOT_PASSWORD: '/auth/forgot-password',
   
   // Customer routes
   CUSTOMER_DASHBOARD: '/customer/dashboard',
@@ -14,6 +17,9 @@ export const ROUTES = {
   
   // Staff routes (vet, receptionist, etc)
   STAFF_DASHBOARD: '/staff/dashboard',
+
+  // Clinic manager routes
+  CLINIC_MANAGER_DASHBOARD: '/clinic-manager/dashboard',
 } as const;
 
 export const ROLE_ROUTES = {
@@ -22,6 +28,7 @@ export const ROLE_ROUTES = {
   Staff: ROUTES.STAFF_DASHBOARD,
   Vet: ROUTES.STAFF_DASHBOARD,
   Receptionist: ROUTES.STAFF_DASHBOARD,
+  ClinicManager: ROUTES.CLINIC_MANAGER_DASHBOARD,
 } as const;
 
 export type UserRole = keyof typeof ROLE_ROUTES;

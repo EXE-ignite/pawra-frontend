@@ -1,54 +1,31 @@
-@import '../../../../styles/variables';
-@import '../../../../styles/mixins';
+@import '../../styles/variables';
+@import '../../styles/mixins';
 
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+.authPage {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #ede7f6 0%, #dcd0f0 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: $z-modal-backdrop;
+  padding: 20px;
 }
 
-.modal {
+.container {
   background: white;
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  width: 95%;
+  width: 100%;
   max-width: 1000px;
   height: 600px;
   display: flex;
   overflow: hidden;
   position: relative;
-}
 
-.closeButton {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
-  font-size: 28px;
-  cursor: pointer;
-  color: #6b7280;
-  z-index: 10;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
-  &:hover {
-    color: #1f2937;
-    background: white;
-    transform: scale(1.1);
+  @media (max-width: $breakpoint-md) {
+    flex-direction: column;
+    height: auto;
+    max-height: 90vh;
   }
 }
 
@@ -61,7 +38,8 @@
   align-items: flex-start;
   justify-content: center;
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   
   &::before {
     content: '';
@@ -74,6 +52,11 @@
     border-radius: 0 200px 0 0;
     opacity: 0.3;
   }
+
+  @media (max-width: $breakpoint-md) {
+    padding: 40px 30px;
+    min-height: 500px;
+  }
 }
 
 .illustrationSection {
@@ -81,4 +64,8 @@
   background: white;
   position: relative;
   overflow: hidden;
+
+  @media (max-width: $breakpoint-md) {
+    display: none;
+  }
 }

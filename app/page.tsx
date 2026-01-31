@@ -1,67 +1,75 @@
+'use client';
+
+import React, { useMemo } from 'react';
 import Link from 'next/link';
-import { Button, MainLayout } from '@/modules/shared';
+import { useAuth } from '@/modules/shared/contexts';
+import { ROUTES } from '@/modules/shared/constants/routes';
+import { Button } from '@/modules/shared';
 import styles from './page.module.scss';
 
 export default function Home() {
+  const { isAuthenticated } = useAuth();
+
+  const bookingHref = useMemo(() => {
+    return isAuthenticated ? '/customer/booking' : ROUTES.LOGIN;
+  }, [isAuthenticated]);
+
   return (
-    <MainLayout>
-      <div className={styles.home}>
-        <div className={styles.hero}>
-          <h1 className={styles.title}>
-            Welcome to Pawra 🐾
-          </h1>
-          <p className={styles.subtitle}>
-            Your comprehensive pet healthcare management platform
-          </p>
-          <div className={styles.cta}>
-            <Link href="/pet-owner">
-              <Button variant="primary" size="lg">
-                Pet Owner Dashboard
-              </Button>
-            </Link>
-            <Link href="/vet">
-              <Button variant="secondary" size="lg">
-                Veterinarian Portal
-              </Button>
-            </Link>
-          </div>
+    <div className={styles.home}>
+      <div className={styles.hero}>
+        <h1 className={styles.title}>Chăm sóc thú cưng toàn diện</h1>
+        <p className={styles.subtitle}>
+          Dịch vụ thú y chất lượng cao với đội ngũ bác sĩ giàu kinh nghiệm. Đặt lịch khám nhanh chóng và tiện lợi.
+        </p>
+
+        <div className={styles.cta}>
+          <Link href={bookingHref}>
+            <Button variant="primary" size="lg">
+              Đăng ký khám
+            </Button>
+          </Link>
+          <Link href="/customer/dashboard">
+            <Button variant="secondary" size="lg">
+              Customer Dashboard
+            </Button>
+          </Link>
         </div>
+      </div>
 
       <div className={styles.features}>
         <div className={styles.featureCard}>
           <div className={styles.featureIcon}>🏥</div>
-          <h3 className={styles.featureTitle}>Health Tracking</h3>
+          <h3 className={styles.featureTitle}>Khám tổng quát</h3>
           <p className={styles.featureText}>
-            Keep track of your pet's health records, vaccinations, and medical history
+            Theo dõi sức khỏe định kỳ, chẩn đoán sớm và tư vấn chăm sóc phù hợp cho thú cưng.
           </p>
         </div>
 
         <div className={styles.featureCard}>
-          <div className={styles.featureIcon}>📅</div>
-          <h3 className={styles.featureTitle}>Easy Scheduling</h3>
+          <div className={styles.featureIcon}>💉</div>
+          <h3 className={styles.featureTitle}>Tiêm phòng</h3>
           <p className={styles.featureText}>
-            Book and manage appointments with veterinarians effortlessly
+            Lịch tiêm phòng đầy đủ, nhắc lịch và theo dõi hồ sơ vaccine cho thú cưng.
           </p>
         </div>
 
         <div className={styles.featureCard}>
-          <div className={styles.featureIcon}>💊</div>
-          <h3 className={styles.featureTitle}>Medication Reminders</h3>
+          <div className={styles.featureIcon}>🩺</div>
+          <h3 className={styles.featureTitle}>Đặt lịch dễ dàng</h3>
           <p className={styles.featureText}>
-            Never miss a dose with automated medication reminders
+            Chọn phòng khám, bác sĩ và khung giờ phù hợp. Nếu khung giờ đã có người đặt, hệ thống sẽ báo để bạn chọn lại.
           </p>
         </div>
 
         <div className={styles.featureCard}>
           <div className={styles.featureIcon}>📱</div>
-          <h3 className={styles.featureTitle}>Mobile Access</h3>
+          <h3 className={styles.featureTitle}>Theo dõi lịch hẹn</h3>
           <p className={styles.featureText}>
-            Access your pet's information anytime, anywhere
+            Xem lịch hẹn, trạng thái duyệt và lịch khám được xác nhận từ quản lý phòng khám.
           </p>
         </div>
       </div>
     </div>
-    </MainLayout>
   );
 }
 

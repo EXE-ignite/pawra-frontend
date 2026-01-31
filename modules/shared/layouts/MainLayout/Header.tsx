@@ -2,7 +2,9 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { AuthModal } from '../../components';
+import { ROUTES } from '../../constants/routes';
 import { useAuth } from '../../contexts';
 import { authService } from '../../services';
 import styles from './MainLayout.module.scss';
@@ -10,12 +12,14 @@ import styles from './MainLayout.module.scss';
 export function Header() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { user, isAuthenticated, logout: contextLogout } = useAuth();
+  const router = useRouter();
   
   console.log('🎨 [HEADER] Render - User:', user);
   console.log('🔐 [HEADER] Is Authenticated:', isAuthenticated);
 
   const openAuth = () => {
-    setIsAuthModalOpen(true);
+    // Navigate to auth page instead of opening modal
+    router.push(ROUTES.LOGIN);
   };
 
   const handleLogout = async () => {

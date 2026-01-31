@@ -10,13 +10,12 @@ interface DashboardPageProps {
   stats: DashboardStats;
   pets: Pet[];
   appointments: Appointment[];
+  onAddPet?: () => void;
+  onEditPet?: (pet: Pet) => void;
+  loading?: boolean;
 }
 
-export function DashboardPage({ stats, pets, appointments }: DashboardPageProps) {
-  function handleAddPet() {
-    console.log('Add new pet');
-  }
-
+export function DashboardPage({ stats, pets, appointments, onAddPet, onEditPet, loading }: DashboardPageProps) {
   function handleBookAppointment() {
     console.log('Book new appointment');
   }
@@ -58,15 +57,21 @@ export function DashboardPage({ stats, pets, appointments }: DashboardPageProps)
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
           <h2 className={styles.sectionTitle}>My Pets</h2>
-          <Button variant="primary" onClick={handleAddPet}>
+          <Button variant="primary" onClick={onAddPet}>
             + Add Pet
           </Button>
         </div>
 
-        {pets.length > 0 ? (
+        {loading ? (
+          <div className={styles.emptyState}>
+            <div className={styles.emptyStateIcon}>⏳</div>
+            <h3 className={styles.emptyStateTitle}>Loading...</h3>
+            <p className={styles.emptyStateText}>Fetching your pets and appointments.</p>
+          </div>
+        ) : pets.length > 0 ? (
           <div className={styles.petsGrid}>
             {pets.map((pet) => (
-              <PetCard key={pet.id} pet={pet} />
+              <PetCard key={pet.id} pet={pet} onClick={() => onEditPet?.(pet)} />
             ))}
           </div>
         ) : (
@@ -76,7 +81,7 @@ export function DashboardPage({ stats, pets, appointments }: DashboardPageProps)
             <p className={styles.emptyStateText}>
               Start by adding your first pet to track their health and appointments.
             </p>
-            <Button variant="primary" onClick={handleAddPet}>
+            <Button variant="primary" onClick={onAddPet}>
               Add Your First Pet
             </Button>
           </div>
