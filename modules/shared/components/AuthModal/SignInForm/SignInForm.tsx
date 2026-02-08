@@ -14,6 +14,10 @@ export function SignInForm({ onSuccess }: SignInFormProps) {
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'info' | 'warning' | 'error' } | null>(null);
 
+  const isGoogleConfigured = typeof window !== 'undefined' && 
+    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && 
+    process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID !== '';
+
   const handleFacebookLogin = () => {
     setToast({ message: 'Tính năng đăng nhập Facebook hiện tại chưa có', type: 'info' });
   };
@@ -55,6 +59,14 @@ export function SignInForm({ onSuccess }: SignInFormProps) {
     },
   });
 
+  const handleGoogleClick = () => {
+    if (!isGoogleConfigured) {
+      setToast({ message: 'Google login is not configured', type: 'warning' });
+      return;
+    }
+    handleGoogleLogin();
+  };
+
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log('🚀 [SIGNIN] Form submitted');
@@ -95,7 +107,7 @@ export function SignInForm({ onSuccess }: SignInFormProps) {
         <button type="button" className={styles.socialButton} onClick={handleFacebookLogin}>
           f
         </button>
-        <button type="button" className={styles.socialButton} onClick={() => handleGoogleLogin()}>
+        <button type="button" className={styles.socialButton} onClick={handleGoogleClick}>
           G+
         </button>
       </div>

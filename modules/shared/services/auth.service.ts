@@ -8,52 +8,51 @@ export async function login(credentials: LoginRequest): Promise<LoginResponse> {
   
   try {
     const response = await apiService.post<any>('/Auth/login', credentials);
-    console.log('📥 [AUTH] API Response:', response);
+    console.log('📥 [AUTH] Full API Response:', JSON.stringify(response, null, 2));
+    console.log('📥 [AUTH] Response type:', typeof response);
+    console.log('📥 [AUTH] Response keys:', Object.keys(response || {}));
     
-    if (response.data?.token) {
+    // Handle different response structures
+    // Case 1: response.data contains the user info
+    // Case 2: response itself contains the user info
+    const responseData = response.data || response;
+    console.log('📦 [AUTH] Response data:', responseData);
+    
+    if (responseData?.token) {
       console.log('✅ [AUTH] Token found, saving...');
-      apiService.setToken(response.data.token);
+      apiService.setToken(responseData.token);
       
       // Lưu thông tin user
       const user: User = {
-        email: response.data.email,
-        fullName: response.data.fullName,
-        role: response.data.role,
-        expiresAt: response.data.expiresAt,
+        email: responseData.email,
+        fullName: responseData.fullName,
+        role: responseData.role,
+        expiresAt: responseData.expiresAt,
       };
       console.log('👤 [AUTH] Saving user:', user);
       saveUser(user);
+      
+      console.log('✨ [AUTH] Login successful!');
+      return {
+        success: true,
+        message: response.message || 'Đã đăng nhập',
+        data: responseData,
+      };
+    } else {
+      console.error('⚠️ [AUTH] No token in response');
+      return {
+        success: false,
+        message: 'Không tìm thấy token trong response',
+      };
     }
-    
-    console.log('✨ [AUTH] Login successful!');
-    return {
-      success: response.success || false,
-      message: response.message || 'Đã đăng nhập',
-      data: response.data,
-    };
   } catch (error: any) {
     console.error('❌ [AUTH] Login error:', error);
-    console.error('📊 [AUTH] Error details:', {
-      message: error?.message,
-      response: error?.response,
-      responseData: error?.response?.data,
-      status: error?.response?.status,
-      stack: error?.stack,
-    });
     
-    // Extract error message from validation errors or general error
-    let errorMessage = 'Đã có lỗi xảy ra';
+    // Error is already formatted by handleApiError in interceptor
+    const errorMessage = error?.message || 'Đã có lỗi xảy ra';
     
-    if (error.response?.data?.errors) {
-      // Get first validation error message
-      const errors = error.response.data.errors;
-      const firstKey = Object.keys(errors)[0];
-      errorMessage = errors[firstKey]?.[0] || errorMessage;
-    } else if (error.response?.data?.message) {
-      errorMessage = error.response.data.message;
-    } else if (error.message) {
-      errorMessage = error.message;
-    }
+    console.error('📊 [AUTH] Error message:', errorMessage);
+    console.error('📊 [AUTH] Error status:', error?.status);
     
     return {
       success: false,
@@ -67,45 +66,47 @@ export async function loginWithGoogle(request: GoogleLoginRequest): Promise<Logi
   
   try {
     const response = await apiService.post<any>('/Auth/google/callback', request);
-    console.log('📥 [GOOGLE] API Response:', response);
+    console.log('📥 [GOOGLE] Full API Response:', JSON.stringify(response, null, 2));
     
-    if (response.data?.token) {
+    // Handle different response structures
+    const responseData = response.data || response;
+    console.log('📦 [GOOGLE] Response data:', responseData);
+    
+    if (responseData?.token) {
       console.log('✅ [GOOGLE] Token found, saving...');
-      apiService.setToken(response.data.token);
+      apiService.setToken(responseData.token);
       
       // Lưu thông tin user
       const user: User = {
-        email: response.data.email,
-        fullName: response.data.fullName,
-        role: response.data.role,
-        expiresAt: response.data.expiresAt,
+        email: responseData.email,
+        fullName: responseData.fullName,
+        role: responseData.role,
+        expiresAt: responseData.expiresAt,
       };
       console.log('👤 [GOOGLE] Saving user:', user);
       saveUser(user);
+      
+      console.log('✨ [GOOGLE] Login successful!');
+      return {
+        success: true,
+        message: response.message || 'Đã đăng nhập với Google',
+        data: responseData,
+      };
+    } else {
+      console.error('⚠️ [GOOGLE] No token in response');
+      return {
+        success: false,
+        message: 'Không tìm thấy token trong response',
+      };
     }
-    
-    console.log('✨ [GOOGLE] Login successful!');
-    return {
-      success: response.success || true,
-      message: response.message || 'Đã đăng nhập với Google',
-      data: response.data,
-    };
   } catch (error: any) {
     console.error('❌ [GOOGLE] Login error:', error);
-    console.error('📊 [GOOGLE] Error details:', {
-      message: error?.message,
-      response: error?.response,
-      responseData: error?.response?.data,
-      status: error?.response?.status,
-    });
     
-    let errorMessage = 'Đã có lỗi xảy ra khi đăng nhập với Google';
+    // Error is already formatted by handleApiError in interceptor
+    const errorMessage = error?.message || 'Đã có lỗi xảy ra khi đăng nhập với Google';
     
-    if (error.response?.data?.message) {
-      errorMessage = error.response.data.message;
-    } else if (error.message) {
-      errorMessage = error.message;
-    }
+    console.error('📊 [GOOGLE] Error message:', errorMessage);
+    console.error('📊 [GOOGLE] Error status:', error?.status);
     
     return {
       success: false,
@@ -122,11 +123,8 @@ export async function logout(): Promise<void> {
     console.log('✅ [AUTH] Logout API called successfully');
   } catch (error: any) {
     console.warn('⚠️ [AUTH] Logout API error (continuing anyway):', error);
-    console.warn('⚠️ [AUTH] Error details:', {
-      message: error.message,
-      status: error.status,
-      response: error.response
-    });
+    console.warn('⚠️ [AUTH] Error message:', error?.message);
+    console.warn('⚠️ [AUTH] Error status:', error?.status);
     // Don't throw - we still want to clear local data even if API fails
   } finally {
     console.log('🧹 [AUTH] Clearing local data...');
@@ -142,51 +140,48 @@ export async function register(data: RegisterRequest): Promise<LoginResponse> {
   
   try {
     const response = await apiService.post<any>('/Auth/register', data);
-    console.log('📥 [AUTH] API Response:', response);
+    console.log('📥 [AUTH] Full API Response:', JSON.stringify(response, null, 2));
     
-    if (response.data?.token) {
+    // Handle different response structures
+    const responseData = response.data || response;
+    console.log('📦 [AUTH] Response data:', responseData);
+    
+    if (responseData?.token) {
       console.log('✅ [AUTH] Token found, saving...');
-      apiService.setToken(response.data.token);
+      apiService.setToken(responseData.token);
       
       // Lưu thông tin user
       const user: User = {
-        email: response.data.email,
-        fullName: response.data.fullName,
-        role: response.data.role,
-        expiresAt: response.data.expiresAt,
+        email: responseData.email,
+        fullName: responseData.fullName,
+        role: responseData.role,
+        expiresAt: responseData.expiresAt,
       };
       console.log('👤 [AUTH] Saving user:', user);
       saveUser(user);
+      
+      console.log('✨ [AUTH] Registration successful!');
+      return {
+        success: true,
+        message: response.message || 'Đã đăng ký thành công',
+        data: responseData,
+      };
+    } else {
+      console.error('⚠️ [AUTH] No token in response');
+      return {
+        success: false,
+        message: 'Không tìm thấy token trong response',
+      };
     }
-    
-    console.log('✨ [AUTH] Registration successful!');
-    return {
-      success: response.success || false,
-      message: response.message || 'Đã đăng ký thành công',
-      data: response.data,
-    };
   } catch (error: any) {
     console.error('❌ [AUTH] Registration error:', error);
-    console.error('❌ [AUTH] Error details:', {
-      message: error.message,
-      response: error.response,
-      status: error.status,
-      full: JSON.stringify(error, null, 2)
-    });
     
-    // Extract error message from validation errors or general error
-    let errorMessage = 'Đã có lỗi xảy ra';
+    // Error is already formatted by handleApiError in interceptor
+    const errorMessage = error?.message || 'Đã có lỗi xảy ra';
     
-    if (error.response?.data?.errors) {
-      // Get first validation error message
-      const errors = error.response.data.errors;
-      const firstKey = Object.keys(errors)[0];
-      errorMessage = errors[firstKey]?.[0] || errorMessage;
-    } else if (error.response?.data?.message) {
-      errorMessage = error.response.data.message;
-    } else if (error.message) {
-      errorMessage = error.message;
-    }
+    console.error('📊 [AUTH] Error message:', errorMessage);
+    console.error('📊 [AUTH] Error status:', error?.status);
+    console.error('📊 [AUTH] Full error:', JSON.stringify(error, null, 2));
     
     return {
       success: false,

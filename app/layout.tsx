@@ -15,11 +15,17 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <GoogleOAuthProvider clientId={googleClientId}>
+        {googleClientId ? (
+          <GoogleOAuthProvider clientId={googleClientId}>
+            <AuthProvider>
+              {children}
+            </AuthProvider>
+          </GoogleOAuthProvider>
+        ) : (
           <AuthProvider>
             {children}
           </AuthProvider>
-        </GoogleOAuthProvider>
+        )}
       </body>
     </html>
   );
