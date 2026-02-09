@@ -1,0 +1,76 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.newsletter {
+  background: linear-gradient(135deg, $primary-500, $primary-400);
+  border-radius: $radius-lg;
+  padding: $spacing-xl;
+  box-shadow: $shadow-md;
+  margin-bottom: $spacing-lg;
+  color: white;
+}
+
+.iconWrapper {
+  margin-bottom: $spacing-md;
+}
+
+.icon {
+  font-size: 32px;
+  display: block;
+}
+
+.title {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacing-sm;
+  color: white;
+}
+
+.description {
+  font-size: $font-size-sm;
+  line-height: 1.6;
+  margin-bottom: $spacing-lg;
+  opacity: 0.95;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.input {
+  padding: $spacing-sm $spacing-md;
+  border: none;
+  border-radius: $radius-md;
+  font-size: $font-size-base;
+  background: rgba(white, 0.95);
+  transition: all $transition-fast;
+
+  &:focus {
+    outline: none;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(white, 0.3);
+  }
+
+  &::placeholder {
+    color: $text-tertiary;
+  }
+}
+
+.button {
+  padding: $spacing-sm $spacing-md;
+  background: white;
+  color: $primary-500;
+  border: none;
+  border-radius: $radius-md;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+}

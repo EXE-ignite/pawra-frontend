@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { AuthModal } from '../../components';
 import { useAuth } from '../../contexts';
@@ -31,7 +32,13 @@ export function Header() {
         <div className={styles.headerContent}>
           {/* Logo */}
           <Link href="/" className={styles.logo}>
-            🐾 PetCare
+            <Image 
+              src="/logo.png" 
+              alt="PetCare Logo" 
+              width={60} 
+              height={20}
+              priority
+            />
           </Link>
 
           {/* Right Side: Nav Links + Notification + Avatar */}
