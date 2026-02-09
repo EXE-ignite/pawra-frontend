@@ -47,9 +47,39 @@ class BlogService {
 
   async getPostById(id: string): Promise<BlogPost> {
     if (USE_MOCK) {
-      const post = mockBlogData.latestPosts.find(p => p.id === id);
+      const allPosts = [mockBlogData.featuredPost, ...mockBlogData.latestPosts];
+      const post = allPosts.find(p => p.id === id);
       if (!post) throw new Error('Post not found');
-      return post;
+      
+      // Add full content for detail page
+      return {
+        ...post,
+        content: `
+          <p>Switching your cat's food can be a delicate process. Cats are notoriously sensitive to changes in their environment, and their digestive systems are no exception.</p>
+          
+          <p>Changing a cat's food too quickly can lead to gastrointestinal upset, including vomiting or diarrhea. Furthermore, some cats may simply refuse to eat the new food, which can be dangerous for their health. A slow and steady approach is the key to a successful transition.</p>
+          
+          <h2>The 7-Day Transition Schedule</h2>
+          
+          <p>Veterinarians generally recommend a 7-day transition period. This allows the beneficial bacteria in your cat's gut to adjust to the new ingredients. Here's a recommended breakdown:</p>
+          
+          <ul>
+            <li><strong>Days 1-2:</strong> 75% old food, 25% new food.</li>
+            <li><strong>Days 3-4:</strong> 50% old food, 50% new food.</li>
+            <li><strong>Days 5-6:</strong> 25% old food, 75% new food.</li>
+            <li><strong>Day 7:</strong> 100% new food.</li>
+          </ul>
+          
+          <div class="pro-tip">
+            <h4>💡 Pro-Tip</h4>
+            <p>If your cat is particularly picky, you can extend this schedule to 14 days, increasing the new food in 10% increments every day or two.</p>
+          </div>
+          
+          <h2>Monitoring Your Cat</h2>
+          
+          <p>During the transition, keep a close eye on your cat's behavior and litter box habits. Look for any signs of discomfort or refusal to eat. If your cat stops eating for more than 24 hours, contact your vet immediately, as this can lead to Hepatic Lipidosis.</p>
+        `
+      };
     }
 
     try {
