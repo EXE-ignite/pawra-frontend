@@ -40,6 +40,9 @@ export function StaffLayout({ children }: StaffLayoutProps) {
           <a href="/admin/pets" className={styles.navItem}>
             🐕 Pets
           </a>
+          <a href="/admin/blog" className={styles.navItem}>
+            📝 Blog Posts
+          </a>
           <a href="/admin/reports" className={styles.navItem}>
             📈 Reports
           </a>

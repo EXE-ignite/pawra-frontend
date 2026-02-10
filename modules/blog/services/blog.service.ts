@@ -1,6 +1,9 @@
 import { apiService } from '@/modules/shared/services';
-import { BlogPost } from '../types';
+import { BlogPost, BlogCategory } from '../types';
 import { mockBlogData } from './mock-data';
+import type { BlogStats } from '../pages/AdminBlogPage/AdminBlogPage.types';
+import type { BlogTablePost } from '../components/BlogTable/BlogTable.types';
+import type { BlogEditorFormData } from '../components/BlogEditor/BlogEditor.types';
 
 /**
  * Blog Service - API Ready
@@ -122,6 +125,193 @@ class BlogService {
       return response.data;
     } catch (error) {
       console.error('Error searching posts:', error);
+      throw error;
+    }
+  }
+
+  // ============ ADMIN METHODS ============
+
+  async getAdminStats(): Promise<BlogStats> {
+    if (USE_MOCK) {
+      return {
+        totalViews: 128430,
+        viewsChange: '+12%',
+        totalPosts: 156,
+        totalComments: 2842,
+        commentsTimeRange: 'Last 30 days',
+      };
+    }
+
+    try {
+      const response = await apiService.get<BlogStats>(`${this.endpoint}/admin/stats`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching admin stats:', error);
+      throw error;
+    }
+  }
+
+  async getAdminPosts(
+    page = 1,
+    limit = 10,
+    search?: string,
+    status?: 'Published' | 'Draft' | 'Scheduled'
+  ): Promise<{ posts: BlogTablePost[]; total: number; totalPages: number }> {
+    if (USE_MOCK) {
+      const mockPosts: BlogTablePost[] = [
+        {
+          id: '1',
+          title: '10 Essential Tips for Puppy Training',
+          slug: 'pet-care-training-tips.html',
+          thumbnailUrl: 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400',
+          author: {
+            id: 'u1',
+            name: 'Jane Doe',
+            avatarUrl: 'https://i.pravatar.cc/150?u=jane',
+          },
+          category: 'Training',
+          status: 'Published',
+          date: 'Oct 24, 2023',
+        },
+        {
+          id: '2',
+          title: 'Understanding Cat Body Language',
+          slug: 'cat-body-language-guide.html',
+          thumbnailUrl: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400',
+          author: {
+            id: 'u2',
+            name: 'Mark Smith',
+            avatarUrl: 'https://i.pravatar.cc/150?u=mark',
+          },
+          category: 'Pet Care',
+          status: 'Draft',
+          date: 'Oct 26, 2023',
+        },
+        {
+          id: '3',
+          title: 'Nutritional Needs of Indoor Rabbits',
+          slug: 'rabbit-nutrition-guide.html',
+          thumbnailUrl: 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=400',
+          author: {
+            id: 'u3',
+            name: 'Alice Wong',
+            avatarUrl: 'https://i.pravatar.cc/150?u=alice',
+          },
+          category: 'Health',
+          status: 'Scheduled',
+          date: 'Oct 30, 2023',
+        },
+        {
+          id: '4',
+          title: 'Creating a Safe Habitat for Parrots',
+          slug: 'parrot-habitat-tips.html',
+          thumbnailUrl: 'https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=400',
+          author: {
+            id: 'u1',
+            name: 'Jane Doe',
+            avatarUrl: 'https://i.pravatar.cc/150?u=jane',
+          },
+          category: 'Lifestyle',
+          status: 'Published',
+          date: 'Oct 20, 2023',
+        },
+      ];
+
+      return {
+        posts: mockPosts,
+        total: 156,
+        totalPages: 40,
+      };
+    }
+
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+        ...(search && { search }),
+        ...(status && { status }),
+      });
+
+      const response = await apiService.get<{ posts: BlogTablePost[]; total: number; totalPages: number }>(
+        `${this.endpoint}/admin/posts?${params.toString()}`
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching admin posts:', error);
+      throw error;
+    }
+  }
+
+  async deletePost(postId: string): Promise<void> {
+    if (USE_MOCK) {
+      console.log('Mock: Delete post', postId);
+      return;
+    }
+
+    try {
+      await apiService.delete(`${this.endpoint}/posts/${postId}`);
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      throw error;
+    }
+  }
+
+  async createPost(data: BlogEditorFormData): Promise<BlogPost> {
+    if (USE_MOCK) {
+      console.log('Mock: Create post', data);
+      // Return mock created post
+      return {
+        id: Date.now().toString(),
+        title: data.title,
+        slug: data.slug,
+        content: data.content,
+        excerpt: data.excerpt,
+        imageUrl: data.thumbnailUrl,
+        author: {
+          name: 'Current User',
+          avatar: '',
+        },
+        category: data.categoryId as BlogCategory,
+        publishedAt: new Date().toISOString(),
+        readTime: 5,
+      };
+    }
+
+    try {
+      const response = await apiService.post<BlogPost>(`${this.endpoint}/posts`, data);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating post:', error);
+      throw error;
+    }
+  }
+
+  async updatePost(postId: string, data: BlogEditorFormData): Promise<BlogPost> {
+    if (USE_MOCK) {
+      console.log('Mock: Update post', postId, data);
+      // Return mock updated post
+      return {
+        id: postId,
+        title: data.title,
+        slug: data.slug,
+        content: data.content,
+        excerpt: data.excerpt,
+        imageUrl: data.thumbnailUrl,
+        author: {
+          name: 'Current User',
+          avatar: '',
+        },
+        category: data.categoryId as BlogCategory,
+        publishedAt: new Date().toISOString(),
+        readTime: 5,
+      };
+    }
+
+    try {
+      const response = await apiService.put<BlogPost>(`${this.endpoint}/posts/${postId}`, data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating post:', error);
       throw error;
     }
   }

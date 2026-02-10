@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { getUser, clearUser, isAuthenticated } from '../services/auth.service';
+import { getUser, clearUser } from '../services/auth.service';
 import type { User } from '../types/auth.types';
 
 interface AuthContextType {
@@ -37,12 +37,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
+  // Calculate isAuthenticated based on user state instead of calling the function
+  const authenticated = !!user;
+
   return (
     <AuthContext.Provider
       value={{
         user,
         isLoading,
-        isAuthenticated: isAuthenticated(),
+        isAuthenticated: authenticated,
         updateUser,
         logout,
       }}

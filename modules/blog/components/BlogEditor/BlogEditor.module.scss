@@ -1,0 +1,266 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.editor {
+  background: #F9FAFB;
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+.header {
+  background: white;
+  padding: 24px 32px;
+  border-bottom: 1px solid #E5E7EB;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: $text-primary;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.cancelButton,
+.draftButton,
+.publishButton {
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.cancelButton {
+  background: white;
+  border: 1px solid #E5E7EB;
+  color: $text-primary;
+
+  &:hover:not(:disabled) {
+    background: #F9FAFB;
+  }
+}
+
+.draftButton {
+  background: white;
+  border: 1px solid $primary-500;
+  color: $primary-500;
+
+  &:hover:not(:disabled) {
+    background: $primary-100;
+  }
+}
+
+.publishButton {
+  background: $primary-500;
+  border: none;
+  color: white;
+
+  &:hover:not(:disabled) {
+    background: $primary-400;
+  }
+}
+
+.form {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px;
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 32px;
+}
+
+.mainContent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: $text-primary;
+}
+
+.required {
+  color: #DC2626;
+}
+
+.input,
+.select,
+.textarea {
+  padding: 12px 16px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  font-size: 14px;
+  color: $text-primary;
+  background: white;
+  font-family: inherit;
+  transition: all 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-500;
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
+  }
+
+  &.error {
+    border-color: #DC2626;
+  }
+
+  &::placeholder {
+    color: $text-secondary;
+  }
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px 8px 0 0;
+  margin-bottom: -1px;
+}
+
+.toolbarButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: none;
+  background: white;
+  border-radius: 6px;
+  color: $text-secondary;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: $primary-100;
+    color: $primary-500;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  &.imageButton {
+    margin-left: auto;
+    background: $primary-500;
+    color: white;
+
+    &:hover {
+      background: $primary-400;
+    }
+  }
+}
+
+.toolbarDivider {
+  width: 1px;
+  height: 20px;
+  background: #E5E7EB;
+  margin: 0 4px;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.6;
+  border-radius: 0 0 8px 8px;
+}
+
+.hint {
+  font-size: 12px;
+  color: $text-secondary;
+}
+
+.errorText {
+  font-size: 12px;
+  color: #DC2626;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sidebarSection {
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.sidebarTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: $text-primary;
+  margin: 0 0 16px 0;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.imagePreview {
+  margin-top: 12px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #E5E7EB;
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+@media (max-width: 1024px) {
+  .form {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+
+  .sidebar {
+    order: -1;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .actions {
+    justify-content: stretch;
+
+    button {
+      flex: 1;
+    }
+  }
+}

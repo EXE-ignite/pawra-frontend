@@ -4,3 +4,5 @@ export { AuthModal } from './AuthModal';
 export type { AuthModalProps } from './AuthModal/AuthModal.types';
 export { Toast } from './Toast';
 export type { ToastProps } from './Toast/Toast.types';
+export { UserDropdown } from './UserDropdown';
+export type { UserDropdownProps } from './UserDropdown/UserDropdown.types';

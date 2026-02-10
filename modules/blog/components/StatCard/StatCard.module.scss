@@ -1,0 +1,76 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.statCard {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border: 1px solid #E5E7EB;
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: $primary-100;
+  color: $primary-500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge {
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+
+  &.success {
+    background: #D1FAE5;
+    color: #065F46;
+  }
+
+  &.info {
+    background: $primary-100;
+    color: $primary-500;
+  }
+
+  &.warning {
+    background: #FEF3C7;
+    color: #92400E;
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: 14px;
+  color: $text-secondary;
+  margin: 0;
+}
+
+.value {
+  font-size: 32px;
+  font-weight: 700;
+  color: $text-primary;
+  margin: 0;
+}

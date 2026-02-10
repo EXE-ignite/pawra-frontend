@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { AuthModal } from '../../components';
+import { AuthModal, UserDropdown } from '../../components';
 import { useAuth } from '../../contexts';
 import { authService } from '../../services';
 import styles from './MainLayout.module.scss';
@@ -67,11 +67,11 @@ export function Header() {
                 <button className={styles.notificationBtn} aria-label="Notifications">
                   🔔
                 </button>
-                <div className={styles.userMenu}>
-                  <div className={styles.userAvatar}>
-                    {user.fullName.charAt(0).toUpperCase()}
-                  </div>
-                </div>
+                <UserDropdown
+                  userName={user.fullName}
+                  userEmail={user.email}
+                  onLogout={handleLogout}
+                />
               </>
             ) : (
               <button onClick={openAuth} className={styles.authButton}>
