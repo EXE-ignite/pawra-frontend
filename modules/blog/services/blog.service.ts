@@ -1,5 +1,5 @@
 import { apiService } from '@/modules/shared/services';
-import { BlogPost, BlogCategory } from '../types';
+import { BlogPost, BlogCategory, BlogComment, BlogReaction } from '../types';
 import { mockBlogData } from './mock-data';
 import type { BlogStats } from '../pages/AdminBlogPage/AdminBlogPage.types';
 import type { BlogTablePost } from '../components/BlogTable/BlogTable.types';
@@ -13,11 +13,175 @@ import type { BlogEditorFormData } from '../components/BlogEditor/BlogEditor.typ
  * 2. Ensure .env.local has NEXT_PUBLIC_API_URL configured
  * 3. Backend must implement endpoints documented in README.md
  */
-const USE_MOCK = true; // TODO: Set to false when API is ready
+const USE_MOCK = true; // Dùng mock data tạm vì backend chưa có admin endpoints
+const USE_MOCK_ADMIN = true; // Backend chưa có admin endpoints → dùng mock tạm
 
 class BlogService {
-  private readonly endpoint = '/blog';
+      // ===== FEATURED & RELATED POSTS =====
+      async getFeaturedPosts(config?: any): Promise<BlogPost[]> {
+        if (USE_MOCK) {
+          return mockBlogData.latestPosts.slice(0, 3);
+        }
+        const res = await apiService.get<BlogPost[]>(`${this.postEndpoint}/featured`, config);
+        return res.data;
+      }
 
+      async getRelatedPosts(postId: string): Promise<BlogPost[]> {
+        if (USE_MOCK) {
+          return mockBlogData.latestPosts.slice(0, 3);
+        }
+        const res = await apiService.get<BlogPost[]>(`${this.postEndpoint}/${postId}/related`);
+        return res.data;
+      }
+    // ===== BLOG COMMENTS =====
+    async getBlogPostComments(postId: string): Promise<BlogComment[]> {
+      if (USE_MOCK) {
+        return [];
+      }
+      const res = await apiService.get<BlogComment[]>(`${this.commentEndpoint}/post/${postId}`);
+      return res.data;
+    }
+
+    async addBlogComment(postId: string, data: { content: string; parentId?: string }): Promise<BlogComment> {
+      if (USE_MOCK) {
+        return {
+          id: 'mock',
+          postId,
+          content: data.content,
+          createdAt: new Date().toISOString(),
+          author: { id: '1', name: 'Mock User' },
+        };
+      }
+      const res = await apiService.post<BlogComment>(`${this.commentEndpoint}/post/${postId}`, data);
+      return res.data;
+    }
+
+    async deleteComment(commentId: string): Promise<void> {
+      if (USE_MOCK) {
+        return;
+      }
+      await apiService.delete(`${this.commentEndpoint}/${commentId}`);
+    }
+
+    // ===== BLOG REACTIONS =====
+    async toggleBlogReaction(postId: string, reaction: string): Promise<BlogReaction> {
+      if (USE_MOCK) {
+        return { postId, reaction, count: 1, reacted: true };
+      }
+      const res = await apiService.post<BlogReaction>(`${this.reactionEndpoint}/toggle`, { postId, reaction });
+      return res.data;
+    }
+
+    async getMyReactionsBatch(postIds: string[]): Promise<{ [postId: string]: string | null }> {
+      if (USE_MOCK) {
+        return {};
+      }
+      const res = await apiService.post<{ [postId: string]: string | null }>(`${this.reactionEndpoint}/batch`, { postIds });
+      return res.data;
+    }
+  // Chuẩn hóa endpoint cho API mới (baseURL đã có /api rồi)
+  private readonly endpoint = '/BlogPosts';  // Dùng cho admin routes
+  private readonly postEndpoint = '/BlogPosts';
+  private readonly categoryEndpoint = '/BlogCategories';
+  private readonly commentEndpoint = '/blog-comments';
+  private readonly reactionEndpoint = '/blog-reactions';
+
+  // ===== BLOG CATEGORIES =====
+  async getBlogCategories(): Promise<BlogCategory[]> {
+    if (USE_MOCK) {
+      return [
+        'health', 'nutrition', 'training', 'behavior', 'grooming',
+      ];
+    }
+    const res = await apiService.get<BlogCategory[]>(`${this.categoryEndpoint}`);
+    return res.data;
+  }
+
+  async getBlogCategoryBySlug(slug: string): Promise<BlogCategory> {
+    if (USE_MOCK) {
+      return 'health';
+    }
+    const res = await apiService.get<BlogCategory>(`${this.categoryEndpoint}/${slug}`);
+    return res.data;
+  }
+
+  // ===== BLOG POSTS =====
+  async getBlogPosts(config?: any): Promise<BlogPost[]> {
+    if (USE_MOCK) {
+      return mockBlogData.latestPosts;
+    }
+    const res = await apiService.get<BlogPost[]>(`${this.postEndpoint}`, config);
+    return res.data;
+  }
+
+  async getBlogPostById(id: string): Promise<BlogPost> {
+    if (USE_MOCK) {
+      return mockBlogData.latestPosts[0];
+    }
+    const res = await apiService.get<BlogPost>(`${this.postEndpoint}/${id}`);
+    return res.data;
+  }
+
+  async getBlogPostBySlug(slug: string): Promise<BlogPost> {
+    if (USE_MOCK) {
+      return mockBlogData.latestPosts[0];
+    }
+    const res = await apiService.get<BlogPost>(`${this.postEndpoint}/slug/${slug}`);
+    return res.data;
+  }
+
+  async getPublishedBlogPosts(params: { page?: number; pageSize?: number; categorySlug?: string }): Promise<{ posts: BlogPost[]; total: number; totalPages: number }> {
+    if (USE_MOCK) {
+      return { posts: mockBlogData.latestPosts, total: 10, totalPages: 1 };
+    }
+    const { page = 1, pageSize = 10, categorySlug } = params;
+    const query = new URLSearchParams({
+      page: String(page),
+      pageSize: String(pageSize),
+      ...(categorySlug ? { categorySlug } : {}),
+    });
+    const res = await apiService.get<{ posts: BlogPost[]; total: number; totalPages: number }>(`${this.postEndpoint}/published?${query}`);
+    return res.data;
+  }
+
+  async createBlogPost(data: Partial<BlogPost>): Promise<BlogPost> {
+    if (USE_MOCK) {
+      return { ...mockBlogData.latestPosts[0], ...data } as BlogPost;
+    }
+    const res = await apiService.post<BlogPost>(`${this.postEndpoint}`, data);
+    return res.data;
+  }
+
+  async updateBlogPost(id: string, data: Partial<BlogPost>): Promise<BlogPost> {
+    if (USE_MOCK) {
+      return { ...mockBlogData.latestPosts[0], ...data, id } as BlogPost;
+    }
+    const res = await apiService.put<BlogPost>(`${this.postEndpoint}/${id}`, data);
+    return res.data;
+  }
+
+  async deleteBlogPost(id: string): Promise<void> {
+    if (USE_MOCK) {
+      return;
+    }
+    await apiService.delete(`${this.postEndpoint}/${id}`);
+  }
+
+  async publishBlogPost(id: string): Promise<BlogPost> {
+    if (USE_MOCK) {
+      return mockBlogData.latestPosts[0];
+    }
+    const res = await apiService.patch<BlogPost>(`${this.postEndpoint}/${id}/publish`);
+    return res.data;
+  }
+
+  async unpublishBlogPost(id: string): Promise<BlogPost> {
+    if (USE_MOCK) {
+      return mockBlogData.latestPosts[0];
+    }
+    const res = await apiService.patch<BlogPost>(`${this.postEndpoint}/${id}/unpublish`);
+    return res.data;
+  }
   async getFeaturedPost(): Promise<BlogPost> {
     if (USE_MOCK) {
       return mockBlogData.featuredPost;
@@ -39,7 +203,7 @@ class BlogService {
 
     try {
       const response = await apiService.get<BlogPost[]>(
-        `${this.endpoint}/posts?page=${page}&limit=${limit}`
+        `${this.endpoint}?page=${page}&limit=${limit}`
       );
       return response.data;
     } catch (error) {
@@ -86,7 +250,7 @@ class BlogService {
     }
 
     try {
-      const response = await apiService.get<BlogPost>(`${this.endpoint}/posts/${id}`);
+      const response = await apiService.get<BlogPost>(`${this.endpoint}/${id}`);
       return response.data;
     } catch (error) {
       console.error('Error fetching post:', error);
@@ -101,7 +265,7 @@ class BlogService {
 
     try {
       const response = await apiService.get<BlogPost[]>(
-        `${this.endpoint}/posts?category=${category}&page=${page}&limit=${limit}`
+        `${this.endpoint}?category=${category}&page=${page}&limit=${limit}`
       );
       return response.data;
     } catch (error) {
@@ -120,7 +284,7 @@ class BlogService {
 
     try {
       const response = await apiService.get<BlogPost[]>(
-        `${this.endpoint}/posts/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`
+        `${this.endpoint}/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`
       );
       return response.data;
     } catch (error) {
@@ -131,7 +295,7 @@ class BlogService {
 
   // ============ ADMIN METHODS ============
 
-  async getAdminStats(): Promise<BlogStats> {
+  async getAdminStats(config?: any): Promise<BlogStats> {
     if (USE_MOCK) {
       return {
         totalViews: 128430,
@@ -143,10 +307,23 @@ class BlogService {
     }
 
     try {
-      const response = await apiService.get<BlogStats>(`${this.endpoint}/admin/stats`);
+      const url = `${this.endpoint}/admin/stats`;
+      if (config && config.headers && config.headers.Authorization) {
+        console.log('[DEBUG] Bearer token:', config.headers.Authorization);
+      }
+      console.log('[DEBUG] Fetching admin stats:', url, config);
+      const response = await apiService.get<BlogStats>(url, config);
+      console.log('[DEBUG] API response:', response);
       return response.data;
-    } catch (error) {
-      console.error('Error fetching admin stats:', error);
+    } catch (error: any) {
+      console.error('Error fetching admin stats - Full error:', error);
+      console.error('Error type:', typeof error);
+      console.error('Error keys:', Object.keys(error));
+      console.error('Error details:', {
+        message: error?.message,
+        status: error?.status,
+        errors: error?.errors,
+      });
       throw error;
     }
   }
@@ -155,7 +332,8 @@ class BlogService {
     page = 1,
     limit = 10,
     search?: string,
-    status?: 'Published' | 'Draft' | 'Scheduled'
+    status?: 'Published' | 'Draft' | 'Scheduled',
+    config?: any
   ): Promise<{ posts: BlogTablePost[]; total: number; totalPages: number }> {
     if (USE_MOCK) {
       const mockPosts: BlogTablePost[] = [
@@ -232,12 +410,23 @@ class BlogService {
         ...(status && { status }),
       });
 
+      const url = `${this.endpoint}/admin/posts?${params.toString()}`;
+      if (config && config.headers && config.headers.Authorization) {
+        console.log('[DEBUG] Bearer token:', config.headers.Authorization);
+      }
+      console.log('[DEBUG] Fetching admin posts:', url, config);
       const response = await apiService.get<{ posts: BlogTablePost[]; total: number; totalPages: number }>(
-        `${this.endpoint}/admin/posts?${params.toString()}`
+        url,
+        config
       );
+      console.log('[DEBUG] API response:', response);
       return response.data;
-    } catch (error) {
-      console.error('Error fetching admin posts:', error);
+    } catch (error: any) {
+      console.error('Error fetching admin posts:', {
+        message: error?.message,
+        status: error?.status,
+        errors: error?.errors,
+      });
       throw error;
     }
   }
@@ -249,7 +438,7 @@ class BlogService {
     }
 
     try {
-      await apiService.delete(`${this.endpoint}/posts/${postId}`);
+      await apiService.delete(`${this.endpoint}/${postId}`);
     } catch (error) {
       console.error('Error deleting post:', error);
       throw error;
@@ -278,7 +467,7 @@ class BlogService {
     }
 
     try {
-      const response = await apiService.post<BlogPost>(`${this.endpoint}/posts`, data);
+      const response = await apiService.post<BlogPost>(`${this.endpoint}`, data);
       return response.data;
     } catch (error) {
       console.error('Error creating post:', error);
@@ -308,7 +497,7 @@ class BlogService {
     }
 
     try {
-      const response = await apiService.put<BlogPost>(`${this.endpoint}/posts/${postId}`, data);
+      const response = await apiService.put<BlogPost>(`${this.endpoint}/${postId}`, data);
       return response.data;
     } catch (error) {
       console.error('Error updating post:', error);

@@ -1,3 +1,25 @@
+// ===== Blog Comment =====
+export interface BlogComment {
+  id: string;
+  postId: string;
+  content: string;
+  createdAt: string;
+  author: {
+    id: string;
+    name: string;
+    avatarUrl?: string;
+  };
+  parentId?: string;
+  replies?: BlogComment[];
+}
+
+// ===== Blog Reaction =====
+export interface BlogReaction {
+  postId: string;
+  reaction: string; // e.g. 'like', 'love', 'haha', etc.
+  count: number;
+  reacted: boolean;
+}
 export interface BlogPost {
   id: string;
   title: string;

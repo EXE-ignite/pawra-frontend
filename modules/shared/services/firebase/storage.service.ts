@@ -3,6 +3,9 @@
  * Handles image uploads for blog content
  */
 
+import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
+import { storage } from './firebase.config';
+
 export interface UploadProgress {
   bytesTransferred: number;
   totalBytes: number;
@@ -47,34 +50,52 @@ class StorageService {
       const fileName = `${timestamp}-${randomString}.${extension}`;
       const storagePath = `${folder}/${fileName}`;
 
-      // TODO: Replace with actual Firebase Storage implementation
-      // For now, simulate upload with mock delay
       console.log('[Firebase Storage] Uploading:', storagePath);
 
-      // Simulate upload progress
-      if (onProgress) {
-        for (let i = 0; i <= 100; i += 20) {
-          await new Promise(resolve => setTimeout(resolve, 100));
-          onProgress({
-            bytesTransferred: (file.size * i) / 100,
-            totalBytes: file.size,
-            progress: i,
-          });
-        }
-      } else {
-        await new Promise(resolve => setTimeout(resolve, 500));
-      }
+      // Create storage reference
+      const storageRef = ref(storage, storagePath);
 
-      // Return mock URL (replace with actual Firebase public URL)
-      const mockUrl = URL.createObjectURL(file);
-      
-      console.log('[Firebase Storage] Upload complete:', mockUrl);
+      // Upload file with progress tracking
+      const uploadTask = uploadBytesResumable(storageRef, file);
 
-      return {
-        url: mockUrl,
-        path: storagePath,
-        fileName,
-      };
+      return new Promise<UploadResult>((resolve, reject) => {
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            // Track upload progress
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            if (onProgress) {
+              onProgress({
+                bytesTransferred: snapshot.bytesTransferred,
+                totalBytes: snapshot.totalBytes,
+                progress,
+              });
+            }
+            console.log(`[Firebase Storage] Upload progress: ${progress.toFixed(1)}%`);
+          },
+          (error) => {
+            // Handle upload error
+            console.error('[Firebase Storage] Upload failed:', error);
+            reject(error);
+          },
+          async () => {
+            // Upload completed successfully, get download URL
+            try {
+              const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+              console.log('[Firebase Storage] Upload complete:', downloadURL);
+
+              resolve({
+                url: downloadURL,
+                path: storagePath,
+                fileName,
+              });
+            } catch (error) {
+              console.error('[Firebase Storage] Failed to get download URL:', error);
+              reject(error);
+            }
+          }
+        );
+      });
     } catch (error) {
       console.error('[Firebase Storage] Upload failed:', error);
       throw error;
@@ -88,8 +109,13 @@ class StorageService {
   async deleteImage(path: string): Promise<void> {
     try {
       console.log('[Firebase Storage] Deleting:', path);
-      // TODO: Implement actual Firebase Storage deletion
-      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      // Create storage reference
+      const storageRef = ref(storage, path);
+      
+      // Delete the file
+      await deleteObject(storageRef);
+      
       console.log('[Firebase Storage] Delete complete');
     } catch (error) {
       console.error('[Firebase Storage] Delete failed:', error);

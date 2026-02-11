@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { blogService } from '@/modules/blog/services';
 import { useRouter } from 'next/navigation';
 import { StatCard } from '../../components/StatCard';
 import { BlogTable, BlogTablePost } from '../../components/BlogTable';
@@ -26,10 +27,11 @@ export function AdminBlogPage({
   const [currentPage, setCurrentPage] = useState(1);
   const [posts, setPosts] = useState(initialPosts);
 
-  const handleSearch = (query: string) => {
+  const handleSearch = async (query: string) => {
     setSearchQuery(query);
-    // TODO: Implement search API call
-    console.log('Search:', query);
+    // Gọi API search
+    const res = await blogService.getAdminPosts(1, 10, query);
+    setPosts(res.posts);
   };
 
   const handleFilter = () => {
@@ -42,10 +44,11 @@ export function AdminBlogPage({
     router.push('/admin/blog/create');
   };
 
-  const handlePageChange = (page: number) => {
+  const handlePageChange = async (page: number) => {
     setCurrentPage(page);
-    // TODO: Fetch posts for new page
-    console.log('Change to page:', page);
+    // Gọi API lấy posts cho page mới
+    const res = await blogService.getAdminPosts(page, 10, searchQuery);
+    setPosts(res.posts);
   };
 
   const handleView = (postId: string) => {
@@ -57,10 +60,12 @@ export function AdminBlogPage({
     router.push(`/admin/blog/${postId}/edit`);
   };
 
-  const handleDelete = (postId: string) => {
+  const handleDelete = async (postId: string) => {
     if (confirm('Are you sure you want to delete this post?')) {
-      // TODO: Implement delete with blogService
-      console.log('Delete post:', postId);
+      await blogService.deleteBlogPost(postId);
+      // Sau khi xóa, reload danh sách
+      const res = await blogService.getAdminPosts(currentPage, 10, searchQuery);
+      setPosts(res.posts);
     }
   };
 
