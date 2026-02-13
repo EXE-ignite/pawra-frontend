@@ -18,13 +18,19 @@ export function ArticleCard({ post }: ArticleCardProps) {
   return (
     <article className={styles.card}>
       <div className={styles.imageWrapper}>
-        <Image 
-          src={post.imageUrl}
-          alt={post.title}
-          width={400}
-          height={240}
-          className={styles.image}
-        />
+        {post.imageUrl ? (
+          <Image 
+            src={post.imageUrl}
+            alt={post.title}
+            width={400}
+            height={240}
+            className={styles.image}
+          />
+        ) : (
+          <div style={{ width: '400px', height: '240px', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ color: '#999' }}>No image</span>
+          </div>
+        )}
         <span 
           className={styles.categoryBadge}
           style={{ backgroundColor: categoryColor }}

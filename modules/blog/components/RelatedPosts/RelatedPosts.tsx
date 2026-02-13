@@ -19,13 +19,19 @@ export function RelatedPosts({ posts }: RelatedPostsProps) {
             className={styles.postItem}
           >
             <div className={styles.thumbnail}>
-              <Image 
-                src={post.imageUrl}
-                alt={post.title}
-                width={80}
-                height={80}
-                className={styles.image}
-              />
+              {post.imageUrl ? (
+                <Image 
+                  src={post.imageUrl}
+                  alt={post.title}
+                  width={80}
+                  height={80}
+                  className={styles.image}
+                />
+              ) : (
+                <div style={{ width: '80px', height: '80px', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <span style={{ fontSize: '0.7rem', color: '#999' }}>No img</span>
+                </div>
+              )}
             </div>
             <div className={styles.postInfo}>
               <h4 className={styles.postTitle}>{post.title}</h4>

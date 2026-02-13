@@ -4,17 +4,34 @@ import { MainLayout } from '@/modules/shared/layouts/MainLayout';
 import { getServerAuthToken } from '@/modules/shared/utils/server-auth';
 
 export default async function Blog() {
-  // Lấy token từ cookie phía server
-  const token = getServerAuthToken();
-  const authConfig = token ? { headers: { Authorization: `Bearer ${token}` } } : undefined;
+  // Lấy published posts từ public API (không cần auth)
+  try {
+    const response = await blogService.getPublishedBlogPosts({ page: 1, pageSize: 10 });
+    
+    console.log('[BLOG PAGE] Response:', JSON.stringify(response, null, 2));
+    console.log('[BLOG PAGE] Response type:', typeof response);
+    console.log('[BLOG PAGE] Response keys:', Object.keys(response || {}));
+    
+    const latestPosts = response?.posts || [];
+    
+    console.log('[BLOG PAGE] Latest posts:', latestPosts);
+    console.log('[BLOG PAGE] Posts count:', latestPosts.length);
+    
+    // Featured post là post đầu tiên trong danh sách published
+    const featured = latestPosts[0] || null;
 
-  // Lấy featured post và latest posts từ API thật với Bearer token
-  const [featured] = await blogService.getFeaturedPosts(authConfig);
-  const latestPosts = await blogService.getBlogPosts(authConfig);
-
-  return (
-    <MainLayout>
-      <BlogPage featuredPost={featured} latestPosts={latestPosts} />
-    </MainLayout>
-  );
+    return (
+      <MainLayout>
+        <BlogPage featuredPost={featured} latestPosts={latestPosts} />
+      </MainLayout>
+    );
+  } catch (error) {
+    console.error('[BLOG PAGE] Error loading blog:', error);
+    // Fallback to empty state
+    return (
+      <MainLayout>
+        <BlogPage featuredPost={null} latestPosts={[]} />
+      </MainLayout>
+    );
+  }
 }

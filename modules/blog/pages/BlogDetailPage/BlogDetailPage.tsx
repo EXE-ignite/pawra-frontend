@@ -14,7 +14,25 @@ const categoryColors: Record<string, string> = {
 };
 
 export function BlogDetailPage({ post, relatedPosts }: BlogDetailPageProps) {
-  const categoryColor = categoryColors[post.category] || '#B1B2FF';
+  // Ensure post has all required fields with defaults
+  const safePost = {
+    ...post,
+    id: post.id || '',
+    title: post.title || 'Untitled',
+    slug: post.slug || '',
+    category: post.category || 'health',
+    imageUrl: post.imageUrl || '',
+    publishedAt: post.publishedAt || new Date().toISOString(),
+    readTime: post.readTime || 5,
+    excerpt: post.excerpt || '',
+    content: post.content || '',
+    author: {
+      name: post.author?.name || 'Unknown Author',
+      avatar: post.author?.avatar || '',
+    }
+  };
+  
+  const categoryColor = categoryColors[safePost.category] || '#B1B2FF';
 
   return (
     <div className={styles.detailPage}>
@@ -25,19 +43,25 @@ export function BlogDetailPage({ post, relatedPosts }: BlogDetailPageProps) {
           <span className={styles.separator}>›</span>
           <Link href="/blog">Blog</Link>
           <span className={styles.separator}>›</span>
-          <span>{post.title}</span>
+          <span>{safePost.title}</span>
         </nav>
 
         {/* Hero Image */}
         <div className={styles.heroImage}>
-          <Image 
-            src={post.imageUrl}
-            alt={post.title}
-            width={1200}
-            height={500}
-            className={styles.image}
-            priority
-          />
+          {safePost.imageUrl ? (
+            <Image 
+              src={safePost.imageUrl}
+              alt={safePost.title}
+              width={1200}
+              height={500}
+              className={styles.image}
+              priority
+            />
+          ) : (
+            <div style={{ width: '100%', height: '500px', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ color: '#999', fontSize: '1.2rem' }}>No image available</span>
+            </div>
+          )}
         </div>
 
         {/* Content Grid */}
@@ -49,22 +73,22 @@ export function BlogDetailPage({ post, relatedPosts }: BlogDetailPageProps) {
               className={styles.categoryBadge}
               style={{ backgroundColor: categoryColor }}
             >
-              {post.category.toUpperCase()}
+              {safePost.category.toUpperCase()}
             </span>
 
             {/* Title */}
-            <h1 className={styles.title}>{post.title}</h1>
+            <h1 className={styles.title}>{safePost.title}</h1>
 
             {/* Author Info */}
             <div className={styles.authorSection}>
               <div className={styles.authorInfo}>
                 <div className={styles.avatar}>
-                  {post.author.name.charAt(0)}
+                  {safePost.author.name.charAt(0)}
                 </div>
                 <div className={styles.authorDetails}>
-                  <div className={styles.authorName}>{post.author.name}</div>
+                  <div className={styles.authorName}>{safePost.author.name}</div>
                   <div className={styles.meta}>
-                    Veterinary Specialist • {post.publishedAt} • {post.readTime} min read
+                    Veterinary Specialist • {safePost.publishedAt} • {safePost.readTime} min read
                   </div>
                 </div>
               </div>
@@ -80,9 +104,9 @@ export function BlogDetailPage({ post, relatedPosts }: BlogDetailPageProps) {
 
             {/* Article Content */}
             <div className={styles.content}>
-              <p className={styles.intro}>{post.excerpt}</p>
+              <p className={styles.intro}>{safePost.excerpt}</p>
               
-              <div dangerouslySetInnerHTML={{ __html: post.content }} />
+              <div dangerouslySetInnerHTML={{ __html: safePost.content }} />
             </div>
 
             {/* Tags */}
@@ -94,7 +118,7 @@ export function BlogDetailPage({ post, relatedPosts }: BlogDetailPageProps) {
             </div>
 
             {/* Reaction Bar */}
-            <ReactionBar postId={post.id} />
+            <ReactionBar postId={safePost.id} />
 
             {/* Share Section */}
             <div className={styles.shareSection}>
@@ -113,7 +137,7 @@ export function BlogDetailPage({ post, relatedPosts }: BlogDetailPageProps) {
             </div>
 
             {/* Comments */}
-            <CommentSection postId={post.id} />
+            <CommentSection postId={safePost.id} />
           </article>
 
           {/* Sidebar */}

@@ -8,13 +8,19 @@ export function FeaturedPost({ post }: FeaturedPostProps) {
   return (
     <div className={styles.featuredPost}>
       <div className={styles.imageWrapper}>
-        <Image 
-          src={post.imageUrl}
-          alt={post.title}
-          width={400}
-          height={300}
-          className={styles.image}
-        />
+        {post.imageUrl ? (
+          <Image 
+            src={post.imageUrl}
+            alt={post.title}
+            width={400}
+            height={300}
+            className={styles.image}
+          />
+        ) : (
+          <div style={{ width: '400px', height: '300px', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ color: '#999' }}>No image</span>
+          </div>
+        )}
       </div>
       <div className={styles.content}>
         <span className={styles.badge}>FEATURED POST</span>

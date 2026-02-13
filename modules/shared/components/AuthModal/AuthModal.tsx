@@ -17,12 +17,6 @@ export function AuthModal({ isOpen, onClose, initialMode = 'signin' }: AuthModal
 
   if (!isOpen) return null;
 
-  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
-
   const toggleMode = () => {
     setMode(mode === 'signin' ? 'signup' : 'signin');
   };
@@ -48,7 +42,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'signin' }: AuthModal
   };
 
   return (
-    <div className={styles.overlay} onClick={handleOverlayClick}>
+    <div className={styles.overlay}>
       <div className={styles.modal}>
         <button className={styles.closeButton} onClick={onClose}>
           ×

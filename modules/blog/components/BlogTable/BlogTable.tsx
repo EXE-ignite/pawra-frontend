@@ -12,8 +12,9 @@ export function BlogTable({
   onEdit,
   onDelete,
 }: BlogTableProps) {
-  const startResult = (currentPage - 1) * posts.length + 1;
-  const endResult = Math.min(currentPage * posts.length, totalResults);
+  const safePost = posts || [];
+  const startResult = (currentPage - 1) * safePost.length + 1;
+  const endResult = Math.min(currentPage * safePost.length, totalResults);
 
   const getStatusClass = (status: string) => {
     switch (status) {
@@ -76,24 +77,37 @@ export function BlogTable({
             </tr>
           </thead>
           <tbody>
-            {posts.map((post) => (
-              <tr key={post.id}>
-                <td>
-                  <div className={styles.titleCell}>
-                    <div className={styles.thumbnail}>
-                      <Image
-                        src={post.thumbnailUrl}
-                        alt={post.title}
-                        fill
-                        style={{ objectFit: 'cover' }}
-                      />
-                    </div>
-                    <div className={styles.titleContent}>
-                      <h4 className={styles.title}>{post.title}</h4>
-                      <p className={styles.slug}>{post.slug}</p>
-                    </div>
-                  </div>
+            {safePost.length === 0 ? (
+              <tr>
+                <td colSpan={6} style={{ textAlign: 'center', padding: '2rem' }}>
+                  No posts found
                 </td>
+              </tr>
+            ) : (
+              safePost.map((post) => (
+                <tr key={post.id}>
+                  <td>
+                    <div className={styles.titleCell}>
+                      {post.thumbnailUrl ? (
+                        <div className={styles.thumbnail}>
+                          <Image
+                            src={post.thumbnailUrl}
+                            alt={post.title}
+                            fill
+                            style={{ objectFit: 'cover' }}
+                          />
+                        </div>
+                      ) : (
+                        <div className={styles.thumbnail} style={{ background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <span style={{ fontSize: '0.75rem', color: '#999' }}>No image</span>
+                        </div>
+                      )}
+                      <div className={styles.titleContent}>
+                        <h4 className={styles.title}>{post.title}</h4>
+                        <p className={styles.slug}>{post.slug}</p>
+                      </div>
+                    </div>
+                  </td>
                 <td>
                   <div className={styles.authorCell}>
                     {post.author.avatarUrl ? (
@@ -157,7 +171,7 @@ export function BlogTable({
                   </div>
                 </td>
               </tr>
-            ))}
+            )))}
           </tbody>
         </table>
       </div>

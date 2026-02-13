@@ -12,7 +12,7 @@ import {
 import styles from './BlogPage.module.scss';
 
 interface BlogPageProps {
-  featuredPost: BlogPost;
+  featuredPost: BlogPost | null;
   latestPosts: BlogPost[];
 }
 
@@ -23,7 +23,7 @@ export function BlogPage({ featuredPost, latestPosts }: BlogPageProps) {
     <div className={styles.blogPage}>
       <div className={styles.container}>
         {/* Featured Post */}
-        <FeaturedPost post={featuredPost} />
+        {featuredPost && <FeaturedPost post={featuredPost} />}
 
         {/* Main Content Grid */}
         <div className={styles.contentGrid}>
