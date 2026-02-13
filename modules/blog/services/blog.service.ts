@@ -51,8 +51,17 @@ class BlogService {
       if (USE_MOCK) {
         return [];
       }
-      const res = await apiService.get<BlogComment[]>(`${this.commentEndpoint}/post/${postId}`);
-      return res.data;
+      try {
+        const res = await apiService.get<BlogComment[]>(`${this.commentEndpoint}/post/${postId}`);
+        return res.data;
+      } catch (error: any) {
+        console.error('Error fetching comments:', {
+          message: error?.message,
+          status: error?.status,
+          errors: error?.errors,
+        });
+        return []; // Return empty array on error
+      }
     }
 
     async addBlogComment(postId: string, data: { content: string; parentId?: string }): Promise<BlogComment> {
@@ -65,32 +74,92 @@ class BlogService {
           author: { id: '1', name: 'Mock User' },
         };
       }
-      const res = await apiService.post<BlogComment>(`${this.commentEndpoint}/post/${postId}`, data);
-      return res.data;
+      try {
+        const res = await apiService.post<BlogComment>(`${this.commentEndpoint}/post/${postId}`, data);
+        return res.data;
+      } catch (error: any) {
+        console.error('Error adding comment:', {
+          message: error?.message,
+          status: error?.status,
+          errors: error?.errors,
+        });
+        throw error;
+      }
     }
 
     async deleteComment(commentId: string): Promise<void> {
       if (USE_MOCK) {
         return;
       }
-      await apiService.delete(`${this.commentEndpoint}/${commentId}`);
+      try {
+        await apiService.delete(`${this.commentEndpoint}/${commentId}`);
+      } catch (error: any) {
+        console.error('Error deleting comment:', {
+          message: error?.message,
+          status: error?.status,
+          errors: error?.errors,
+        });
+        throw error;
+      }
     }
 
     // ===== BLOG REACTIONS =====
+    async getPostReactions(postId: string): Promise<BlogReaction[]> {
+      if (USE_MOCK) {
+        return [
+          { postId, reaction: 'like', count: 24, reacted: false },
+          { postId, reaction: 'love', count: 18, reacted: false },
+          { postId, reaction: 'celebrate', count: 12, reacted: false },
+          { postId, reaction: 'insightful', count: 9, reacted: false },
+          { postId, reaction: 'curious', count: 5, reacted: false },
+        ];
+      }
+      try {
+        const res = await apiService.get<BlogReaction[]>(`${this.reactionEndpoint}/post/${postId}`);
+        return res.data;
+      } catch (error: any) {
+        console.error('Error fetching post reactions:', {
+          message: error?.message,
+          status: error?.status,
+          errors: error?.errors,
+        });
+        // Return empty array on error instead of throwing
+        return [];
+      }
+    }
+
     async toggleBlogReaction(postId: string, reaction: string): Promise<BlogReaction> {
       if (USE_MOCK) {
         return { postId, reaction, count: 1, reacted: true };
       }
-      const res = await apiService.post<BlogReaction>(`${this.reactionEndpoint}/toggle`, { postId, reaction });
-      return res.data;
+      try {
+        const res = await apiService.post<BlogReaction>(`${this.reactionEndpoint}/toggle`, { postId, reaction });
+        return res.data;
+      } catch (error: any) {
+        console.error('Error toggling reaction:', {
+          message: error?.message,
+          status: error?.status,
+          errors: error?.errors,
+        });
+        throw error;
+      }
     }
 
     async getMyReactionsBatch(postIds: string[]): Promise<{ [postId: string]: string | null }> {
       if (USE_MOCK) {
         return {};
       }
-      const res = await apiService.post<{ [postId: string]: string | null }>(`${this.reactionEndpoint}/batch`, { postIds });
-      return res.data;
+      try {
+        const res = await apiService.post<{ [postId: string]: string | null }>(`${this.reactionEndpoint}/batch`, { postIds });
+        return res.data;
+      } catch (error: any) {
+        console.error('Error fetching reactions batch:', {
+          message: error?.message,
+          status: error?.status,
+          errors: error?.errors,
+        });
+        return {};
+      }
     }
   // Chuẩn hóa endpoint cho API mới (baseURL đã có /api rồi)
   private readonly endpoint = '/BlogPosts';  // Public blog posts
