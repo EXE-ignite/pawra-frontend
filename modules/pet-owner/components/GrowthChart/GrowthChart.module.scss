@@ -1,0 +1,111 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.container {
+  background-color: var(--color-bg-primary);
+  border-radius: 12px;
+  padding: $spacing-lg;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-lg;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.icon {
+  font-size: 1.5rem;
+}
+
+.editButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  padding: $spacing-sm;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  color: var(--color-text-primary);
+
+  &:hover {
+    background-color: var(--color-bg-hover);
+  }
+}
+
+.chartContainer {
+  margin-bottom: $spacing-lg;
+}
+
+.chart {
+  width: 100%;
+  height: 150px;
+  margin-bottom: $spacing-sm;
+}
+
+.chartLine {
+  fill: none;
+  stroke: var(--color-primary);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chartPoint {
+  fill: var(--color-primary);
+  stroke: var(--color-bg-primary);
+  stroke-width: 2;
+}
+
+.xAxis {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 $spacing-sm;
+}
+
+.axisLabel {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.stats {
+  display: flex;
+  gap: $spacing-xl;
+  padding-top: $spacing-lg;
+  border-top: 1px solid var(--color-border);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.statLabel {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.statValue {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+
+  &.positive {
+    color: $color-success;
+  }
+}

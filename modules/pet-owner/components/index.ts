@@ -1,3 +1,10 @@
 export { StatCard } from './StatCard';
 export { PetCard } from './PetCard';
 export { AppointmentCard } from './AppointmentCard';
+export { HealthRecords } from './HealthRecords';
+export { GrowthChart } from './GrowthChart';
+export { DailyRoutine } from './DailyRoutine';
+export { DocumentVault } from './DocumentVault';
+export { PetProfileHeader } from './PetProfileHeader';
+export { CalendarView } from './CalendarView';
+export { TaskSidebar } from './TaskSidebar';

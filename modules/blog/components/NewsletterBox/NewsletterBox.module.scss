@@ -2,7 +2,7 @@
 @import '../../../../styles/mixins';
 
 .newsletter {
-  background: linear-gradient(135deg, $primary-500, $primary-400);
+  background: var(--color-primary);
   border-radius: $radius-lg;
   padding: $spacing-xl;
   box-shadow: $shadow-md;
@@ -54,14 +54,14 @@
   }
 
   &::placeholder {
-    color: $text-tertiary;
+    color: var(--color-text-tertiary);
   }
 }
 
 .button {
   padding: $spacing-sm $spacing-md;
   background: white;
-  color: $primary-500;
+  color: var(--color-primary);
   border: none;
   border-radius: $radius-md;
   font-size: $font-size-base;

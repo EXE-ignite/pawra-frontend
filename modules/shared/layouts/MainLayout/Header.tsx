@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { AuthModal, UserDropdown } from '../../components';
+import { AuthModal, UserDropdown, ThemeToggle } from '../../components';
 import { useAuth } from '../../contexts';
 import { authService } from '../../services';
 import styles from './MainLayout.module.scss';
@@ -13,9 +13,6 @@ export function Header() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { user, isAuthenticated, logout: contextLogout } = useAuth();
   const pathname = usePathname();
-  
-  console.log('🎨 [HEADER] Render - User:', user);
-  console.log('🔐 [HEADER] Is Authenticated:', isAuthenticated);
 
   const openAuth = () => {
     setIsAuthModalOpen(true);
@@ -28,7 +25,7 @@ export function Header() {
 
   return (
     <>
-      <header className={styles.header}>
+      <header className={styles.header} suppressHydrationWarning>
         <div className={styles.headerContent}>
           {/* Logo */}
           <Link href="/" className={styles.logo}>
@@ -44,10 +41,10 @@ export function Header() {
           {/* Right Side: Nav Links + Notification + Avatar */}
           <div className={styles.rightNav}>
             <Link 
-              href="/pet-profiles" 
-              className={`${styles.navLink} ${pathname === '/pet-profiles' ? styles.active : ''}`}
+              href="/pet-owner/profile" 
+              className={`${styles.navLink} ${pathname === '/pet-owner/profile' ? styles.active : ''}`}
             >
-              Pet Profiles
+              Pet Profile
             </Link>
             <Link 
               href="/blog" 
@@ -56,11 +53,13 @@ export function Header() {
               Blog
             </Link>
             <Link 
-              href="/community" 
-              className={`${styles.navLink} ${pathname === '/community' ? styles.active : ''}`}
+              href="/pet-owner/reminders" 
+              className={`${styles.navLink} ${pathname === '/pet-owner/reminders' ? styles.active : ''}`}
             >
-              Community
+              Calendar
             </Link>
+
+            <ThemeToggle />
 
             {isAuthenticated && user ? (
               <>

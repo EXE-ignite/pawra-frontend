@@ -9,7 +9,7 @@
   max-width: 500px;
   padding: $spacing-lg $spacing-xl;
   border-radius: $radius-lg;
-  background: white;
+  background: var(--color-bg-primary);
   box-shadow: $shadow-xl;
   display: flex;
   align-items: center;
@@ -45,7 +45,7 @@
 .message {
   flex: 1;
   font-size: $font-size-sm;
-  color: $text-primary;
+  color: var(--color-text-primary);
   line-height: 1.5;
 }
 
@@ -53,7 +53,7 @@
   background: none;
   border: none;
   font-size: $font-size-2xl;
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   cursor: pointer;
   padding: 0;
   width: 24px;
@@ -65,7 +65,7 @@
   flex-shrink: 0;
   
   &:hover {
-    color: $text-primary;
+    color: var(--color-text-primary);
   }
 }
 

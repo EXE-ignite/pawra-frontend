@@ -14,6 +14,7 @@ export const mockBlogData = {
       name: 'Dr. Sarah Johnson',
       avatar: '/images/authors/sarah.jpg'
     },
+    status: 'Published' as const,
     isFeatured: true
   },
 
@@ -30,7 +31,8 @@ export const mockBlogData = {
       author: {
         name: 'Emily Chen',
         avatar: '/images/authors/emily.jpg'
-      }
+      },
+      status: 'Published' as const
     },
     {
       id: '3',
@@ -44,7 +46,8 @@ export const mockBlogData = {
       author: {
         name: 'Dr. Mike Wilson',
         avatar: '/images/authors/mike.jpg'
-      }
+      },
+      status: 'Published' as const
     },
     {
       id: '4',
@@ -58,7 +61,8 @@ export const mockBlogData = {
       author: {
         name: 'Lisa Park',
         avatar: '/images/authors/lisa.jpg'
-      }
+      },
+      status: 'Published' as const
     },
     {
       id: '5',
@@ -72,7 +76,8 @@ export const mockBlogData = {
       author: {
         name: 'Dr. Sarah Johnson',
         avatar: '/images/authors/sarah.jpg'
-      }
+      },
+      status: 'Published' as const
     }
   ] as BlogPost[]
 };

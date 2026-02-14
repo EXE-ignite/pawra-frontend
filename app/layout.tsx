@@ -1,8 +1,4 @@
-'use client';
-
-import type { Metadata } from "next";
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import { AuthProvider } from "@/modules/shared";
+import { Providers } from './providers';
 import "@/styles/globals.scss";
 
 export default function RootLayout({
@@ -10,22 +6,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
-  
   return (
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        {googleClientId ? (
-          <GoogleOAuthProvider clientId={googleClientId}>
-            <AuthProvider>
-              {children}
-            </AuthProvider>
-          </GoogleOAuthProvider>
-        ) : (
-          <AuthProvider>
-            {children}
-          </AuthProvider>
-        )}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

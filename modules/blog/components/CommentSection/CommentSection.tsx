@@ -96,9 +96,11 @@ export function CommentSection({ postId }: CommentSectionProps) {
       
       setComments(prev => [...prev, newCommentUI]);
       setNewComment('');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to post comment:', error);
-      // Optionally show error toast to user
+      // Show user-friendly error message
+      const errorMessage = error?.message || 'Failed to post comment. Please try again.';
+      alert(errorMessage);
     } finally {
       setSubmitting(false);
     }

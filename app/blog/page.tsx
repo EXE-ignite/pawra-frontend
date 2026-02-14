@@ -1,6 +1,5 @@
 import { BlogPage } from '@/modules/blog/pages/BlogPage';
 import { blogService } from '@/modules/blog/services';
-import { MainLayout } from '@/modules/shared/layouts/MainLayout';
 import { getServerAuthToken } from '@/modules/shared/utils/server-auth';
 
 export default async function Blog() {
@@ -20,18 +19,10 @@ export default async function Blog() {
     // Featured post là post đầu tiên trong danh sách published
     const featured = latestPosts[0] || null;
 
-    return (
-      <MainLayout>
-        <BlogPage featuredPost={featured} latestPosts={latestPosts} />
-      </MainLayout>
-    );
+    return <BlogPage featuredPost={featured} latestPosts={latestPosts} />;
   } catch (error) {
     console.error('[BLOG PAGE] Error loading blog:', error);
     // Fallback to empty state
-    return (
-      <MainLayout>
-        <BlogPage featuredPost={null} latestPosts={[]} />
-      </MainLayout>
-    );
+    return <BlogPage featuredPost={null} latestPosts={[]} />;
   }
 }

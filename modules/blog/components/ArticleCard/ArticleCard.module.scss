@@ -2,7 +2,7 @@
 @import '../../../../styles/mixins';
 
 .card {
-  background: white;
+  background: var(--color-bg-primary);
   border-radius: $radius-lg;
   overflow: hidden;
   box-shadow: $shadow-sm;
@@ -57,13 +57,13 @@
 .title {
   font-size: $font-size-lg;
   font-weight: $font-weight-bold;
-  color: $text-primary;
+  color: var(--color-text-primary);
   margin-bottom: $spacing-sm;
   line-height: 1.4;
 }
 
 .excerpt {
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   font-size: $font-size-sm;
   line-height: 1.6;
   margin-bottom: $spacing-md;
@@ -75,22 +75,22 @@
   align-items: center;
   justify-content: space-between;
   padding-top: $spacing-sm;
-  border-top: 1px solid $border-subtle;
+  border-top: 1px solid var(--color-border);
 }
 
 .readTime {
-  color: $text-tertiary;
+  color: var(--color-text-tertiary);
   font-size: $font-size-sm;
 }
 
 .readLink {
-  color: $primary-500;
+  color: var(--color-primary);
   font-weight: $font-weight-semibold;
   font-size: $font-size-sm;
   transition: all $transition-fast;
 
   &:hover {
-    color: $primary-400;
+    color: var(--color-primary-light);
     transform: translateX(4px);
   }
 }

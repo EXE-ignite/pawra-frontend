@@ -8,8 +8,8 @@
 }
 
 .header {
-  background-color: $bg-default;
-  border-bottom: 1px solid $border-default;
+  background-color: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border);
   position: sticky;
   top: 0;
   z-index: $z-sticky;
@@ -21,7 +21,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 64px;
+  height: 90px;
   gap: $spacing-xl;
 }
 
@@ -52,7 +52,7 @@
 }
 
 .navLink {
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   font-weight: $font-weight-medium;
   padding: $spacing-sm $spacing-md;
   border-radius: $radius-md;
@@ -60,11 +60,11 @@
   font-size: $font-size-base;
 
   &:hover {
-    color: $primary-500;
+    color: var(--color-primary);
   }
 
   &.active {
-    color: $primary-500;
+    color: var(--color-primary);
   }
 
   @include mobile {
@@ -83,9 +83,10 @@
   justify-content: center;
   transition: all $transition-fast;
   border-radius: $radius-md;
+  color: var(--color-text-secondary);
 
   &:hover {
-    background-color: $primary-100;
+    background-color: var(--color-bg-hover);
   }
 }
 
@@ -97,7 +98,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, $primary-500, $primary-400);
+  background: var(--color-primary);
   color: white;
   display: flex;
   align-items: center;
@@ -114,20 +115,20 @@
 }
 
 .authButton {
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   font-weight: $font-weight-medium;
   padding: $spacing-sm $spacing-lg;
   border-radius: $radius-md;
   background: transparent;
-  border: 1px solid $border-default;
+  border: 1px solid var(--color-border);
   cursor: pointer;
   transition: all $transition-fast;
   font-size: $font-size-base;
 
   &:hover {
-    color: $primary-500;
-    border-color: $primary-500;
-    background-color: $primary-100;
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+    background-color: var(--color-bg-hover);
   }
 }
 
@@ -141,8 +142,8 @@
 }
 
 .footer {
-  background-color: $bg-subtle;
-  border-top: 1px solid $border-default;
+  background-color: var(--color-bg-secondary);
+  border-top: 1px solid var(--color-border);
   padding: $spacing-xl 0;
   margin-top: auto;
 }
@@ -160,6 +161,6 @@
 }
 
 .footerText {
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   font-size: $font-size-sm;
 }

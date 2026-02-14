@@ -2,13 +2,13 @@
 @import '../../../../styles/mixins';
 
 .statCard {
-  background: white;
+  background: var(--color-bg-primary);
   border-radius: 12px;
   padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--color-border);
   transition: all 0.3s ease;
 
   &:hover {
@@ -27,8 +27,8 @@
   width: 48px;
   height: 48px;
   border-radius: 12px;
-  background: $primary-100;
-  color: $primary-500;
+  background: var(--color-bg-tertiary);
+  color: var(--color-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -46,8 +46,8 @@
   }
 
   &.info {
-    background: $primary-100;
-    color: $primary-500;
+    background: var(--color-bg-tertiary);
+    color: var(--color-primary);
   }
 
   &.warning {
@@ -64,13 +64,13 @@
 
 .label {
   font-size: 14px;
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
 .value {
   font-size: 32px;
   font-weight: 700;
-  color: $text-primary;
+  color: var(--color-text-primary);
   margin: 0;
 }

@@ -4,13 +4,13 @@
 .layout {
   display: flex;
   min-height: 100vh;
-  background-color: $bg-subtle;
+  background-color: var(--color-bg-secondary);
 }
 
 .sidebar {
   width: 260px;
-  background-color: $bg-default;
-  border-right: 1px solid $border-default;
+  background-color: var(--color-bg-primary);
+  border-right: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
   position: fixed;
@@ -22,13 +22,13 @@
 
 .sidebarHeader {
   padding: $spacing-xl;
-  border-bottom: 1px solid $border-default;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .logo {
   font-size: $font-size-xl;
   font-weight: $font-weight-bold;
-  color: $primary-500;
+  color: var(--color-primary);
   margin: 0;
 }
 
@@ -47,25 +47,25 @@
   gap: $spacing-sm;
   padding: $spacing-md $spacing-lg;
   border-radius: $radius-md;
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   text-decoration: none;
   font-weight: $font-weight-medium;
   transition: all $transition-fast;
   
   &:hover {
-    background-color: $primary-100;
-    color: $primary-500;
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-primary);
   }
   
   &.active {
-    background-color: $primary-100;
-    color: $primary-500;
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-primary);
   }
 }
 
 .sidebarFooter {
   padding: $spacing-lg;
-  border-top: 1px solid $border-default;
+  border-top: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
@@ -76,7 +76,7 @@
   align-items: center;
   gap: $spacing-md;
   padding: $spacing-md;
-  background-color: $bg-subtle;
+  background-color: var(--color-bg-secondary);
   border-radius: $radius-md;
 }
 
@@ -84,7 +84,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: $primary-500;
+  background-color: var(--color-primary);
   color: white;
   display: flex;
   align-items: center;
@@ -103,7 +103,7 @@
   margin: 0;
   font-size: $font-size-sm;
   font-weight: $font-weight-semibold;
-  color: $text-primary;
+  color: var(--color-text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -112,7 +112,7 @@
 .userRole {
   margin: 0;
   font-size: $font-size-xs;
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   text-transform: capitalize;
 }
 
@@ -120,9 +120,9 @@
   width: 100%;
   padding: $spacing-sm $spacing-md;
   background-color: transparent;
-  border: 1px solid $border-default;
+  border: 1px solid var(--color-border);
   border-radius: $radius-md;
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   font-weight: $font-weight-medium;
   cursor: pointer;
   transition: all $transition-fast;

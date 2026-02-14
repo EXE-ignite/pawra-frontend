@@ -22,7 +22,7 @@
   left: 16px;
   top: 50%;
   transform: translateY(-50%);
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   pointer-events: none;
 }
 
@@ -30,20 +30,20 @@
   width: 100%;
   height: 44px;
   padding: 12px 16px 12px 48px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--color-border);
   border-radius: 10px;
   font-size: 14px;
-  color: $text-primary;
-  background: white;
+  color: var(--color-text-primary);
+  background: var(--color-bg-primary);
   transition: all 0.2s;
 
   &::placeholder {
-    color: $text-secondary;
+    color: var(--color-text-secondary);
   }
 
   &:focus {
     outline: none;
-    border-color: $primary-500;
+    border-color: var(--color-primary);
     box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
   }
 }
@@ -59,25 +59,25 @@
   gap: 8px;
   height: 44px;
   padding: 0 20px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--color-border);
   border-radius: 10px;
-  background: white;
+  background: var(--color-bg-primary);
   font-size: 14px;
   font-weight: 500;
-  color: $text-primary;
+  color: var(--color-text-primary);
   cursor: pointer;
   transition: all 0.2s;
 
   svg {
-    color: $text-secondary;
+    color: var(--color-text-secondary);
   }
 
   &:hover {
-    background: #F9FAFB;
-    border-color: $primary-500;
+    background: var(--color-bg-secondary);
+    border-color: var(--color-primary);
 
     svg {
-      color: $primary-500;
+      color: var(--color-primary);
     }
   }
 }
@@ -90,7 +90,7 @@
   padding: 0 24px;
   border: none;
   border-radius: 10px;
-  background: $primary-500;
+  background: var(--color-primary);
   font-size: 14px;
   font-weight: 600;
   color: white;
@@ -98,9 +98,9 @@
   transition: all 0.2s;
 
   &:hover {
-    background: $primary-400;
+    background: var(--color-primary-dark);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba($primary-500, 0.3);
+    box-shadow: 0 4px 12px rgba(177, 178, 255, 0.3);
   }
 
   &:active {

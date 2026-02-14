@@ -16,7 +16,7 @@
 
 .title {
   @include heading-1;
-  background: linear-gradient(135deg, $primary-500, $primary-400);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -25,7 +25,7 @@
 
 .subtitle {
   font-size: $font-size-xl;
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   max-width: 600px;
   margin-bottom: $spacing-lg;
 }
@@ -72,6 +72,6 @@
 }
 
 .featureText {
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   line-height: $line-height-relaxed;
 }

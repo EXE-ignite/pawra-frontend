@@ -19,17 +19,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log('🔄 [CONTEXT] Initializing AuthContext...');
     const storedUser = getUser();
-    console.log('💾 [CONTEXT] Stored user:', storedUser);
     setUser(storedUser);
     setIsLoading(false);
   }, []);
 
   const updateUser = (newUser: User | null) => {
-    console.log('🔄 [CONTEXT] Updating user:', newUser);
     setUser(newUser);
-    console.log('✅ [CONTEXT] User state updated');
   };
 
   const logout = () => {

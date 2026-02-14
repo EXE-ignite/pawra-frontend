@@ -15,7 +15,7 @@
 }
 
 .subtitle {
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   font-size: $font-size-lg;
 }
 
@@ -71,10 +71,10 @@
 .emptyStateTitle {
   font-size: $font-size-xl;
   font-weight: $font-weight-semibold;
-  color: $text-primary;
+  color: var(--color-text-primary);
 }
 
 .emptyStateText {
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   max-width: 400px;
 }

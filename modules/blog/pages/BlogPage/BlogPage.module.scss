@@ -3,7 +3,7 @@
 
 .blogPage {
   min-height: 100vh;
-  background: linear-gradient(180deg, #F8F9FA 0%, #FFFFFF 100%);
+  background: var(--color-bg-secondary);
   padding: $spacing-2xl 0;
 }
 
@@ -35,13 +35,13 @@
 .sectionTitle {
   font-size: $font-size-2xl;
   font-weight: $font-weight-bold;
-  color: $text-primary;
+  color: var(--color-text-primary);
 }
 
 .viewToggle {
   display: flex;
   gap: $spacing-xs;
-  background: white;
+  background: var(--color-bg-primary);
   padding: $spacing-xs;
   border-radius: $radius-md;
   box-shadow: $shadow-sm;
@@ -54,15 +54,15 @@
   cursor: pointer;
   font-size: $font-size-lg;
   border-radius: $radius-sm;
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   transition: all $transition-fast;
 
   &:hover {
-    background: $bg-subtle;
+    background: var(--color-bg-secondary);
   }
 
   &.active {
-    background: $primary-500;
+    background: var(--color-primary);
     color: white;
   }
 }
@@ -90,9 +90,9 @@
 
 .loadMoreBtn {
   padding: $spacing-md $spacing-2xl;
-  background: white;
-  color: $primary-500;
-  border: 2px solid $primary-500;
+  background: var(--color-bg-primary);
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
   border-radius: $radius-full;
   font-weight: $font-weight-semibold;
   font-size: $font-size-base;
@@ -100,7 +100,7 @@
   transition: all $transition-fast;
 
   &:hover {
-    background: $primary-500;
+    background: var(--color-primary);
     color: white;
     transform: translateY(-2px);
     box-shadow: $shadow-md;

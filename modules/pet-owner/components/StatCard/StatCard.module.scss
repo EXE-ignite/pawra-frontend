@@ -24,7 +24,7 @@
 .cardLabel {
   font-size: $font-size-sm;
   font-weight: $font-weight-medium;
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -32,7 +32,7 @@
 .cardValue {
   font-size: $font-size-3xl;
   font-weight: $font-weight-bold;
-  color: $primary-500;
+  color: var(--color-primary);
 }
 
 .cardChange {

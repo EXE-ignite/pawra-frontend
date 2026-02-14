@@ -1,0 +1,183 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.container {
+  background-color: var(--color-bg-primary);
+  border-radius: 12px;
+  padding: $spacing-xl;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-lg;
+}
+
+.monthYear {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.controls {
+  display: flex;
+  gap: $spacing-sm;
+  align-items: center;
+}
+
+.todayButton {
+  padding: $spacing-sm $spacing-md;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: var(--color-primary-dark);
+  }
+}
+
+.navButton {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg-secondary);
+  border: none;
+  border-radius: 6px;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--color-text-primary);
+
+  &:hover {
+    background-color: var(--color-bg-tertiary);
+  }
+}
+
+.viewToggle {
+  display: flex;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-lg;
+}
+
+.toggleButton {
+  padding: $spacing-sm $spacing-md;
+  background-color: transparent;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: var(--color-bg-secondary);
+  }
+
+  &.active {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+}
+
+.calendar {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: $spacing-xs;
+  margin-bottom: $spacing-sm;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  padding: $spacing-sm;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: $spacing-xs;
+}
+
+.emptyDay {
+  aspect-ratio: 1;
+  background-color: transparent;
+}
+
+.day {
+  aspect-ratio: 1;
+  padding: $spacing-sm;
+  background-color: var(--color-bg-secondary);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  overflow: hidden;
+
+  &:hover {
+    background-color: var(--color-bg-tertiary);
+    transform: scale(1.02);
+  }
+
+  &.today {
+    background-color: rgba(177, 178, 255, 0.1);
+    border: 2px solid var(--color-primary);
+  }
+
+  &.selected {
+    background-color: rgba(177, 178, 255, 0.2);
+    box-shadow: 0 0 0 2px var(--color-primary);
+  }
+}
+
+.dayNumber {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.events {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.event {
+  font-size: 0.65rem;
+  padding: 2px 4px;
+  border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: white;
+  font-weight: 500;
+}
+
+.moreEvents {
+  font-size: 0.65rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  margin-top: 2px;
+}

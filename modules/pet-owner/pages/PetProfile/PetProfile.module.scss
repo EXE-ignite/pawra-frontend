@@ -1,0 +1,42 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: $spacing-xl;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+  min-height: 100vh;
+  background-color: var(--color-bg-secondary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-xl;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.leftColumn,
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+}
+
+.footer {
+  margin-top: auto;
+  padding-top: $spacing-xl;
+  text-align: center;
+}
+
+.footerText {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}

@@ -12,7 +12,7 @@
   width: 80px;
   height: 80px;
   border-radius: $radius-xl;
-  background: linear-gradient(135deg, $primary-300, $primary-400);
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
   @include flex-center;
   font-size: $font-size-2xl;
   flex-shrink: 0;
@@ -26,7 +26,7 @@
 .petName {
   font-size: $font-size-xl;
   font-weight: $font-weight-semibold;
-  color: $text-primary;
+  color: var(--color-text-primary);
   margin-bottom: $spacing-xs;
 }
 
@@ -39,11 +39,11 @@
 
 .petDetail {
   font-size: $font-size-sm;
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   @include flex-start;
   gap: $spacing-xs;
 }
 
 .detailIcon {
-  color: $primary-500;
+  color: var(--color-primary);
 }

@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { MainLayoutProps } from './MainLayout.types';
 import { Header } from './Header';
@@ -5,7 +7,7 @@ import styles from './MainLayout.module.scss';
 
 export function MainLayout({ children }: MainLayoutProps) {
   return (
-    <div className={styles.layout}>
+    <div className={styles.layout} suppressHydrationWarning>
       <Header />
 
       <main className={styles.main}>

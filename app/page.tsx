@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { Button, MainLayout } from '@/modules/shared';
 import styles from './page.module.scss';

@@ -1,5 +1,4 @@
 import React from 'react';
-import { MainLayout } from '@/modules/shared/layouts/MainLayout';
 import { BlogDetailPage } from '@/modules/blog/pages/BlogDetailPage';
 import { blogService } from '@/modules/blog/services/blog.service';
 import { notFound } from 'next/navigation';
@@ -17,11 +16,7 @@ export default async function BlogPost({ params }: BlogPostPageProps) {
     const allPosts = await blogService.getLatestPosts();
     const relatedPosts = allPosts.filter(p => p.id !== id).slice(0, 3);
 
-    return (
-      <MainLayout>
-        <BlogDetailPage post={post} relatedPosts={relatedPosts} />
-      </MainLayout>
-    );
+    return <BlogDetailPage post={post} relatedPosts={relatedPosts} />;
   } catch (error) {
     console.error('Error loading blog post:', error);
     notFound();

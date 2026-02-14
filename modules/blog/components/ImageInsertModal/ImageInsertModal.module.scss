@@ -16,7 +16,7 @@
 }
 
 .modal {
-  background: white;
+  background: var(--color-bg-primary);
   border-radius: 16px;
   width: 100%;
   max-width: 500px;
@@ -42,13 +42,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 24px;
-  border-bottom: 1px solid #E5E7EB;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .title {
   font-size: 20px;
   font-weight: 700;
-  color: $text-primary;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
@@ -62,12 +62,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   transition: all 0.2s;
 
   &:hover {
-    background: #F3F4F6;
-    color: $text-primary;
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
   }
 }
 
@@ -87,41 +87,41 @@
   display: block;
   font-size: 14px;
   font-weight: 600;
-  color: $text-primary;
+  color: var(--color-text-primary);
   margin-bottom: 8px;
 }
 
 .input {
   width: 100%;
   padding: 12px 16px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 14px;
-  color: $text-primary;
+  color: var(--color-text-primary);
   transition: all 0.2s;
 
   &:focus {
     outline: none;
-    border-color: $primary-500;
+    border-color: var(--color-primary);
     box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
   }
 
   &::placeholder {
-    color: $text-secondary;
+    color: var(--color-text-secondary);
   }
 }
 
 .preview {
   margin-top: 20px;
   padding: 16px;
-  background: #F9FAFB;
+  background: var(--color-bg-secondary);
   border-radius: 8px;
 }
 
 .previewLabel {
   font-size: 12px;
   font-weight: 600;
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   margin: 0 0 12px 0;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -132,8 +132,8 @@
   max-height: 300px;
   object-fit: contain;
   border-radius: 8px;
-  border: 1px solid #E5E7EB;
-  background: white;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-primary);
 }
 
 .footer {
@@ -141,7 +141,7 @@
   justify-content: flex-end;
   gap: 12px;
   padding: 20px 24px;
-  border-top: 1px solid #E5E7EB;
+  border-top: 1px solid var(--color-border);
 }
 
 .cancelButton,
@@ -156,22 +156,22 @@
 }
 
 .cancelButton {
-  background: white;
-  border: 1px solid #E5E7EB;
-  color: $text-primary;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
 
   &:hover {
-    background: #F9FAFB;
+    background: var(--color-bg-secondary);
   }
 }
 
 .insertButton {
-  background: $primary-500;
+  background: var(--color-primary);
   border: none;
   color: white;
 
   &:hover:not(:disabled) {
-    background: $primary-400;
+    background: var(--color-primary-dark);
   }
 
   &:disabled {

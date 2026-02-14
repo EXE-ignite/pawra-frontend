@@ -2,15 +2,15 @@
 @import '../../../../styles/mixins';
 
 .editor {
-  background: #F9FAFB;
+  background: var(--color-bg-secondary);
   min-height: 100vh;
   padding-bottom: 40px;
 }
 
 .header {
-  background: white;
+  background: var(--color-bg-primary);
   padding: 24px 32px;
-  border-bottom: 1px solid #E5E7EB;
+  border-bottom: 1px solid var(--color-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -22,7 +22,7 @@
 .title {
   font-size: 24px;
   font-weight: 700;
-  color: $text-primary;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
@@ -49,32 +49,32 @@
 }
 
 .cancelButton {
-  background: white;
-  border: 1px solid #E5E7EB;
-  color: $text-primary;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
 
   &:hover:not(:disabled) {
-    background: #F9FAFB;
+    background: var(--color-bg-secondary);
   }
 }
 
 .draftButton {
-  background: white;
-  border: 1px solid $primary-500;
-  color: $primary-500;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
 
   &:hover:not(:disabled) {
-    background: $primary-100;
+    background: var(--color-bg-tertiary);
   }
 }
 
 .publishButton {
-  background: $primary-500;
+  background: var(--color-primary);
   border: none;
   color: white;
 
   &:hover:not(:disabled) {
-    background: $primary-400;
+    background: var(--color-primary-light);
   }
 }
 
@@ -102,7 +102,7 @@
 .label {
   font-size: 14px;
   font-weight: 600;
-  color: $text-primary;
+  color: var(--color-text-primary);
 }
 
 .required {
@@ -113,17 +113,17 @@
 .select,
 .textarea {
   padding: 12px 16px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 14px;
-  color: $text-primary;
-  background: white;
+  color: var(--color-text-primary);
+  background: var(--color-bg-primary);
   font-family: inherit;
   transition: all 0.2s;
 
   &:focus {
     outline: none;
-    border-color: $primary-500;
+    border-color: var(--color-primary);
     box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
   }
 
@@ -132,7 +132,7 @@
   }
 
   &::placeholder {
-    color: $text-secondary;
+    color: var(--color-text-secondary);
   }
 }
 
@@ -141,8 +141,8 @@
   align-items: center;
   gap: 4px;
   padding: 8px;
-  background: #F9FAFB;
-  border: 1px solid #E5E7EB;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
   border-radius: 8px 8px 0 0;
   margin-bottom: -1px;
 }
@@ -153,17 +153,17 @@
   gap: 6px;
   padding: 8px 12px;
   border: none;
-  background: white;
+  background: var(--color-bg-primary);
   border-radius: 6px;
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
 
   &:hover {
-    background: $primary-100;
-    color: $primary-500;
+    background: var(--color-bg-tertiary);
+    color: var(--color-primary);
   }
 
   svg {
@@ -172,11 +172,11 @@
 
   &.imageButton {
     margin-left: auto;
-    background: $primary-500;
+    background: var(--color-primary);
     color: white;
 
     &:hover {
-      background: $primary-400;
+      background: var(--color-primary-light);
     }
   }
 }
@@ -184,7 +184,7 @@
 .toolbarDivider {
   width: 1px;
   height: 20px;
-  background: #E5E7EB;
+  background: var(--color-border);
   margin: 0 4px;
 }
 
@@ -197,7 +197,7 @@
 
 .hint {
   font-size: 12px;
-  color: $text-secondary;
+  color: var(--color-text-secondary);
 }
 
 .errorText {
@@ -212,8 +212,8 @@
 }
 
 .sidebarSection {
-  background: white;
-  border: 1px solid #E5E7EB;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 20px;
 }
@@ -221,17 +221,17 @@
 .sidebarTitle {
   font-size: 16px;
   font-weight: 700;
-  color: $text-primary;
+  color: var(--color-text-primary);
   margin: 0 0 16px 0;
   padding-bottom: 12px;
-  border-bottom: 1px solid #E5E7EB;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .imagePreview {
   margin-top: 12px;
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--color-border);
 
   img {
     width: 100%;

@@ -6,3 +6,5 @@ export { Toast } from './Toast';
 export type { ToastProps } from './Toast/Toast.types';
 export { UserDropdown } from './UserDropdown';
 export type { UserDropdownProps } from './UserDropdown/UserDropdown.types';
+export { ThemeToggle } from './ThemeToggle';
+export type { ThemeToggleProps } from './ThemeToggle/ThemeToggle.types';

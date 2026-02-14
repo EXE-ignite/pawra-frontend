@@ -7,6 +7,11 @@ export const ROUTES = {
   CUSTOMER_PETS: '/customer/pets',
   CUSTOMER_APPOINTMENTS: '/customer/appointments',
   
+  // Pet Owner routes
+  PET_OWNER_DASHBOARD: '/pet-owner/page',
+  PET_OWNER_PROFILE: '/pet-owner/profile',
+  PET_OWNER_REMINDERS: '/pet-owner/reminders',
+  
   // Admin routes
   ADMIN_DASHBOARD: '/admin/dashboard',
   ADMIN_USERS: '/admin/users',

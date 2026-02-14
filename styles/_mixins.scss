@@ -95,11 +95,11 @@
 }
 
 @mixin button-primary {
-  background-color: $primary-500;
-  color: $bg-default;
+  background-color: var(--color-primary);
+  color: var(--color-bg-primary);
 
   &:hover:not(:disabled) {
-    background-color: darken($primary-500, 8%);
+    background-color: var(--color-primary-dark);
     transform: translateY(-1px);
   }
 
@@ -109,21 +109,21 @@
 }
 
 @mixin button-secondary {
-  background-color: $primary-100;
-  color: $primary-500;
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-primary);
 
   &:hover:not(:disabled) {
-    background-color: $primary-300;
+    background-color: var(--color-bg-hover);
   }
 }
 
 @mixin button-outline {
   background-color: transparent;
-  color: $primary-500;
-  border: 1px solid $primary-500;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
 
   &:hover:not(:disabled) {
-    background-color: $primary-100;
+    background-color: var(--color-bg-tertiary);
   }
 }
 

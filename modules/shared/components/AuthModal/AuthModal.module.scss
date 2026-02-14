@@ -15,7 +15,7 @@
 }
 
 .modal {
-  background: white;
+  background: var(--color-bg-primary);
   border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
   width: 90%;
@@ -34,7 +34,7 @@
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   z-index: 10;
   width: 30px;
   height: 30px;
@@ -44,7 +44,7 @@
   transition: color 0.3s ease;
 
   &:hover {
-    color: $text-primary;
+    color: var(--color-text-primary);
   }
 }
 

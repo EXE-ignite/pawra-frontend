@@ -19,10 +19,11 @@ export function BlogEditor({ mode, initialData, onSave, onCancel }: BlogEditorPr
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSaving, setIsSaving] = useState(false);
   const [categories] = useState<Category[]>([
-    { id: '1', name: 'Training', slug: 'training' },
-    { id: '2', name: 'Pet Care', slug: 'pet-care' },
-    { id: '3', name: 'Health', slug: 'health' },
-    { id: '4', name: 'Lifestyle', slug: 'lifestyle' },
+    { id: 'health', name: 'Health', slug: 'health' },
+    { id: 'nutrition', name: 'Nutrition', slug: 'nutrition' },
+    { id: 'training', name: 'Training', slug: 'training' },
+    { id: 'behavior', name: 'Behavior', slug: 'behavior' },
+    { id: 'grooming', name: 'Grooming', slug: 'grooming' },
   ]);
 
   // Auto-generate slug from title
@@ -45,9 +46,7 @@ export function BlogEditor({ mode, initialData, onSave, onCancel }: BlogEditorPr
     if (!formData.content.trim()) {
       newErrors.content = 'Content is required';
     }
-    if (!formData.categoryId) {
-      newErrors.categoryId = 'Category is required';
-    }
+    // Note: categoryId and excerpt are optional since BE doesn't support them yet
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -141,12 +140,13 @@ export function BlogEditor({ mode, initialData, onSave, onCancel }: BlogEditorPr
             <label className={styles.label}>Excerpt</label>
             <textarea
               className={styles.textarea}
-              placeholder="Short description (optional)"
+              placeholder="Short description (optional - not saved yet)"
               value={formData.excerpt}
               onChange={(e) => handleChange('excerpt', e.target.value)}
               rows={3}
+              disabled
             />
-            <span className={styles.hint}>Brief summary shown in post listings</span>
+            <span className={styles.hint}>Backend doesn't support excerpt yet</span>
           </div>
         </div>
 
@@ -156,12 +156,13 @@ export function BlogEditor({ mode, initialData, onSave, onCancel }: BlogEditorPr
 
             <div className={styles.formGroup}>
               <label className={styles.label}>
-                Category <span className={styles.required}>*</span>
+                Category <span className={styles.hint}>(optional - not saved yet)</span>
               </label>
               <select
                 className={`${styles.select} ${errors.categoryId ? styles.error : ''}`}
                 value={formData.categoryId}
                 onChange={(e) => handleChange('categoryId', e.target.value)}
+                disabled
               >
                 <option value="">Select a category</option>
                 {categories.map((cat) => (
@@ -170,7 +171,7 @@ export function BlogEditor({ mode, initialData, onSave, onCancel }: BlogEditorPr
                   </option>
                 ))}
               </select>
-              {errors.categoryId && <span className={styles.errorText}>{errors.categoryId}</span>}
+              <span className={styles.hint}>Backend doesn't support categories yet</span>
             </div>
 
             <div className={styles.formGroup}>

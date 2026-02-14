@@ -2,7 +2,7 @@
 @import '../../../../styles/mixins';
 
 .featuredPost {
-  background: white;
+  background: var(--color-bg-primary);
   border-radius: $radius-lg;
   padding: $spacing-xl;
   display: grid;
@@ -41,7 +41,7 @@
 
 .badge {
   display: inline-block;
-  color: $primary-500;
+  color: var(--color-primary);
   font-size: $font-size-xs;
   font-weight: $font-weight-bold;
   letter-spacing: 0.05em;
@@ -51,7 +51,7 @@
 .title {
   font-size: $font-size-2xl;
   font-weight: $font-weight-bold;
-  color: $text-primary;
+  color: var(--color-text-primary);
   margin-bottom: $spacing-md;
   line-height: 1.3;
 
@@ -61,7 +61,7 @@
 }
 
 .excerpt {
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   font-size: $font-size-base;
   line-height: 1.6;
   margin-bottom: $spacing-lg;
@@ -71,20 +71,20 @@
   display: flex;
   align-items: center;
   gap: $spacing-sm;
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   font-size: $font-size-sm;
   margin-bottom: $spacing-lg;
 }
 
 .separator {
-  color: $text-tertiary;
+  color: var(--color-text-tertiary);
 }
 
 .readMore {
   display: inline-flex;
   align-items: center;
   padding: $spacing-sm $spacing-xl;
-  background: linear-gradient(135deg, $primary-500, $primary-400);
+  background: var(--color-primary);
   color: white;
   border-radius: $radius-full;
   font-weight: $font-weight-semibold;

@@ -34,6 +34,7 @@ export interface BlogPost {
     name: string;
     avatar: string;
   };
+  status?: 'Published' | 'Draft' | 'Scheduled';
   isFeatured?: boolean;
 }
 

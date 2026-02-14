@@ -4,13 +4,13 @@
 .commentSection {
   padding-top: $spacing-2xl;
   margin-top: $spacing-2xl;
-  border-top: 2px solid $border-subtle;
+  border-top: 2px solid var(--color-border);
 }
 
 .title {
   font-size: $font-size-2xl;
   font-weight: $font-weight-bold;
-  color: $text-primary;
+  color: var(--color-text-primary);
   margin-bottom: $spacing-xl;
 }
 
@@ -19,7 +19,7 @@
   gap: $spacing-md;
   margin-bottom: $spacing-2xl;
   padding: $spacing-lg;
-  background: $bg-subtle;
+  background: var(--color-bg-secondary);
   border-radius: $radius-lg;
 }
 
@@ -27,7 +27,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: $primary-100;
+  background: var(--color-bg-tertiary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -45,7 +45,7 @@
 .textarea {
   width: 100%;
   padding: $spacing-md;
-  border: 1px solid $border-default;
+  border: 1px solid var(--color-border);
   border-radius: $radius-md;
   font-size: $font-size-base;
   font-family: inherit;
@@ -54,25 +54,25 @@
 
   &:focus {
     outline: none;
-    border-color: $primary-500;
+    border-color: var(--color-primary);
     box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
   }
 
   &:disabled {
-    background: $bg-subtle;
+    background: var(--color-bg-secondary);
     cursor: not-allowed;
     opacity: 0.6;
   }
 
   &::placeholder {
-    color: $text-tertiary;
+    color: var(--color-text-tertiary);
   }
 }
 
 .submitBtn {
   align-self: flex-start;
   padding: $spacing-sm $spacing-xl;
-  background: linear-gradient(135deg, $primary-500, $primary-400);
+  background: var(--color-primary);
   color: white;
   border: none;
   border-radius: $radius-md;
@@ -101,18 +101,18 @@
 .loading {
   text-align: center;
   padding: $spacing-2xl;
-  color: $text-secondary;
+  color: var(--color-text-secondary);
   font-size: $font-size-base;
 }
 
 .emptyState {
   text-align: center;
   padding: $spacing-2xl;
-  background: $bg-subtle;
+  background: var(--color-bg-secondary);
   border-radius: $radius-lg;
   
   p {
-    color: $text-secondary;
+    color: var(--color-text-secondary);
     font-size: $font-size-base;
     margin: 0;
   }
@@ -127,7 +127,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, $primary-500, $primary-400);
+  background: var(--color-primary);
   color: white;
   display: flex;
   align-items: center;
@@ -157,7 +157,7 @@
 
 .authorName {
   font-weight: $font-weight-bold;
-  color: $text-primary;
+  color: var(--color-text-primary);
   font-size: $font-size-base;
   display: flex;
   align-items: center;
@@ -166,8 +166,8 @@
 
 .authorRole {
   padding: $spacing-xs $spacing-sm;
-  background: $primary-100;
-  color: $primary-500;
+  background: var(--color-bg-tertiary);
+  color: var(--color-primary);
   font-size: $font-size-xs;
   font-weight: $font-weight-semibold;
   border-radius: $radius-sm;
@@ -175,11 +175,11 @@
 
 .commentTime {
   font-size: $font-size-sm;
-  color: $text-tertiary;
+  color: var(--color-text-tertiary);
 }
 
 .commentText {
-  color: $text-primary;
+  color: var(--color-text-primary);
   line-height: 1.6;
   margin-bottom: $spacing-sm;
 }
@@ -187,7 +187,7 @@
 .replyBtn {
   background: transparent;
   border: none;
-  color: $primary-500;
+  color: var(--color-primary);
   font-size: $font-size-sm;
   font-weight: $font-weight-semibold;
   cursor: pointer;
@@ -195,6 +195,6 @@
   transition: color $transition-fast;
 
   &:hover {
-    color: $primary-400;
+    color: var(--color-primary-light);
   }
 }

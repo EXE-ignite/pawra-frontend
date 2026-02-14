@@ -5,7 +5,7 @@ export type { ButtonProps } from './components/Button';
 export type { MainLayoutProps } from './layouts/MainLayout';
 
 // Contexts
-export { AuthProvider, useAuth } from './contexts';
+export { AuthProvider, useAuth, ThemeProvider, useTheme } from './contexts';
 
 // API Service
 export { apiService, api, authService } from './services';
