@@ -29,11 +29,17 @@
   gap: $spacing-md;
 }
 
-.logo {
-  font-size: $font-size-xl;
-  font-weight: $font-weight-bold;
-  color: var(--color-primary);
-  margin: 0;
+.logoContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  
+  img {
+    max-width: 63px;
+    height: auto;
+    object-fit: contain;
+  }
 }
 
 .nav {

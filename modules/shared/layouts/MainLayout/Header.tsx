@@ -5,13 +5,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { AuthModal, UserDropdown, ThemeToggle } from '../../components';
-import { useAuth } from '../../contexts';
+import { useAuth, useTheme } from '../../contexts';
 import { authService } from '../../services';
 import styles from './MainLayout.module.scss';
 
 export function Header() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { user, isAuthenticated, logout: contextLogout } = useAuth();
+  const { theme } = useTheme();
   const pathname = usePathname();
 
   const openAuth = () => {
@@ -30,8 +31,8 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className={styles.logo}>
             <Image 
-              src="/logo.png" 
-              alt="PetCare Logo" 
+              src={theme === 'dark' ? '/darklogo.svg' : '/logo.png'}
+              alt="Pawra Logo" 
               width={60} 
               height={20}
               priority

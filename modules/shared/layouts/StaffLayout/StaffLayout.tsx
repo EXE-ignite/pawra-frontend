@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '../../contexts';
+import Image from 'next/image';
+import { useAuth, useTheme } from '../../contexts';
 import { authService } from '../../services';
 import { ThemeToggle } from '../../components';
 import styles from './StaffLayout.module.scss';
@@ -13,6 +14,7 @@ interface StaffLayoutProps {
 
 export function StaffLayout({ children }: StaffLayoutProps) {
   const { user, updateUser } = useAuth();
+  const { theme } = useTheme();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -25,7 +27,16 @@ export function StaffLayout({ children }: StaffLayoutProps) {
     <div className={styles.layout}>
       <aside className={styles.sidebar}>
         <div className={styles.sidebarHeader}>
-          <h1 className={styles.logo}>🐾 Pawra Admin</h1>
+          <div className={styles.logoContainer}>
+            <Image 
+              src={theme === 'dark' ? '/darklogo.svg' : '/logo.png'}
+              alt="Pawra Admin Logo" 
+              width={63} 
+              height={83.344}
+              priority
+              style={{ objectFit: 'contain' }}
+            />
+          </div>
           <ThemeToggle />
         </div>
         
