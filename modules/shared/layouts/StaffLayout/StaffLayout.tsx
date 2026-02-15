@@ -4,6 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../contexts';
 import { authService } from '../../services';
+import { ThemeToggle } from '../../components';
 import styles from './StaffLayout.module.scss';
 
 interface StaffLayoutProps {
@@ -25,6 +26,7 @@ export function StaffLayout({ children }: StaffLayoutProps) {
       <aside className={styles.sidebar}>
         <div className={styles.sidebarHeader}>
           <h1 className={styles.logo}>🐾 Pawra Admin</h1>
+          <ThemeToggle />
         </div>
         
         <nav className={styles.nav}>
