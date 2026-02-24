@@ -28,7 +28,8 @@ export function mapStatusToNumber(status: 'Published' | 'Draft' | 'Scheduled'): 
 export function transformPostData(postData: any): any {
   postData.imageUrl = postData.imageUrl || postData.thumbnailUrl || '';
   postData.publishedAt = postData.publishedAt || postData.publishedDate || new Date().toISOString();
-  postData.category = postData.category || (postData.categories && postData.categories[0]) || 'health';
+  const rawCat = postData.category || (postData.categories && postData.categories[0]) || 'health';
+  postData.category = typeof rawCat === 'string' ? rawCat : (rawCat?.name || rawCat?.slug || 'health');
   postData.readTime = postData.readTime || 5;
   postData.excerpt = postData.excerpt || '';
   postData.content = postData.content || '';

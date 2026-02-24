@@ -149,7 +149,7 @@ class BlogPostService {
       imageUrl: item.thumbnailUrl || '',
       readTime: item.readTime || 5,
       publishedAt: item.publishedDate || item.publishedAt,
-      category: item.categories?.[0] || 'health',
+      category: (() => { const cat = item.categories?.[0]; return (typeof cat === 'string' ? cat : cat?.name || cat?.slug || 'health'); })() as any,
       author: {
         name: item.author?.name || 'Unknown',
         avatar: item.author?.avatarUrl || '',

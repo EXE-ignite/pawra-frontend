@@ -13,7 +13,8 @@ const categoryColors: Record<string, string> = {
 };
 
 export function ArticleCard({ post }: ArticleCardProps) {
-  const categoryColor = categoryColors[post.category] || '#999';
+  const categoryStr = typeof post.category === 'string' ? post.category : (post.category as any)?.name || (post.category as any)?.slug || 'health';
+  const categoryColor = categoryColors[categoryStr] || '#999';
 
   return (
     <article className={styles.card}>
@@ -35,7 +36,7 @@ export function ArticleCard({ post }: ArticleCardProps) {
           className={styles.categoryBadge}
           style={{ backgroundColor: categoryColor }}
         >
-          {post.category.toUpperCase()}
+          {categoryStr.toUpperCase()}
         </span>
       </div>
       <div className={styles.content}>
