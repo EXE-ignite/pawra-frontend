@@ -33,6 +33,9 @@ export function CommentSection({ postId }: CommentSectionProps) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyContent, setReplyContent] = useState<Record<string, string>>({});
+  const [submittingReply, setSubmittingReply] = useState(false);
 
   // Load comments on mount
   useEffect(() => {
@@ -45,17 +48,17 @@ export function CommentSection({ postId }: CommentSectionProps) {
         const mappedComments: Comment[] = apiComments.map(comment => ({
           id: comment.id,
           author: {
-            name: comment.author.name,
-            avatar: comment.author.avatarUrl || comment.author.name.charAt(0).toUpperCase(),
-            role: undefined, // Backend might provide role
+            name: comment.author?.name || 'Anonymous',
+            avatar: comment.author?.avatarUrl || (comment.author?.name?.charAt(0).toUpperCase() ?? '?'),
+            role: undefined,
           },
           content: comment.content,
           createdAt: formatRelativeTime(comment.createdAt),
           replies: comment.replies?.map(reply => ({
             id: reply.id,
             author: {
-              name: reply.author.name,
-              avatar: reply.author.avatarUrl || reply.author.name.charAt(0).toUpperCase(),
+              name: reply.author?.name || 'Anonymous',
+              avatar: reply.author?.avatarUrl || (reply.author?.name?.charAt(0).toUpperCase() ?? '?'),
             },
             content: reply.content,
             createdAt: formatRelativeTime(reply.createdAt),
@@ -82,18 +85,25 @@ export function CommentSection({ postId }: CommentSectionProps) {
       const addedComment = await blogService.addBlogComment(postId, {
         content: newComment.trim(),
       });
-      
-      // Add new comment to list
-      const newCommentUI: Comment = {
-        id: addedComment.id,
-        author: {
-          name: addedComment.author.name,
-          avatar: addedComment.author.avatarUrl || addedComment.author.name.charAt(0).toUpperCase(),
-        },
-        content: addedComment.content,
-        createdAt: formatRelativeTime(addedComment.createdAt),
-      };
-      
+
+      // BE may return null on success (e.g. 201 with no body) — build fallback from known data
+      const newCommentUI: Comment = addedComment
+        ? {
+            id: addedComment.id,
+            author: {
+              name: addedComment.author?.name || 'You',
+              avatar: addedComment.author?.avatarUrl || (addedComment.author?.name?.charAt(0).toUpperCase() ?? 'Y'),
+            },
+            content: addedComment.content,
+            createdAt: formatRelativeTime(addedComment.createdAt),
+          }
+        : {
+            id: `temp-${Date.now()}`,
+            author: { name: 'You', avatar: 'Y' },
+            content: newComment.trim(),
+            createdAt: 'Just now',
+          };
+
       setComments(prev => [...prev, newCommentUI]);
       setNewComment('');
     } catch (error: any) {
@@ -103,6 +113,48 @@ export function CommentSection({ postId }: CommentSectionProps) {
       alert(errorMessage);
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleReply = async (parentId: string) => {
+    const content = replyContent[parentId]?.trim();
+    if (!content || submittingReply) return;
+
+    setSubmittingReply(true);
+    try {
+      const added = await blogService.addBlogComment(postId, { content, parentId });
+
+      const newReply: Comment = added
+        ? {
+            id: added.id,
+            author: {
+              name: added.author?.name || 'You',
+              avatar: added.author?.avatarUrl || (added.author?.name?.charAt(0).toUpperCase() ?? 'Y'),
+            },
+            content: added.content,
+            createdAt: formatRelativeTime(added.createdAt),
+          }
+        : {
+            id: `temp-reply-${Date.now()}`,
+            author: { name: 'You', avatar: 'Y' },
+            content,
+            createdAt: 'Just now',
+          };
+
+      setComments(prev =>
+        prev.map(c =>
+          c.id === parentId
+            ? { ...c, replies: [...(c.replies || []), newReply] }
+            : c
+        )
+      );
+      setReplyContent(prev => ({ ...prev, [parentId]: '' }));
+      setReplyingTo(null);
+    } catch (error: any) {
+      console.error('Failed to post reply:', error);
+      alert(error?.message || 'Failed to post reply. Please try again.');
+    } finally {
+      setSubmittingReply(false);
     }
   };
 
@@ -171,7 +223,76 @@ export function CommentSection({ postId }: CommentSectionProps) {
                   <span className={styles.commentTime}>{comment.createdAt}</span>
                 </div>
                 <p className={styles.commentText}>{comment.content}</p>
-                <button className={styles.replyBtn}>Reply</button>
+                <button
+                  className={styles.replyBtn}
+                  onClick={() => setReplyingTo(replyingTo === comment.id ? null : comment.id)}
+                >
+                  {replyingTo === comment.id ? 'Cancel' : 'Reply'}
+                </button>
+
+                {/* Inline reply form */}
+                {replyingTo === comment.id && (
+                  <div className={styles.replyForm}>
+                    <textarea
+                      placeholder={`Reply to ${comment.author.name}...`}
+                      value={replyContent[comment.id] || ''}
+                      onChange={e =>
+                        setReplyContent(prev => ({ ...prev, [comment.id]: e.target.value }))
+                      }
+                      className={styles.replyTextarea}
+                      rows={3}
+                      disabled={submittingReply}
+                      autoFocus
+                    />
+                    <div className={styles.replyFormActions}>
+                      <button
+                        className={styles.cancelReplyBtn}
+                        onClick={() => setReplyingTo(null)}
+                        type="button"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        className={styles.submitReplyBtn}
+                        onClick={() => handleReply(comment.id)}
+                        disabled={!replyContent[comment.id]?.trim() || submittingReply}
+                        type="button"
+                      >
+                        {submittingReply ? 'Posting...' : 'Post Reply'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Nested replies */}
+                {comment.replies && comment.replies.length > 0 && (
+                  <div className={styles.replies}>
+                    {comment.replies.map(reply => (
+                      <div key={reply.id} className={styles.reply}>
+                        <div className={styles.replyAvatar}>
+                          {isAvatarUrl(reply.author.avatar) ? (
+                            <Image
+                              src={reply.author.avatar!}
+                              alt={reply.author.name}
+                              width={32}
+                              height={32}
+                              className={styles.avatarImage}
+                            />
+                          ) : (
+                            <span>{reply.author.avatar}</span>
+                          )}
+                        </div>
+                        <div className={styles.commentContent}>
+                          <div className={styles.commentHeader}>
+                            <span className={styles.authorName}>{reply.author.name}</span>
+                            <span className={styles.commentTime}>{reply.createdAt}</span>
+                          </div>
+                          <p className={styles.commentText}>{reply.content}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           ))}

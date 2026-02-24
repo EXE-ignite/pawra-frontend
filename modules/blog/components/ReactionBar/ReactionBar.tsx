@@ -6,11 +6,12 @@ import { ReactionBarProps, Reaction, ReactionType } from './ReactionBar.types';
 import styles from './ReactionBar.module.scss';
 
 const reactionConfig: Reaction[] = [
-  { type: 'like', emoji: '👍', label: 'Like', count: 0 },
-  { type: 'love', emoji: '❤️', label: 'Love', count: 0 },
-  { type: 'celebrate', emoji: '🎉', label: 'Celebrate', count: 0 },
-  { type: 'insightful', emoji: '💡', label: 'Insightful', count: 0 },
-  { type: 'curious', emoji: '🤔', label: 'Curious', count: 0 }
+  { type: 'like',  emoji: '👍', label: 'Like',  count: 0 },
+  { type: 'love',  emoji: '❤️', label: 'Love',  count: 0 },
+  { type: 'haha',  emoji: '😂', label: 'Haha',  count: 0 },
+  { type: 'wow',   emoji: '😮', label: 'Wow',   count: 0 },
+  { type: 'sad',   emoji: '😢', label: 'Sad',   count: 0 },
+  { type: 'angry', emoji: '😡', label: 'Angry', count: 0 },
 ];
 
 export function ReactionBar({ postId }: ReactionBarProps) {
@@ -52,26 +53,38 @@ export function ReactionBar({ postId }: ReactionBarProps) {
   const handleReaction = async (type: ReactionType) => {
     if (loading) return;
 
+    // Optimistic update
+    const isRemoving = userReaction === type;
+    setUserReaction(isRemoving ? null : type);
+    setReactions(prev =>
+      prev.map(r => {
+        if (r.type === type) return { ...r, count: r.count + (isRemoving ? -1 : 1) };
+        if (r.type === userReaction && !isRemoving) return { ...r, count: Math.max(0, r.count - 1) };
+        return r;
+      })
+    );
+
     setLoading(true);
     try {
-      // Call API to toggle reaction
       const result = await blogService.toggleBlogReaction(postId, type);
-      
-      // Update local state based on API response
-      setReactions(prevReactions =>
-        prevReactions.map(reaction => {
-          if (reaction.type === type) {
-            return { ...reaction, count: result.count };
-          }
-          return reaction;
+      // Sync with server count if BE returned real data
+      if (result.count !== undefined) {
+        setReactions(prev =>
+          prev.map(r => (r.type === type ? { ...r, count: result.count } : r))
+        );
+        setUserReaction(result.reacted ? type : null);
+      }
+    } catch (error) {
+      // Rollback optimistic update on failure
+      setUserReaction(userReaction);
+      setReactions(prev =>
+        prev.map(r => {
+          if (r.type === type) return { ...r, count: r.count - (isRemoving ? -1 : 1) };
+          if (r.type === userReaction && !isRemoving) return { ...r, count: r.count + 1 };
+          return r;
         })
       );
-
-      // Update user reaction state
-      setUserReaction(result.reacted ? type : null);
-    } catch (error) {
       console.error('Failed to toggle reaction:', error);
-      // Optionally show error toast to user
     } finally {
       setLoading(false);
     }

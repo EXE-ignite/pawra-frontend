@@ -1,6 +1,11 @@
 import { apiService } from '@/modules/shared/services';
-import { BlogReaction } from '../types';
+import { BlogReaction, BLOG_REACTION_TYPE_IDS, BlogReactionType, RawReactionStat } from '../types';
 import { USE_MOCK } from './helpers';
+
+// Inverse map: UUID (lowercase) → ReactionType
+const UUID_TO_TYPE: Record<string, BlogReactionType> = Object.fromEntries(
+  Object.entries(BLOG_REACTION_TYPE_IDS).map(([k, v]) => [v.toLowerCase(), k as BlogReactionType])
+);
 
 /**
  * Blog Reaction Service
@@ -12,58 +17,78 @@ class BlogReactionService {
   async getPostReactions(postId: string): Promise<BlogReaction[]> {
     if (USE_MOCK) {
       return [
-        { postId, reaction: 'like', count: 24, reacted: false },
-        { postId, reaction: 'love', count: 18, reacted: false },
-        { postId, reaction: 'celebrate', count: 12, reacted: false },
-        { postId, reaction: 'insightful', count: 9, reacted: false },
-        { postId, reaction: 'curious', count: 5, reacted: false },
+        { postId, reaction: 'like',  count: 24, reacted: false },
+        { postId, reaction: 'love',  count: 18, reacted: false },
+        { postId, reaction: 'haha',  count: 12, reacted: false },
+        { postId, reaction: 'wow',   count: 9,  reacted: false },
+        { postId, reaction: 'sad',   count: 5,  reacted: false },
+        { postId, reaction: 'angry', count: 3,  reacted: false },
       ];
     }
     try {
-      // NOTE: BE doesn't have GET endpoint for single post reactions
-      // Using batch endpoint instead: POST /api/blog-posts/my-reactions
-      // For now, return empty array to avoid errors
-      console.log('[INFO] Post reactions endpoint not available in BE, returning empty array');
-      return [];
-      
-      // TODO: Implement using batch endpoint when needed:
-      // const res = await apiService.post<any>('/blog-posts/my-reactions', { postIds: [postId] });
-      // return res.data[postId] || [];
+      // Parallel: GET reaction counts + GET current user's reaction
+      const [statsRes, myRes] = await Promise.allSettled([
+        apiService.get<RawReactionStat[]>(`/BlogPosts/${postId}/reactions`),
+        apiService.post<{ [postId: string]: string | null }>('/blog-posts/my-reactions', { postIds: [postId] }),
+      ]);
+
+      // BE may return the array directly, or wrapped in ApiResponse { data: [] },
+      // or .NET-serialised as { $values: [] }
+      const rawValue = statsRes.status === 'fulfilled' ? statsRes.value : null;
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔍 [ReactionService] raw statsRes.value:', rawValue);
+      }
+      const extractStats = (val: any): RawReactionStat[] => {
+        if (!val) return [];
+        if (Array.isArray(val)) return val;                       // direct array
+        if (Array.isArray(val.data)) return val.data;             // ApiResponse wrapper
+        if (Array.isArray(val.$values)) return val.$values;       // .NET $values
+        if (val.data && Array.isArray(val.data.$values)) return val.data.$values;
+        console.warn('⚠️ Unexpected reaction stats shape:', val);
+        return [];
+      };
+      const stats: RawReactionStat[] = extractStats(rawValue);
+
+      // my-reactions returns the reaction TYPE NAME (e.g. "like"), NOT a UUID
+      const myReactionName: string | null =
+        myRes.status === 'fulfilled' ? (myRes.value.data?.[postId] ?? null) : null;
+
+      return stats
+        .map(stat => {
+          const type = UUID_TO_TYPE[stat.reactionTypeId.toLowerCase()];
+          if (!type) return null;
+          return {
+            postId,
+            reaction: type,
+            count: stat.count,
+            // Compare reaction name against mapped type name (both lowercase)
+            reacted: !!myReactionName && myReactionName.toLowerCase() === type.toLowerCase(),
+          } satisfies BlogReaction;
+        })
+        .filter((r): r is BlogReaction => r !== null);
     } catch (error: any) {
-      console.error('❌ [ERROR] Failed to fetch reactions for post:', postId);
-      console.error('Error type:', typeof error);
-      console.error('Error message:', error?.message);
-      console.error('Error status:', error?.status);
-      console.error('Error response:', error?.response?.data);
-      console.error('Full error:', JSON.stringify(error, null, 2));
+      console.error('❌ Failed to fetch reactions:', postId, error?.message);
       return [];
     }
   }
 
-  async toggleBlogReaction(postId: string, reaction: string): Promise<BlogReaction> {
+  async toggleBlogReaction(postId: string, reaction: BlogReactionType): Promise<BlogReaction> {
     if (USE_MOCK) {
       return { postId, reaction, count: 1, reacted: true };
     }
     try {
-      // NOTE: BE API requires different schema:
-      // PUT /api/blog-reactions
-      // Body: { targetType: "Post", targetId: "uuid", reactionTypeId: "uuid" }
-      // For now, we don't have reactionTypeId mapping, so reactions are disabled
-      console.log('[INFO] Toggle reaction not implemented - waiting for reaction type ID mapping');
-      throw new Error('Reaction feature not fully implemented yet');
-      
-      // TODO: Implement with correct schema:
-      // const res = await apiService.put<BlogReaction>('/blog-reactions', {
-      //   targetType: 'Post',
-      //   targetId: postId,
-      //   reactionTypeId: getReactionTypeId(reaction) // Need mapping
-      // });
-      // return res.data;
+      const res = await apiService.put<BlogReaction | null>(this.reactionEndpoint, {
+        targetType: 'Post',
+        targetId: postId,
+        reactionTypeId: BLOG_REACTION_TYPE_IDS[reaction],
+      });
+      // BE may return null on success — return a minimal valid object as fallback
+      return res.data ?? { postId, reaction, count: 0, reacted: true };
     } catch (error: any) {
       console.error('❌ [ERROR] Failed to toggle reaction:', {
         postId,
         reaction,
-        error: error?.message
+        error: error?.message,
       });
       throw error;
     }

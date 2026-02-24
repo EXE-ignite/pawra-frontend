@@ -1,6 +1,23 @@
 import { apiService } from '@/modules/shared/services';
-import { BlogComment } from '../types';
+import { BlogComment, RawBlogComment } from '../types';
 import { USE_MOCK } from './helpers';
+
+// Helper: normalise a raw BE comment to the FE BlogComment shape
+function normaliseComment(raw: RawBlogComment): BlogComment {
+  return {
+    id: raw.id,
+    postId: raw.postId,
+    content: raw.content,
+    createdAt: raw.createdAt,
+    parentId: raw.parentId ?? undefined,
+    author: {
+      id: raw.authorId,
+      name: raw.authorName,
+    },
+    // Recursively normalise nested replies if BE returned tree
+    replies: raw.replies?.map(normaliseComment) ?? [],
+  };
+}
 
 /**
  * Blog Comment Service
@@ -11,111 +28,74 @@ class BlogCommentService {
   private readonly commentEndpoint = '/blog-comments';
 
   async getBlogPostComments(postId: string): Promise<BlogComment[]> {
-    if (USE_MOCK) {
-      return [];
-    }
+    if (USE_MOCK) return [];
     try {
-      // Correct endpoint according to BE API doc: /api/BlogPosts/{postId}/comments
-      const res = await apiService.get<BlogComment[]>(`${this.postEndpoint}/${postId}/comments`);
-      return res.data;
+      // BE returns comment tree: GET /api/BlogPosts/{postId}/comments
+      const res = await apiService.get<RawBlogComment[]>(`${this.postEndpoint}/${postId}/comments`);
+      const raw = res.data ?? [];
+
+      // If BE already returns a tree (replies nested), normalise directly
+      const hasNestedReplies = raw.some(r => (r.replies?.length ?? 0) > 0);
+      if (hasNestedReplies) {
+        return raw.filter(r => !r.parentId).map(normaliseComment);
+      }
+
+      // Fallback: flat list — group manually
+      const map = new Map<string, BlogComment>();
+      for (const r of raw) map.set(r.id, { ...normaliseComment(r), replies: [] });
+      const roots: BlogComment[] = [];
+      for (const c of map.values()) {
+        if (c.parentId && map.has(c.parentId)) map.get(c.parentId)!.replies!.push(c);
+        else roots.push(c);
+      }
+      return roots;
     } catch (error: any) {
-      console.error('❌ [ERROR] Failed to fetch comments for post:', postId);
-      console.error('Error type:', typeof error);
-      console.error('Error message:', error?.message);
-      console.error('Error status:', error?.status);
-      console.error('Error response:', error?.response?.data);
-      console.error('Full error:', JSON.stringify(error, null, 2));
-      return []; // Return empty array on error
+      console.error('❌ Failed to fetch comments:', postId, error?.message);
+      return [];
     }
   }
 
   async addBlogComment(postId: string, data: { content: string; parentId?: string }): Promise<BlogComment> {
     if (USE_MOCK) {
       return {
-        id: 'mock',
-        postId,
-        content: data.content,
+        id: 'mock', postId, content: data.content,
         createdAt: new Date().toISOString(),
         author: { id: '1', name: 'Mock User' },
       };
     }
-    
-    console.log('[INFO] 💬 Adding comment to post:', postId);
-    console.log('[INFO] 📝 Comment data:', data);
-    
-    // Try multiple endpoint patterns
-    const endpoints = [
-      `${this.postEndpoint}/${postId}/comments`,  // Pattern 1: /BlogPosts/{postId}/comments (matches GET)
-      `${this.commentEndpoint}`,                   // Pattern 2: /blog-comments (with postId in body)
-      `${this.commentEndpoint}/post/${postId}`,    // Pattern 3: /blog-comments/post/{postId}
-    ];
-    
-    const errors: Array<{ endpoint: string; status: number; message: string; data: any }> = [];
-    
-    for (let i = 0; i < endpoints.length; i++) {
-      const endpoint = endpoints[i];
-      try {
-        console.log(`[INFO] 🔄 Trying endpoint ${i + 1}/${endpoints.length}:`, endpoint);
-        
-        // For pattern 2, include postId in body
-        const requestData = i === 1 ? { ...data, postId } : data;
-        console.log(`[INFO]    Request data:`, requestData);
-        
-        const res = await apiService.post<BlogComment>(endpoint, requestData);
-        console.log('✅ [SUCCESS] Comment added successfully via:', endpoint);
-        console.log('✅ Response:', res);
-        return res.data;
-      } catch (error: any) {
-        // Error has been transformed by error handler
-        const status = error?.status || error?.response?.status || 0;
-        const errorData = error?.errors || error?.response?.data;
-        
-        console.log(`❌ Endpoint ${i + 1} failed with status: ${status}`);
-        console.log(`   Error message:`, error?.message);
-        console.log(`   Error response:`, errorData);
-        
-        errors.push({
-          endpoint,
-          status: status,
-          message: error?.message || 'Unknown error',
-          data: errorData
-        });
-        
-        // If not the last endpoint and got 404 or 405, try next one
-        if (i < endpoints.length - 1 && (status === 404 || status === 405)) {
-          console.log(`   ℹ️  ${status} error (${status === 404 ? 'Not Found' : 'Method Not Allowed'}), trying next endpoint...`);
-          continue;
-        }
-        
-        // If last endpoint or non-404 error, log all attempts and throw
-        console.error('❌ [ERROR] Comment submission failed. Summary of all attempts:');
-        errors.forEach((err, idx) => {
-          console.error(`   ${idx + 1}. ${err.endpoint}`);
-          console.error(`      Status: ${err.status}`);
-          console.error(`      Message: ${err.message}`);
-          console.error(`      Data:`, err.data);
-        });
-        
-        // Provide user-friendly error messages
-        if (status === 404) {
-          throw new Error('💬 Comment feature not yet implemented by backend. Please contact support.');
-        } else if (status === 401) {
-          throw new Error('🔒 You must be logged in to comment. Please sign in and try again.');
-        } else if (status === 403) {
-          throw new Error('🚫 You do not have permission to comment on this post.');
-        } else if (status === 400) {
-          const backendMsg = errorData?.message || errorData?.error;
-          throw new Error(`❌ Invalid comment: ${backendMsg || 'Please check your comment and try again.'}`);
-        } else if (status >= 500) {
-          throw new Error('⚠️ Server error. Please try again later.');
-        }
-        
-        // Generic error
-        throw new Error(`❌ Failed to post comment: ${error?.message || 'Unknown error'}`);
+
+    // Body: only content + optional parentId (postId is a PATH param, NOT in body)
+    const body: Record<string, string> = { content: data.content };
+    if (data.parentId) body.parentId = data.parentId;
+
+    try {
+      // Confirmed endpoint from swagger: POST /api/BlogPosts/{postId}/comments
+      const res = await apiService.post<RawBlogComment | null>(
+        `${this.postEndpoint}/${postId}/comments`,
+        body,
+      );
+      const raw = res.data;
+      if (raw) return normaliseComment(raw);
+      // 2xx but null body — build from known data
+      return {
+        id: `temp-${Date.now()}`,
+        postId,
+        content: data.content,
+        createdAt: new Date().toISOString(),
+        parentId: data.parentId,
+        author: { id: '', name: 'You' },
+        replies: [],
+      };
+    } catch (error: any) {
+      const status = error?.status || error?.response?.status || 0;
+      if (status === 401) throw new Error('🔒 Bạn cần đăng nhập để bình luận.');
+      if (status === 403) throw new Error('🚫 Bạn không có quyền bình luận.');
+      if (status === 400) {
+        const msg = error?.errors?.message || error?.response?.data?.message;
+        throw new Error(`❌ ${msg || 'Nội dung bình luận không hợp lệ.'}`);
       }
+      throw new Error(`⚠️ ${error?.message || 'Không thể gửi bình luận. Vui lòng thử lại.'}`);
     }
-    
-    throw new Error('Failed to post comment - all endpoints returned 404');
   }
 
   async deleteComment(commentId: string): Promise<void> {

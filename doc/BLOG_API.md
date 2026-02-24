@@ -400,7 +400,7 @@ GET /api/BlogPosts/{postId}/comments
 
 ### Thêm Bình Luận Vào Bài Viết
 ```http
-POST /api/BlogPosts/{postId}/comments (hoặc endpoint thay thế)
+POST /api/BlogPosts/{postId}/comments
 ```
 
 **Path Parameters:**
@@ -408,33 +408,25 @@ POST /api/BlogPosts/{postId}/comments (hoặc endpoint thay thế)
 |---------|------|----------|-------|
 | postId | string (UUID) | Có | ID của bài viết |
 
-**Request Body:**
+**Request Body (CreateBlogCommentDto):**
 ```json
 {
   "content": "Nội dung bình luận",
-  "parentId": "uuid" | null
+  "parentId": "uuid"
 }
 ```
 
-**Trạng thái:** ❌ **CHƯA TRIỂN KHAI** ở backend
+**Trường bắt buộc:**
+- `content` (string)
 
-**Vấn đề Xác Nhận:**
-- **Endpoint POST comment KHÔNG tồn tại trong backend API spec**
-- Các endpoint đã test đều thất bại:
-  - `POST /BlogPosts/{postId}/comments` → **405 Method Not Allowed** (chỉ hỗ trợ GET)
-  - `POST /blog-comments` → **404 Not Found**
-  - `POST /blog-comments/post/{postId}` → **404 Not Found**
+**Trường tùy chọn:**
+- `parentId` (uuid) — nếu là reply cho comment khác
 
-**Triển Khai Frontend:**
-- Frontend tự động thử nhiều endpoint patterns
-- Hiển thị thông báo lỗi thân thiện khi thất bại
-- Form bình luận vẫn hiển thị (đợi backend implement)
-- Ghi log lỗi chi tiết để debug
+**Trạng thái:** ✅ **Đã triển khai** (xác nhận từ Swagger spec)
 
-**TODO Backend:**
-- Implement endpoint POST cho comments
-- Pattern đề xuất: `POST /api/BlogPosts/{postId}/comments` (khớp với GET endpoint)
-- Thay thế: `POST /api/blog-comments` với `postId` trong body
+**Ghi chú:**
+- `postId` là **path param**, không để trong body
+- Yêu cầu Bearer token (user phải đăng nhập)
 
 ---
 
@@ -480,20 +472,31 @@ POST /api/blog-posts/my-reactions
 
 **Trạng thái:** ✅ **Đã triển khai** (batch endpoint hoạt động)
 
-**Ghi chú:**
-- Trả về trạng thái phản ứng của user cho nhiều bài viết
-- `null` có nghĩa là user chưa phản ứng
+**⚠️ QUAN TRỌNG — Giá trị trả về là reaction TYPE NAME, không phải UUID:**
+- `"like"`, `"love"`, `"haha"`, `"wow"`, `"sad"`, `"angry"`
+- `null` = user chưa react bài đó
+- Frontend phải so sánh giá trị này với reaction type NAME (không phải so với `reactionTypeId`)
 
 ---
 
 ### Lấy Phản Ứng Của Bài Viết (Một Bài)
 ```http
-GET /api/blog-reactions/{postId}
+GET /api/BlogPosts/{postId}/reactions
 ```
 
-**Trạng thái:** ❌ **CHƯA TRIỂN KHAI** ở backend
+**Trạng thái:** ✅ **Đã triển khai** (xác nhận từ Swagger spec)
 
-**Workaround:** Frontend trả về mảng rỗng và ghi log endpoint không tồn tại
+**Response trả về `RawReactionStat[]`:**
+```json
+[
+  { "reactionTypeId": "9D34726A-...", "reactionTypeName": "Like", "count": 5 },
+  { "reactionTypeId": "6F3BD810-...", "reactionTypeName": "Love", "count": 2 }
+]
+```
+
+**Ghi chú:**
+- Chỉ trả về các loại reaction có count > 0
+- Endpoint trước đó dùng sai path `/blog-reactions/{postId}` đã được sửa
 
 ---
 
@@ -502,7 +505,7 @@ GET /api/blog-reactions/{postId}
 PUT /api/blog-reactions
 ```
 
-**Request Body:**
+**Request Body (ToggleBlogReactionDto):**
 ```json
 {
   "targetType": "Post",
@@ -511,19 +514,22 @@ PUT /api/blog-reactions
 }
 ```
 
-**Trạng thái:** ⚠️ **Triển khai một phần** - Bị chặn do thiếu mapping reaction type ID
+**Trạng thái:** ✅ **Đã triển khai**
 
-**Vấn đề:**
-- Frontend không có mapping tên reaction → reactionTypeId
-- Cần backend cung cấp danh sách reaction types với IDs
-- Hiện tại tắt ở frontend với thông báo lỗi
+**Mapping reactionTypeId (đã xác nhận):**
+| Reaction | reactionTypeId |
+|----------|----------------|
+| like  | `9D34726A-4D87-4154-A01C-C94D09B3A450` |
+| love  | `6F3BD810-6C62-4328-8730-26C496FA4EFB` |
+| haha  | `C89B5834-F16A-4AF4-86C6-2E9796296124` |
+| angry | `FBC01CBB-2836-48CE-B6DD-E43C05399751` |
+| sad   | `37931634-3641-4160-9A8D-3729D273108C` |
+| wow   | `0C04BB1B-3862-4D51-BEDC-DFCC4AC516C2` |
 
-**Các Loại Phản Ứng Cần:**
-- Like
-- Love
-- Celebrate
-- Insightful
-- Curious
+**Logic toggle:**
+- Chưa react → Thêm mới
+- Đã react giống → Xóa (toggle off)
+- Đã react khác → Cập nhật sang loại mới
 
 ---
 
@@ -747,11 +753,11 @@ catch (error: any) {
 - [x] PUT update blog post
 - [x] DELETE blog post
 - [x] GET post comments
-- [ ] POST add comment - **❌ Chưa triển khai trong backend**
+- [x] POST add comment - **✅ Đã triển khai (`POST /api/BlogPosts/{postId}/comments`)**
 - [ ] DELETE comment - **Chưa test**
 - [x] POST get my reactions (batch)
-- [ ] GET post reactions (single) - **❌ Chưa triển khai trong backend**
-- [ ] PUT toggle reaction - **Chặn do thiếu reactionTypeId**
+- [x] GET post reactions (single) - **✅ Đã triển khai (`GET /api/BlogPosts/{postId}/reactions`)**
+- [x] PUT toggle reaction
 - [ ] GET admin stats - **Chưa test**
 - [ ] GET admin posts - **Chưa test**
 - [x] PATCH publish post
@@ -805,14 +811,10 @@ catch (error: any) {
    - Đề xuất: `POST /api/BlogPosts/{postId}/comments`
    - Frontend sẵn sàng hỗ trợ nhiều patterns
    
-2. **GET single post reactions** - Để hiển thị số lượng reactions
-   - Hiện tại: Chỉ có batch endpoint
-   - Cần: `GET /api/BlogPosts/{postId}/reactions` hoặc tương tự
-   
-3. **Danh sách Reaction type IDs** - Cho tính năng toggle reactions
-   - Cần endpoint lấy các reaction types với IDs
-   - Ví dụ: `{ "like": "uuid", "love": "uuid", ... }`
-   
+2. ~~**GET single post reactions**~~ - ✅ Đã có `GET /api/BlogPosts/{postId}/reactions`
+
+3. ~~**Danh sách Reaction type IDs**~~ - ✅ UUIDs đã được hardcode trong FE
+
 4. **Hỗ trợ Category trong blog posts** - Để tổ chức tốt hơn
    - Thêm trường `categoryId` vào CreateBlogPostDto & UpdateBlogPostDto
    - Frontend đã có category UI sẵn sàng (hiện tại tắt)
