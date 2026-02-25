@@ -3,13 +3,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { BlogDetailPageProps } from './BlogDetailPage.types';
 import { RelatedPosts, CommentSection, SearchBox, NewsletterBox, ReactionBar } from '../../components';
+import { ReactionType, Reaction } from '../../components/ReactionBar/ReactionBar.types';
 import styles from './BlogDetailPage.module.scss';
 
 const categoryColors: Record<string, string> = {
   behavior: '#B1B2FF',
   nutrition: '#AAC4FF',
   grooming: '#D2DAFF',
-  health: '#EF476F',
   training: '#06D6A0'
 };
 
@@ -29,8 +29,18 @@ export function BlogDetailPage({ post, relatedPosts }: BlogDetailPageProps) {
     author: {
       name: post.author?.name || 'Unknown Author',
       avatar: post.author?.avatar || '',
-    }
+    },
+    reactionSummary: post.reactionSummary || {},
   };
+
+  // Convert reactionSummary to Reaction[]
+  const reactionTypes: ReactionType[] = ['like', 'love', 'haha', 'wow', 'sad', 'angry'];
+  const initialReactions: Reaction[] = reactionTypes.map(type => ({
+    type,
+    emoji: '', // ReactionBar will fill emoji
+    label: '', // ReactionBar will fill label
+    count: safePost.reactionSummary?.[type] || 0,
+  }));
   
   const categoryColor = categoryColors[safePost.category] || '#B1B2FF';
 
@@ -117,8 +127,9 @@ export function BlogDetailPage({ post, relatedPosts }: BlogDetailPageProps) {
               <button className={styles.tag}>#FelineNutrition</button>
             </div>
 
+
             {/* Reaction Bar */}
-            <ReactionBar postId={safePost.id} />
+            <ReactionBar postId={safePost.id} initialReactions={initialReactions} />
 
             {/* Share Section */}
             <div className={styles.shareSection}>

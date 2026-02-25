@@ -26,10 +26,13 @@ class BlogReactionService {
       ];
     }
     try {
-      // Parallel: GET reaction counts + GET current user's reaction
+      // Parallel: GET reaction counts + GET current user's reaction (only if logged in)
+      const hasToken = typeof window !== 'undefined' && !!localStorage.getItem('authToken');
       const [statsRes, myRes] = await Promise.allSettled([
         apiService.get<RawReactionStat[]>(`/BlogPosts/${postId}/reactions`),
-        apiService.post<{ [postId: string]: string | null }>('/blog-posts/my-reactions', { postIds: [postId] }),
+        hasToken
+          ? apiService.post<{ [postId: string]: string | null }>('/blog-posts/my-reactions', { postIds: [postId] })
+          : Promise.resolve({ data: {} as { [postId: string]: string | null }, success: true, status: 200 }),
       ]);
 
       // BE may return the array directly, or wrapped in ApiResponse { data: [] },
@@ -92,6 +95,11 @@ class BlogReactionService {
       });
       throw error;
     }
+  }
+
+  // After toggling, re-fetch true stats + user reaction from server
+  async refreshPostReactions(postId: string): Promise<BlogReaction[]> {
+    return this.getPostReactions(postId);
   }
 
   async getMyReactionsBatch(postIds: string[]): Promise<{ [postId: string]: string | null }> {

@@ -18,9 +18,10 @@ export function EditBlogPage({ postId, initialData }: EditBlogPageProps) {
       router.push('/admin/blog');
     } catch (error: any) {
       console.error('Error updating post:', error);
-      const errorMessage = error?.message || error?.errors 
-        ? Object.values(error.errors)[0]?.[0] 
-        : 'Failed to update post';
+      let errorMessage = 'Failed to update post';
+      if (error && typeof error === 'object' && error.message) {
+        errorMessage = error.message;
+      }
       alert(`Failed to update post: ${errorMessage}`);
     }
   };

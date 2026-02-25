@@ -67,6 +67,7 @@ export interface BlogPost {
   };
   status?: 'Published' | 'Draft' | 'Scheduled';
   isFeatured?: boolean;
+  reactionSummary?: Record<string, number>;
 }
 
 export type BlogCategory = 

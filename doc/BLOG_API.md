@@ -179,8 +179,7 @@ POST /api/BlogPosts
 **Trạng thái:** ✅ **Đã triển khai**
 
 **Ghi chú:**
-- Backend **CHƯA** hỗ trợ các trường `categoryId` hoặc `excerpt`
-- Frontend đã disable các trường này trong UI
+- Backend đã hỗ trợ `categoryId` và `excerpt` — frontend cần bật lại các trường này
 
 ---
 
@@ -346,7 +345,7 @@ GET /api/BlogCategories
 }
 ```
 
-**Trạng thái:** ❓ **Endpoint tồn tại** nhưng không được sử dụng (tính năng danh mục đã tắt ở frontend)
+**Trạng thái:** ✅ **Đã triển khai** — cần bật lại tính năng category ở frontend
 
 ---
 
@@ -642,7 +641,7 @@ interface BlogPost {
   id: string;
   title: string;
   slug: string;
-  excerpt: string;              // Chưa lưu trong backend
+  excerpt: string;              // ✅ Backend đã hỗ trợ
   content: string;
   imageUrl: string;            // Chuyển đổi từ thumbnailUrl
   thumbnailUrl?: string;       // Trường backend
@@ -654,7 +653,7 @@ interface BlogPost {
   authorName?: string;         // Trường backend
   authorEmail?: string;        // Trường backend
   authorAccountId?: string;    // Trường backend
-  category: string;            // Chưa lưu trong backend
+  category: string;            // ✅ Backend đã hỗ trợ (categoryId)
   publishedAt: string;         // Chuyển đổi từ publishedDate
   publishedDate?: string;      // Trường backend
   readTime: number;            // Được frontend tính toán
@@ -673,7 +672,7 @@ interface BlogPost {
 type BlogCategory = 'health' | 'nutrition' | 'training' | 'behavior' | 'grooming';
 ```
 
-**Ghi chú:** Tính năng Category **đã tắt** ở frontend vì backend chưa hỗ trợ `categoryId` trong blog posts.
+**Ghi chú:** Backend đã hỗ trợ `categoryId` — cần bật lại tính năng Category ở frontend.
 
 ### BlogComment
 ```typescript
@@ -732,10 +731,8 @@ catch (error: any) {
 - `thumbnailUrl` (không phải `imageUrl`)
 - `publishedDate` (không phải `publishedAt`)
 
-### 4. Categories Không Hoạt Động
-**Vấn đề:** Backend chưa hỗ trợ `categoryId` hoặc `excerpt` trong blog posts.
-
-**Giải pháp:** Frontend tắt các trường này với ghi chú UI. Chờ backend triển khai.
+### 4. ~~Categories Không Hoạt Động~~
+**Trạng thái:** ✅ Backend đã hỗ trợ `categoryId` và `excerpt`. Cần bật lại UI ở frontend.
 
 ### 5. Reactions Không Hoạt Động
 **Vấn đề:** Thiếu mapping reaction type ID.
@@ -790,9 +787,8 @@ catch (error: any) {
 - Sửa GET comments endpoint từ `/blog-comments/post/{id}` sang `/BlogPosts/{id}/comments`
 - Xóa logic fallback cho `/BlogPosts/published/{id}` (endpoint không tồn tại)
 - Sửa getPostById để dùng direct endpoint (không còn lỗi 404)
-- Tắt các trường category và excerpt (backend chưa hỗ trợ)
+- Tắt các trường category và excerpt (backend chưa hỗ trợ — nay đã hỗ trợ, cần bật lại)
 - Cải thiện error logging trong tất cả các blog service methods
-- Triển khai multi-endpoint fallback cho POST comment (sẵn sàng khi backend implement)
 
 ---
 
@@ -800,27 +796,20 @@ catch (error: any) {
 
 **✅ Đã Triển Khai & Hoạt Động:**
 1. Blog post CRUD (create, read, update, delete)
-2. GET comments cho posts
-3. Publish/Unpublish posts
-4. Featured posts & Related posts (by slug)
-5. Posts by author & by status
-6. Batch get user reactions
+2. GET & POST comments cho posts (`GET/POST /api/BlogPosts/{postId}/comments`)
+3. DELETE comment (`DELETE /api/blog-comments/{commentId}`)
+4. Publish/Unpublish posts
+5. Featured posts & Related posts (by slug)
+6. Posts by author & by status
+7. Batch get user reactions (`POST /api/blog-posts/my-reactions`)
+8. GET single post reactions (`GET /api/BlogPosts/{postId}/reactions`)
+9. Toggle reaction (`PUT /api/blog-reactions`)
+10. Category support — `categoryId` trong CreateBlogPostDto & UpdateBlogPostDto
+11. Excerpt support — `excerpt` trong blog post DTOs
 
-**❌ Thiếu / Cần:**
-1. **POST comment endpoint** - Quan trọng cho user engagement
-   - Đề xuất: `POST /api/BlogPosts/{postId}/comments`
-   - Frontend sẵn sàng hỗ trợ nhiều patterns
-   
-2. ~~**GET single post reactions**~~ - ✅ Đã có `GET /api/BlogPosts/{postId}/reactions`
-
-3. ~~**Danh sách Reaction type IDs**~~ - ✅ UUIDs đã được hardcode trong FE
-
-4. **Hỗ trợ Category trong blog posts** - Để tổ chức tốt hơn
-   - Thêm trường `categoryId` vào CreateBlogPostDto & UpdateBlogPostDto
-   - Frontend đã có category UI sẵn sàng (hiện tại tắt)
-   
-5. **Trường Excerpt trong blog posts** - Để preview tốt hơn
-   - Thêm trường `excerpt` vào blog post DTOs
-   - Frontend đã có excerpt field sẵn sàng (hiện tại tắt)
+**⚠️ Cần làm ở Frontend:**
+1. **Bật lại tính năng Category** — backend đã có `categoryId`, FE đang tắt
+2. **Bật lại trường Excerpt** — backend đã có `excerpt`, FE đang tắt
+3. **Test DELETE comment** — endpoint có, chưa đánh giá UX xóa comment
 
 **API Base:** `https://api-pawra.purintech.id.vn/api`

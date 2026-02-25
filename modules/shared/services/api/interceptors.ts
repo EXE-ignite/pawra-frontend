@@ -21,7 +21,9 @@ export function setupInterceptors(client: AxiosInstance): void {
   client.interceptors.response.use(
     (response) => response,
     async (error) => {
-      if (error.response?.status === 401) {
+      // Only redirect to login when the user HAD a token (session expired)
+      // Not when a request is made without a token (e.g. optional-auth endpoints)
+      if (error.response?.status === 401 && tokenService.hasToken()) {
         tokenService.clearToken();
         if (typeof window !== 'undefined') {
           window.location.href = '/';

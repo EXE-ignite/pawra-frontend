@@ -7,6 +7,7 @@ import type { BlogEditorFormData } from '../components/BlogEditor/BlogEditor.typ
 import { blogPostService } from './blog-post.service';
 import { blogCommentService } from './blog-comment.service';
 import { blogReactionService } from './blog-reaction.service';
+import { BlogReactionType } from '../types/blog.types';
 import { blogCategoryService } from './blog-category.service';
 import { blogAdminService } from './blog-admin.service';
 
@@ -128,8 +129,12 @@ class BlogService {
     return blogReactionService.getPostReactions(postId);
   }
 
+  async refreshPostReactions(postId: string): Promise<BlogReaction[]> {
+    return blogReactionService.refreshPostReactions(postId);
+  }
+
   async toggleBlogReaction(postId: string, reaction: string): Promise<BlogReaction> {
-    return blogReactionService.toggleBlogReaction(postId, reaction);
+    return blogReactionService.toggleBlogReaction(postId, reaction as BlogReactionType);
   }
 
   async getMyReactionsBatch(postIds: string[]): Promise<{ [postId: string]: string | null }> {

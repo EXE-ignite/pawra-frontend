@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { blogService } from '@/modules/blog/services';
+import { useAuth } from '@/modules/shared/contexts';
 import { CommentSectionProps, Comment } from './CommentSection.types';
 import styles from './CommentSection.module.scss';
 
@@ -29,6 +30,7 @@ const isAvatarUrl = (avatar?: string): boolean => {
 };
 
 export function CommentSection({ postId }: CommentSectionProps) {
+  const { isAuthenticated, user } = useAuth();
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(false);
@@ -80,6 +82,11 @@ export function CommentSection({ postId }: CommentSectionProps) {
     e.preventDefault();
     if (!newComment.trim() || submitting) return;
 
+    if (!isAuthenticated) {
+      alert('🔒 Vui lòng đăng nhập để bình luận.');
+      return;
+    }
+
     setSubmitting(true);
     try {
       const addedComment = await blogService.addBlogComment(postId, {
@@ -119,6 +126,11 @@ export function CommentSection({ postId }: CommentSectionProps) {
   const handleReply = async (parentId: string) => {
     const content = replyContent[parentId]?.trim();
     if (!content || submittingReply) return;
+
+    if (!isAuthenticated) {
+      alert('🔒 Vui lòng đăng nhập để reply.');
+      return;
+    }
 
     setSubmittingReply(true);
     try {
@@ -167,21 +179,21 @@ export function CommentSection({ postId }: CommentSectionProps) {
       {/* Comment Form */}
       <form onSubmit={handleSubmit} className={styles.commentForm}>
         <div className={styles.avatarPlaceholder}>
-          <span>👤</span>
+          <span>{isAuthenticated && user ? (user.fullName?.charAt(0).toUpperCase() ?? '👤') : '👤'}</span>
         </div>
         <div className={styles.formContent}>
           <textarea 
-            placeholder="Add a comment..."
+            placeholder={isAuthenticated ? 'Add a comment...' : '🔒 Đăng nhập để bình luận...'}
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             className={styles.textarea}
             rows={4}
-            disabled={submitting}
+            disabled={submitting || !isAuthenticated}
           />
           <button 
             type="submit" 
             className={styles.submitBtn}
-            disabled={!newComment.trim() || submitting}
+            disabled={!newComment.trim() || submitting || !isAuthenticated}
           >
             {submitting ? 'Posting...' : 'Post Comment'}
           </button>
