@@ -1,5 +1,6 @@
 import { apiService } from '@/modules/shared/services';
 import type { Pet, PetProfile } from '../types';
+import { vaccinationService } from './vaccination.service';
 
 // Flag để chuyển đổi giữa mock data và real API
 const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === 'true';
@@ -82,6 +83,111 @@ const mockPets: Pet[] = [
   }
 ];
 
+const mockPetProfiles: Record<string, PetProfile> = {
+  '1': {
+    id: '1',
+    name: 'Max',
+    species: 'Dog',
+    breed: 'Golden Retriever',
+    age: 4,
+    ageMonths: 2,
+    weight: 32.5,
+    imageUrl: '/images/pets/max.jpg',
+    status: 'active',
+    color: 'Cream / Honey Gold',
+    microchipId: '985112009456122',
+    lastVisit: 'Oct 14, 2023',
+    insurance: 'PetGuard Platinum',
+    summary: 'Max is a gentle, highly energetic Golden Retriever who loves outdoor adventures.',
+    hobbies: [
+      { label: 'Swimming', color: 'blue' },
+      { label: 'Frisbee', color: 'blue' },
+      { label: 'Hiking', color: 'orange' },
+    ],
+    favoriteThings: [
+      { label: 'Peanut Butter', color: 'yellow' },
+      { label: 'Tennis Balls', color: 'green' },
+      { label: 'Belly Rubs', color: 'pink' },
+    ],
+    vaccinationAlert: 'Bordetella vaccine is due soon. Please schedule a booster.',
+    vaccinations: [
+      { id: 'v1', name: 'Rabies (3-Year)', dateAdministered: '2023-10-12', expirationDate: '2026-10-11', batchNumber: 'RB-99281', status: 'valid' },
+      { id: 'v2', name: 'Distemper/Parvo', dateAdministered: '2023-10-12', expirationDate: '2024-10-11', batchNumber: 'DPV-4431', status: 'valid' },
+      { id: 'v3', name: 'Bordetella', dateAdministered: '2023-04-05', expirationDate: '2024-04-04', batchNumber: 'BD-2289', status: 'due-soon' },
+    ],
+    medications: [
+      { id: 'm1', name: 'NexGard Spectra', dosage: '1 chewable monthly', frequency: 'Monthly' },
+    ],
+    weightHistory: [
+      { date: '2024-01-01', weight: 30.4 },
+      { date: '2024-04-01', weight: 31.2 },
+      { date: '2024-07-01', weight: 32.5 },
+    ],
+    routine: [
+      { id: 'r1', time: '07:30 AM', title: 'Breakfast', description: '1.5 cups dry kibble', completed: true },
+      { id: 'r2', time: '08:30 AM', title: 'Morning Walk', description: '30 min walk', completed: false },
+      { id: 'r3', time: '06:00 PM', title: 'Dinner', description: '1.5 cups dry kibble', completed: false },
+    ],
+    documents: [
+      { id: 'd1', name: 'Vet_Visit_Oct23.pdf', type: 'pdf', uploadDate: 'Last edited 3 days', size: '2.3 MB' },
+    ],
+  },
+  '2': {
+    id: '2',
+    name: 'Luna',
+    species: 'Cat',
+    breed: 'Persian',
+    age: 2,
+    ageMonths: 6,
+    weight: 4.5,
+    imageUrl: '/images/pets/luna.jpg',
+    status: 'active',
+    color: 'White / Silver',
+    summary: 'Luna is a calm and affectionate Persian cat who loves lounging in sunny spots.',
+    hobbies: [
+      { label: 'Napping', color: 'purple' },
+      { label: 'Bird Watching', color: 'blue' },
+    ],
+    favoriteThings: [
+      { label: 'Tuna Treats', color: 'orange' },
+      { label: 'Soft Blankets', color: 'pink' },
+    ],
+    vaccinations: [
+      { id: 'v1', name: 'Rabies', dateAdministered: '2024-02-10', expirationDate: '2027-02-10', batchNumber: 'RB-11123', status: 'valid' },
+      { id: 'v2', name: 'FVRCP', dateAdministered: '2024-02-10', expirationDate: '2025-02-10', batchNumber: 'FV-8812', status: 'due-soon' },
+    ],
+    medications: [],
+    weightHistory: [
+      { date: '2024-01-01', weight: 4.0 },
+      { date: '2024-07-01', weight: 4.5 },
+    ],
+    routine: [],
+    documents: [],
+  },
+  '3': {
+    id: '3',
+    name: 'Charlie',
+    species: 'Dog',
+    breed: 'Beagle',
+    age: 3,
+    ageMonths: 4,
+    weight: 12.0,
+    imageUrl: '/images/pets/charlie.jpg',
+    status: 'active',
+    summary: 'Charlie is a curious and playful Beagle who loves sniffing everything on walks.',
+    vaccinations: [
+      { id: 'v1', name: 'Rabies', dateAdministered: '2023-06-15', expirationDate: '2026-06-15', batchNumber: 'RB-55234', status: 'valid' },
+    ],
+    medications: [],
+    weightHistory: [
+      { date: '2024-01-01', weight: 11.5 },
+      { date: '2024-07-01', weight: 12.0 },
+    ],
+    routine: [],
+    documents: [],
+  },
+};
+
 /**
  * Calculate age from birth date
  */
@@ -135,8 +241,8 @@ class PetService {
         : response.data?.items || [];
       
       return pets.map(transformPetData);
-    } catch (error) {
-      console.error('Error fetching pets:', error);
+    } catch (error: unknown) {
+      console.error('Error fetching pets:', (error as any)?.message || error);
       throw error;
     }
   }
@@ -157,8 +263,8 @@ class PetService {
       const response = await apiService.get<PetDto[]>(`${this.endpoint}`);
       const pets = Array.isArray(response.data) ? response.data : [];
       return pets.map(transformPetData);
-    } catch (error) {
-      console.error('Error fetching user pets:', error);
+    } catch (error: unknown) {
+      console.error('Error fetching user pets:', (error as any)?.message || error);
       throw error;
     }
   }
@@ -177,8 +283,8 @@ class PetService {
     try {
       const response = await apiService.get<PetDto>(`${this.endpoint}/${id}`);
       return transformPetData(response.data);
-    } catch (error) {
-      console.error('Error fetching pet by ID:', error);
+    } catch (error: unknown) {
+      console.error('Error fetching pet by ID:', (error as any)?.message || error);
       throw error;
     }
   }
@@ -219,8 +325,8 @@ class PetService {
 
       const response = await apiService.post<PetDto>(`${this.endpoint}/create`, createDto);
       return transformPetData(response.data);
-    } catch (error) {
-      console.error('Error creating pet:', error);
+    } catch (error: unknown) {
+      console.error('Error creating pet:', (error as any)?.message || error);
       throw error;
     }
   }
@@ -257,8 +363,67 @@ class PetService {
 
       const response = await apiService.put<PetDto>(`${this.endpoint}/update/${id}`, updateDto);
       return transformPetData(response.data);
-    } catch (error) {
-      console.error('Error updating pet:', error);
+    } catch (error: unknown) {
+      console.error('Error updating pet:', (error as any)?.message || error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get full pet profile (Pet + Vaccinations)
+   * Combines: GET /api/Pet/{id} + GET /api/VaccinationRecord/pet/{petId}
+   */
+  async getPetProfile(petId: string): Promise<PetProfile> {
+    if (USE_MOCK) {
+      const profile = mockPetProfiles[petId];
+      if (!profile) throw new Error(`Pet profile not found for id: ${petId}`);
+      return profile;
+    }
+
+    try {
+      // Fetch pet basic info and vaccinations in parallel
+      const [petResponse, vaccinations] = await Promise.all([
+        apiService.get<PetDto>(`${this.endpoint}/${petId}`),
+        vaccinationService.getPetVaccinations(petId).catch(() => []),
+      ]);
+
+      const petDto = petResponse.data;
+      const birthDate = new Date(petDto.birthDate);
+      const today = new Date();
+      const ageMonths = (today.getFullYear() - birthDate.getFullYear()) * 12
+        + (today.getMonth() - birthDate.getMonth());
+
+      const profile: PetProfile = {
+        id: petDto.id,
+        name: petDto.name,
+        species: petDto.species,
+        breed: petDto.breed,
+        age: calculateAge(petDto.birthDate),
+        ageMonths: ageMonths % 12,
+        status: 'active',
+        vaccinations,
+        medications: [],
+        weightHistory: [],
+        routine: [],
+        documents: [],
+        // Fields below not in backend yet — kept empty as defaults
+        weight: undefined,
+        imageUrl: undefined,
+        color: undefined,
+        microchipId: undefined,
+        insurance: undefined,
+        summary: undefined,
+        lastVisit: undefined,
+        hobbies: [],
+        favoriteThings: [],
+        vaccinationAlert: vaccinations.some(v => v.status === 'overdue' || v.status === 'due-soon')
+          ? 'Một số vaccine cần được tiêm nhắc lại. Vui lòng liên hệ phòng khám.'
+          : undefined,
+      };
+
+      return profile;
+    } catch (error: unknown) {
+      console.error('Error fetching pet profile:', (error as any)?.message || error);
       throw error;
     }
   }
@@ -277,8 +442,8 @@ class PetService {
 
     try {
       await apiService.delete(`${this.endpoint}/${id}`);
-    } catch (error) {
-      console.error('Error deleting pet:', error);
+    } catch (error: unknown) {
+      console.error('Error deleting pet:', (error as any)?.message || error);
       throw error;
     }
   }

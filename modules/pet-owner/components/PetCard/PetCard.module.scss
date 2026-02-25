@@ -6,6 +6,9 @@
   @include flex-start;
   gap: $spacing-lg;
   padding: $spacing-lg;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
 }
 
 .petImage {

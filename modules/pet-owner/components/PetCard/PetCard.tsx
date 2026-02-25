@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { Pet } from '../../types';
 import styles from './PetCard.module.scss';
 
@@ -9,7 +10,7 @@ interface PetCardProps {
 
 export function PetCard({ pet, onClick }: PetCardProps) {
   return (
-    <div className={styles.card} onClick={onClick}>
+    <Link href={`/pet-owner/profile/${pet.id}`} className={styles.card} onClick={onClick}>
       <div className={styles.petImage}>
         {pet.species === 'Dog' ? '🐕' : '🐱'}
       </div>
@@ -26,6 +27,6 @@ export function PetCard({ pet, onClick }: PetCardProps) {
           </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
