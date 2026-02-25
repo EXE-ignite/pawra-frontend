@@ -100,6 +100,7 @@ export interface CalendarEvent {
 
 export interface Task {
   id: string;
+  date: string; // YYYY-MM-DD
   time: string;
   title: string;
   petName: string;

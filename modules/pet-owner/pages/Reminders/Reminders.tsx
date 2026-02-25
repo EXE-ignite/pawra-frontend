@@ -30,10 +30,7 @@ export function RemindersPage({
     setCurrentYear(year);
   }
 
-  const tasksForSelectedDate = tasks.filter(task => {
-    // In a real app, you'd filter by the task's date
-    return true; // Show all tasks for now
-  });
+  const tasksForSelectedDate = tasks.filter(task => task.date === selectedDate);
 
   return (
     <div className={styles.container}>
@@ -52,6 +49,7 @@ export function RemindersPage({
             month={currentMonth}
             year={currentYear}
             events={events}
+            tasks={tasks}
             selectedDate={selectedDate}
             onDateSelect={handleDateSelect}
             onMonthChange={handleMonthChange}
