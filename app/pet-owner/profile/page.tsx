@@ -3,9 +3,8 @@
 import { PetProfilePage } from '@/modules/pet-owner';
 import { PetProfile } from '@/modules/pet-owner/types';
 
-// Mock data for demonstration
 const mockPetProfile: PetProfile = {
-  id: 'PET-774291-8',
+  id: '00812-G',
   name: 'Cooper',
   species: 'Dog',
   breed: 'Golden Retriever',
@@ -13,18 +12,67 @@ const mockPetProfile: PetProfile = {
   ageMonths: 2,
   weight: 32.4,
   imageUrl: '/images/cooper.jpg',
+  status: 'active',
+  color: 'Cream / Honey Gold',
+  microchipId: '985112009456122',
+  lastVisit: 'Oct 14, 2023',
+  insurance: 'PetGuard Platinum',
+  summary:
+    'Cooper is a gentle, highly energetic Golden Retriever who loves outdoor adventures. He is microchipped and fully socialized with other dogs and children. Known for his "smiling" face and love for tennis balls.',
+  hobbies: [
+    { label: 'Swimming',  color: 'blue'   },
+    { label: 'Frisbee',   color: 'blue'   },
+    { label: 'Hiking',    color: 'orange' },
+    { label: 'Napping',   color: 'green'  },
+  ],
+  favoriteThings: [
+    { label: 'Peanut Butter', color: 'yellow' },
+    { label: 'Tennis Balls',  color: 'green'  },
+    { label: 'Squeaky Duck',  color: 'orange' },
+    { label: 'Belly Rubs',    color: 'pink'   },
+  ],
+  vaccinationAlert:
+    'The Bordetella vaccine is required for daycare and grooming appointments. Please schedule a booster before April.',
   vaccinations: [
     {
       id: '1',
-      name: 'Rabies Booster',
-      dueDate: 'Due in 12 days',
-      status: 'soon',
+      name: 'Rabies (3-Year)',
+      dateAdministered: 'Oct 12, 2023',
+      expirationDate: 'Oct 11, 2026',
+      batchNumber: 'RB-99281',
+      status: 'valid',
     },
     {
       id: '2',
       name: 'Distemper/Parvo',
-      dueDate: 'Last: Oct 2023',
-      status: 'ok',
+      dateAdministered: 'Oct 12, 2023',
+      expirationDate: 'Oct 11, 2024',
+      batchNumber: 'DPV-4431',
+      status: 'valid',
+    },
+    {
+      id: '3',
+      name: 'Bordetella',
+      dateAdministered: 'Apr 05, 2023',
+      expirationDate: 'Apr 04, 2024',
+      batchNumber: 'BD-2289',
+      status: 'due-soon',
+    },
+    {
+      id: '4',
+      name: 'Leptospirosis',
+      dateAdministered: 'Oct 12, 2023',
+      expirationDate: 'Oct 11, 2024',
+      batchNumber: 'LEP-1811',
+      status: 'valid',
+    },
+    {
+      id: '5',
+      name: 'Lyme Disease',
+      dateAdministered: 'Oct 12, 2023',
+      expirationDate: 'Oct 11, 2024',
+      batchNumber: 'LY-8827',
+      status: 'valid',
     },
   ],
   medications: [
@@ -34,79 +82,35 @@ const mockPetProfile: PetProfile = {
       dosage: '1 chewable monthly',
       frequency: 'Monthly',
     },
-    {
-      id: '2',
-      name: 'Glucosamine',
-      dosage: '500mg daily with breakfast',
-      frequency: 'Daily',
-    },
   ],
   weightHistory: [
     { date: '2024-01-01', weight: 30.4 },
-    { date: '2024-03-01', weight: 31.2 },
-    { date: '2024-05-01', weight: 31.8 },
     { date: '2024-07-01', weight: 32.4 },
   ],
-  routine: [
-    {
-      id: '1',
-      time: '07:30 AM',
-      title: 'Breakfast',
-      description: '1.5 cups dry kibble + topper',
-      completed: true,
-    },
-    {
-      id: '2',
-      time: '08:30 AM',
-      title: 'Morning Walk',
-      description: '30 min park or trail walk',
-      completed: false,
-    },
-    {
-      id: '3',
-      time: '06:00 PM',
-      title: 'Dinner',
-      description: '1.5 cups dry kibble',
-      completed: false,
-    },
-  ],
-  documents: [
-    {
-      id: '1',
-      name: 'Vet_Visit_Oct23.pdf',
-      type: 'pdf',
-      uploadDate: 'Last edited 3 days',
-      size: '2.3 MB',
-    },
-    {
-      id: '2',
-      name: 'Rabies_Cert_2024.pdf',
-      type: 'pdf',
-      uploadDate: 'Last edited 2 weeks',
-      size: '1.1 MB',
-    },
-  ],
+  routine: [],
+  documents: [],
 };
 
 export default function PetProfilePageRoute() {
-  function handleShareProfile() {
-    console.log('Share profile');
+  function handleEditProfile() {
+    console.log('Edit profile');
   }
 
-  function handleLogEntry() {
-    console.log('Log entry');
+  function handleExportPdf() {
+    console.log('Export PDF');
   }
 
-  function handleToggleActivity(activityId: string) {
-    console.log('Toggle activity:', activityId);
+  function handleAddRecord() {
+    console.log('Add vaccination record');
   }
 
   return (
     <PetProfilePage
       petProfile={mockPetProfile}
-      onShareProfile={handleShareProfile}
-      onLogEntry={handleLogEntry}
-      onToggleActivity={handleToggleActivity}
+      onEditProfile={handleEditProfile}
+      onExportPdf={handleExportPdf}
+      onAddRecord={handleAddRecord}
     />
   );
 }
+

@@ -2,6 +2,10 @@ import { PetProfile } from '../../types';
 
 export interface PetProfilePageProps {
   petProfile: PetProfile;
+  onEditProfile?: () => void;
+  onExportPdf?: () => void;
+  onAddRecord?: () => void;
+  // Legacy handlers kept for compatibility
   onShareProfile?: () => void;
   onLogEntry?: () => void;
   onEditHealth?: () => void;

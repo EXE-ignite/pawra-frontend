@@ -2,80 +2,221 @@
 
 import React from 'react';
 import { PetProfilePageProps } from './PetProfile.types';
-import {
-  PetProfileHeader,
-  HealthRecords,
-  GrowthChart,
-  DailyRoutine,
-  DocumentVault,
-} from '../../components';
 import styles from './PetProfile.module.scss';
 
 export function PetProfilePage({
   petProfile,
-  onShareProfile,
-  onLogEntry,
-  onEditHealth,
-  onEditGrowth,
-  onEditRoutine,
-  onUploadDocument,
-  onViewDocument,
-  onToggleActivity,
+  onEditProfile,
+  onExportPdf,
+  onAddRecord,
 }: PetProfilePageProps) {
-  const weightChange = petProfile.weightHistory.length >= 2
-    ? petProfile.weightHistory[petProfile.weightHistory.length - 1].weight -
-      petProfile.weightHistory[0].weight
-    : 0;
+  function getStatusClass(status: string) {
+    switch (status) {
+      case 'valid': return styles.statusValid;
+      case 'due-soon': return styles.statusDueSoon;
+      case 'overdue': return styles.statusOverdue;
+      default: return styles.statusValid;
+    }
+  }
+
+  function getStatusLabel(status: string) {
+    switch (status) {
+      case 'valid': return 'Valid';
+      case 'due-soon': return 'Due Soon';
+      case 'overdue': return 'Overdue';
+      default: return 'Valid';
+    }
+  }
+
+  function getTagClass(color: string) {
+    switch (color) {
+      case 'blue': return styles.tagBlue;
+      case 'orange': return styles.tagOrange;
+      case 'green': return styles.tagGreen;
+      case 'yellow': return styles.tagYellow;
+      case 'pink': return styles.tagPink;
+      case 'purple': return styles.tagPurple;
+      default: return styles.tagBlue;
+    }
+  }
 
   return (
-    <div className={styles.container}>
-      <PetProfileHeader
-        name={petProfile.name}
-        breed={petProfile.breed}
-        age={petProfile.age}
-        ageMonths={petProfile.ageMonths}
-        weight={petProfile.weight || 0}
-        imageUrl={petProfile.imageUrl}
-        onShareProfile={onShareProfile}
-        onLogEntry={onLogEntry}
-      />
-
-      <div className={styles.grid}>
-        <div className={styles.leftColumn}>
-          <HealthRecords
-            vaccinations={petProfile.vaccinations}
-            medications={petProfile.medications}
-            onEdit={onEditHealth}
-          />
-
-          <DailyRoutine
-            activities={petProfile.routine}
-            onToggle={onToggleActivity}
-            onEdit={onEditRoutine}
-          />
+    <div className={styles.page}>
+      {/* ── Pet Header ── */}
+      <div className={styles.header}>
+        <div className={styles.headerLeft}>
+          <div className={styles.headerAvatar}>
+            {petProfile.imageUrl ? (
+              <img src={petProfile.imageUrl} alt={petProfile.name} className={styles.headerAvatarImg} />
+            ) : (
+              <span className={styles.headerAvatarPlaceholder}>🐾</span>
+            )}
+          </div>
+          <div className={styles.headerInfo}>
+            <div className={styles.headerNameRow}>
+              <h1 className={styles.headerName}>{petProfile.name}</h1>
+              {petProfile.status === 'active' && (
+                <span className={styles.activeBadge}>ACTIVE</span>
+              )}
+            </div>
+            <div className={styles.headerAttributes}>
+              <span className={styles.attribute}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4a2 2 0 1 1 4 0v1a1 1 0 0 0 1 1h3a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1a2 2 0 1 0 0 4h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1v-1a2 2 0 1 0-4 0v1a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-3a1 1 0 0 0-1-1H4a2 2 0 1 1 0-4h1a1 1 0 0 0 1-1V7a1 1 0 0 1 1-1h3a1 1 0 0 0 1-1V4z"/></svg>
+                {petProfile.breed}
+              </span>
+              {petProfile.color && (
+                <span className={styles.attribute}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20"/></svg>
+                  {petProfile.color}
+                </span>
+              )}
+              <span className={styles.attribute}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                {petProfile.age} Years {petProfile.ageMonths} Months
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div className={styles.rightColumn}>
-          <GrowthChart
-            weightHistory={petProfile.weightHistory}
-            currentWeight={petProfile.weight || 0}
-            weightChange={weightChange}
-            onEdit={onEditGrowth}
-          />
-
-          <DocumentVault
-            documents={petProfile.documents}
-            onUpload={onUploadDocument}
-            onView={onViewDocument}
-          />
+        <div className={styles.headerActions}>
+          <button className={styles.editButton} onClick={onEditProfile}>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit Profile
+          </button>
         </div>
       </div>
 
-      <div className={styles.footer}>
-        <p className={styles.footerText}>
-          {petProfile.name}'s Profile • ID: PET-{petProfile.id} • Last synced: 2 minutes ago
+      {/* ── Main Content ── */}
+      <div className={styles.content}>
+        {/* Left Panel */}
+        <aside className={styles.leftPanel}>
+          <div className={styles.petImageWrapper}>
+            {petProfile.imageUrl ? (
+              <img src={petProfile.imageUrl} alt={petProfile.name} className={styles.petImage} />
+            ) : (
+              <div className={styles.petImagePlaceholder}>🐾</div>
+            )}
+          </div>
+
+          {petProfile.summary && (
+            <div className={styles.summarySection}>
+              <h3 className={styles.summaryTitle}>Pet Summary</h3>
+              <p className={styles.summaryText}>{petProfile.summary}</p>
+            </div>
+          )}
+
+          {(petProfile.hobbies?.length || petProfile.favoriteThings?.length) ? (
+            <div className={styles.interestsSection}>
+              <h3 className={styles.interestsTitle}>
+                <svg className={styles.heartIcon} width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                Personal Interests
+              </h3>
+
+              {petProfile.hobbies && petProfile.hobbies.length > 0 && (
+                <div className={styles.tagGroup}>
+                  <span className={styles.tagGroupLabel}>FAVORITE HOBBIES</span>
+                  <div className={styles.tagList}>
+                    {petProfile.hobbies.map((tag, i) => (
+                      <span key={i} className={`${styles.tag} ${getTagClass(tag.color)}`}>
+                        {tag.label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {petProfile.favoriteThings && petProfile.favoriteThings.length > 0 && (
+                <div className={styles.tagGroup}>
+                  <span className={styles.tagGroupLabel}>FAVORITE THINGS</span>
+                  <div className={styles.tagList}>
+                    {petProfile.favoriteThings.map((tag, i) => (
+                      <span key={i} className={`${styles.tag} ${getTagClass(tag.color)}`}>
+                        {tag.label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : null}
+        </aside>
+
+        {/* Right Panel */}
+        <section className={styles.rightPanel}>
+          <div className={styles.vaccinationCard}>
+            <div className={styles.vaccinationHeader}>
+              <div className={styles.vaccinationTitleGroup}>
+                <svg className={styles.vaccinationIcon} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                <div>
+                  <h2 className={styles.vaccinationTitle}>Vaccination History</h2>
+                  <p className={styles.vaccinationSubtitle}>Full medical immunization record</p>
+                </div>
+              </div>
+              <button className={styles.addButton} onClick={onAddRecord} aria-label="Add vaccination">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </button>
+            </div>
+
+            <div className={styles.tableWrapper}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th>VACCINE TYPE</th>
+                    <th>DATE ADMINISTERED</th>
+                    <th>EXPIRATION DATE</th>
+                    <th>BATCH #</th>
+                    <th>STATUS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {petProfile.vaccinations.map((v) => (
+                    <tr key={v.id}>
+                      <td className={styles.vaccineName}>{v.name}</td>
+                      <td>{v.dateAdministered}</td>
+                      <td>{v.expirationDate}</td>
+                      <td className={styles.batchNum}>{v.batchNumber}</td>
+                      <td>
+                        <span className={`${styles.statusBadge} ${getStatusClass(v.status)}`}>
+                          <span className={styles.statusDot} />
+                          {getStatusLabel(v.status)}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {petProfile.vaccinationAlert && (
+              <div className={styles.alertBox}>
+                <div className={styles.alertIcon}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                </div>
+                <div>
+                  <p className={styles.alertTitle}>Vaccination Alert</p>
+                  <p className={styles.alertText}>{petProfile.vaccinationAlert}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+      </div>
+
+      {/* ── Footer ── */}
+      <footer className={styles.footer}>
+        <p className={styles.footerSync}>
+          <span className={styles.syncDot} />
+          SYSTEM SYNCED: MAR 22, 2024 09:41AM
         </p>
-      </div>
+        <p className={styles.footerInfo}>
+          {petProfile.name} Jenkins • Profile ID: PET-{petProfile.id} • Secured by PetHub Cloud
+        </p>
+      </footer>
+
+      {/* ── FAB ── */}
+      <button className={styles.fab} aria-label="Add new record">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
     </div>
   );
 }

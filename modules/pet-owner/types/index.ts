@@ -30,8 +30,17 @@ export interface DashboardStats {
 export interface Vaccination {
   id: string;
   name: string;
-  dueDate: string;
-  status: 'soon' | 'ok' | 'overdue';
+  dateAdministered: string;
+  expirationDate: string;
+  batchNumber: string;
+  status: 'valid' | 'due-soon' | 'overdue';
+  // Legacy fields kept for backward compatibility
+  dueDate?: string;
+}
+
+export interface InterestTag {
+  label: string;
+  color: 'blue' | 'orange' | 'green' | 'yellow' | 'pink' | 'purple';
 }
 
 export interface Medication {
@@ -64,6 +73,15 @@ export interface Document {
 
 export interface PetProfile extends Pet {
   ageMonths: number;
+  status?: 'active' | 'inactive';
+  color?: string;
+  microchipId?: string;
+  lastVisit?: string;
+  insurance?: string;
+  summary?: string;
+  hobbies?: InterestTag[];
+  favoriteThings?: InterestTag[];
+  vaccinationAlert?: string;
   vaccinations: Vaccination[];
   medications: Medication[];
   weightHistory: WeightRecord[];
