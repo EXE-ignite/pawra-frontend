@@ -10,4 +10,4 @@ export * from './components';
 export * from './types';
 
 // Services
-export * from './services/dashboard.service';
+export * from './services';
