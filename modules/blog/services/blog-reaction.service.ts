@@ -56,10 +56,22 @@ class BlogReactionService {
       const myReactionName: string | null =
         myRes.status === 'fulfilled' ? (myRes.value.data?.[postId] ?? null) : null;
 
+      const validTypes: BlogReactionType[] = ['like', 'love', 'haha', 'wow', 'sad', 'angry'];
+
       return stats
         .map(stat => {
-          const type = UUID_TO_TYPE[stat.reactionTypeId.toLowerCase()];
-          if (!type) return null;
+          // Primary: map by UUID; Secondary fallback: map by reactionTypeName (e.g. "Like" → "like")
+          const typeById = UUID_TO_TYPE[stat.reactionTypeId?.toLowerCase()];
+          const typeByName = stat.reactionTypeName?.toLowerCase() as BlogReactionType | undefined;
+          const type: BlogReactionType | undefined = typeById
+            || (typeByName && validTypes.includes(typeByName) ? typeByName : undefined);
+
+          if (!type) {
+            if (process.env.NODE_ENV === 'development') {
+              console.warn('⚠️ [ReactionService] Unknown reactionTypeId / name:', stat.reactionTypeId, stat.reactionTypeName);
+            }
+            return null;
+          }
           return {
             postId,
             reaction: type,

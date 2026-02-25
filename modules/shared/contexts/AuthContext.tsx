@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { getUser, clearUser } from '../services/auth.service';
+import { tokenService } from '../services/api/token.service';
 import type { User } from '../types/auth.types';
 
 interface AuthContextType {
@@ -30,6 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     clearUser();
+    tokenService.clearToken();
     setUser(null);
   };
 

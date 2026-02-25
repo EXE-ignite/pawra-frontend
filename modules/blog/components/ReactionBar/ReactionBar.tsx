@@ -16,7 +16,7 @@ const reactionConfig: Reaction[] = [
 ];
 
 export function ReactionBar({ postId, initialReactions }: ReactionBarProps) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [reactions, setReactions] = useState<Reaction[]>(() => {
     if (initialReactions && initialReactions.length > 0) {
       // Merge initial counts with config
@@ -36,7 +36,10 @@ export function ReactionBar({ postId, initialReactions }: ReactionBarProps) {
       const apiReactions = await blogService.getPostReactions(postId);
       const mappedReactions = reactionConfig.map(config => {
         const apiReaction = apiReactions.find(r => r.reaction === config.type);
-        return { ...config, count: apiReaction?.count || 0 };
+        // BE only returns reaction types with count > 0 — fall back to initialReactions
+        // (sourced from post's reactionSummary) for types not in the response
+        const fallbackCount = initialReactions?.find(r => r.type === config.type)?.count ?? 0;
+        return { ...config, count: apiReaction?.count ?? fallbackCount };
       });
       setReactions(mappedReactions);
       const userReacted = apiReactions.find(r => r.reacted);
@@ -44,7 +47,7 @@ export function ReactionBar({ postId, initialReactions }: ReactionBarProps) {
     } catch (error) {
       console.error('Failed to load reactions:', error);
     }
-  }, [postId]);
+  }, [postId, initialReactions]);
 
   // Load reactions on mount
   useEffect(() => {
@@ -54,8 +57,8 @@ export function ReactionBar({ postId, initialReactions }: ReactionBarProps) {
   const handleReaction = async (type: ReactionType) => {
     if (loading) return;
 
-    // Require login
-    if (!isAuthenticated) {
+    // Require login — don't block if auth is still being determined
+    if (!authLoading && !isAuthenticated) {
       setLoginHint(true);
       setTimeout(() => setLoginHint(false), 3000);
       return;
@@ -111,10 +114,10 @@ export function ReactionBar({ postId, initialReactions }: ReactionBarProps) {
           <button
             key={reaction.type}
             onClick={() => handleReaction(reaction.type)}
-            disabled={loading}
+            disabled={loading || authLoading}
             className={`${styles.reactionBtn} ${
               userReaction === reaction.type ? styles.active : ''
-            } ${loading ? styles.loading : ''}`}
+            } ${loading || authLoading ? styles.loading : ''}`}
             aria-label={`React with ${reaction.label}`}
           >
             <span className={styles.emoji}>{reaction.emoji}</span>
