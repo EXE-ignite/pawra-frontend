@@ -1,8 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { BlogEditorProps, Category } from './BlogEditor.types';
 import { RichTextEditor } from '../RichTextEditor';
+import { blogCategoryService } from '@/modules/blog/services';
+import { storageService } from '@/modules/shared/services/firebase/storage.service';
 import styles from './BlogEditor.module.scss';
 
 export function BlogEditor({ mode, initialData, onSave, onCancel }: BlogEditorProps) {
@@ -18,13 +20,27 @@ export function BlogEditor({ mode, initialData, onSave, onCancel }: BlogEditorPr
   
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSaving, setIsSaving] = useState(false);
-  const [categories] = useState<Category[]>([
-    { id: 'health', name: 'Health', slug: 'health' },
-    { id: 'nutrition', name: 'Nutrition', slug: 'nutrition' },
-    { id: 'training', name: 'Training', slug: 'training' },
-    { id: 'behavior', name: 'Behavior', slug: 'behavior' },
-    { id: 'grooming', name: 'Grooming', slug: 'grooming' },
-  ]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Load categories from API
+  useEffect(() => {
+    blogCategoryService.getBlogCategories()
+      .then((data: any[]) => {
+        const mapped: Category[] = data.map((cat: any) => ({
+          id: cat.id || cat.slug || cat,
+          name: cat.name || cat,
+          slug: cat.slug || cat,
+        }));
+        setCategories(mapped);
+      })
+      .catch(() => setCategories([]))
+      .finally(() => setCategoriesLoading(false));
+  }, []);
 
   // Auto-generate slug from title
   useEffect(() => {
@@ -46,7 +62,9 @@ export function BlogEditor({ mode, initialData, onSave, onCancel }: BlogEditorPr
     if (!formData.content.trim()) {
       newErrors.content = 'Content is required';
     }
-    // Note: categoryId and excerpt are optional since BE doesn't support them yet
+    if (!formData.categoryId) {
+      newErrors.categoryId = 'Category is required';
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -72,6 +90,46 @@ export function BlogEditor({ mode, initialData, onSave, onCancel }: BlogEditorPr
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
+  };
+
+  const handleFileUpload = async (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file.');
+      return;
+    }
+    setIsUploading(true);
+    setUploadProgress(0);
+    try {
+      const result = await storageService.uploadImage(file, 'blog-thumbnails', ({ progress }) => {
+        setUploadProgress(Math.round(progress));
+      });
+      handleChange('thumbnailUrl', result.url);
+    } catch (error: any) {
+      alert(`Upload failed: ${error?.message || 'Unknown error'}`);
+    } finally {
+      setIsUploading(false);
+      setUploadProgress(0);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) handleFileUpload(file);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => setIsDragging(false);
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) handleFileUpload(file);
   };
 
   return (
@@ -140,13 +198,11 @@ export function BlogEditor({ mode, initialData, onSave, onCancel }: BlogEditorPr
             <label className={styles.label}>Excerpt</label>
             <textarea
               className={styles.textarea}
-              placeholder="Short description (optional - not saved yet)"
+              placeholder="Short description of the post..."
               value={formData.excerpt}
               onChange={(e) => handleChange('excerpt', e.target.value)}
               rows={3}
-              disabled
             />
-            <span className={styles.hint}>Backend doesn't support excerpt yet</span>
           </div>
         </div>
 
@@ -156,22 +212,22 @@ export function BlogEditor({ mode, initialData, onSave, onCancel }: BlogEditorPr
 
             <div className={styles.formGroup}>
               <label className={styles.label}>
-                Category <span className={styles.hint}>(optional - not saved yet)</span>
+                Category <span className={styles.required}>*</span>
               </label>
               <select
                 className={`${styles.select} ${errors.categoryId ? styles.error : ''}`}
                 value={formData.categoryId}
                 onChange={(e) => handleChange('categoryId', e.target.value)}
-                disabled
+                disabled={categoriesLoading}
               >
-                <option value="">Select a category</option>
+                <option value="">{categoriesLoading ? 'Loading...' : 'Select a category'}</option>
                 {categories.map((cat) => (
                   <option key={cat.id} value={cat.id}>
                     {cat.name}
                   </option>
                 ))}
               </select>
-              <span className={styles.hint}>Backend doesn't support categories yet</span>
+              {errors.categoryId && <span className={styles.errorText}>{errors.categoryId}</span>}
             </div>
 
             <div className={styles.formGroup}>
@@ -191,7 +247,58 @@ export function BlogEditor({ mode, initialData, onSave, onCancel }: BlogEditorPr
             <h3 className={styles.sidebarTitle}>Featured Image</h3>
 
             <div className={styles.formGroup}>
-              <label className={styles.label}>Image URL</label>
+              {formData.thumbnailUrl ? (
+                <div className={styles.imagePreview}>
+                  <img src={formData.thumbnailUrl} alt="Preview" />
+                  <button
+                    type="button"
+                    className={styles.removeImage}
+                    onClick={() => handleChange('thumbnailUrl', '')}
+                  >
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                <div
+                  className={`${styles.uploadArea} ${isDragging ? styles.uploadAreaDragging : ''} ${isUploading ? styles.uploadAreaUploading : ''}`}
+                  onClick={() => !isUploading && fileInputRef.current?.click()}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
+                  {isUploading ? (
+                    <div className={styles.uploadProgressWrapper}>
+                      <div className={styles.uploadProgressText}>Uploading... {uploadProgress}%</div>
+                      <div className={styles.uploadProgressBar}>
+                        <div className={styles.uploadProgressFill} style={{ width: `${uploadProgress}%` }} />
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                        <rect x="3" y="3" width="18" height="18" rx="3" />
+                        <circle cx="8.5" cy="8.5" r="1.5" />
+                        <path d="M21 15l-5-5L5 21" />
+                      </svg>
+                      <p className={styles.uploadAreaText}>Drag & drop or <span>click to upload</span></p>
+                      <p className={styles.uploadAreaHint}>PNG, JPG, GIF up to 5MB</p>
+                    </>
+                  )}
+                </div>
+              )}
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className={styles.fileInput}
+                onChange={handleFileInputChange}
+              />
+
+              <div className={styles.uploadOr}>
+                <span>or enter URL</span>
+              </div>
+
               <input
                 type="text"
                 className={styles.input}
@@ -199,11 +306,6 @@ export function BlogEditor({ mode, initialData, onSave, onCancel }: BlogEditorPr
                 value={formData.thumbnailUrl}
                 onChange={(e) => handleChange('thumbnailUrl', e.target.value)}
               />
-              {formData.thumbnailUrl && (
-                <div className={styles.imagePreview}>
-                  <img src={formData.thumbnailUrl} alt="Preview" />
-                </div>
-              )}
             </div>
           </div>
         </div>

@@ -222,7 +222,9 @@ class BlogAdminService {
         title: data.title.trim(),
         slug: data.slug?.trim() || data.title.toLowerCase().replace(/\s+/g, '-'),
         content: data.content,
+        excerpt: data.excerpt?.trim() || '',
         thumbnailUrl: data.thumbnailUrl?.trim() || null,
+        categoryIds: data.categoryId ? [data.categoryId] : [],
         status: mapStatusToNumber(data.status),
         publishedDate: data.status === 'Published' ? new Date().toISOString() : null
       };
@@ -231,7 +233,9 @@ class BlogAdminService {
         titleLength: backendData.title.length,
         slugLength: backendData.slug.length,
         contentLength: backendData.content.length,
+        excerptLength: backendData.excerpt.length,
         thumbnailUrl: backendData.thumbnailUrl,
+        categoryIds: backendData.categoryIds,
         status: backendData.status,
         publishedDate: backendData.publishedDate
       });
@@ -240,12 +244,11 @@ class BlogAdminService {
       console.log('[DEBUG] Create post response:', response);
       return response.data;
     } catch (error: any) {
-      console.error('Error creating post:', {
-        message: error?.message,
-        status: error?.status,
-        errors: error?.errors,
-      });
-      console.error('Full error object:', error);
+      const errMessage = error?.message || 'Unknown error';
+      const errStatus = error?.status ?? error?.response?.status ?? 0;
+      const errErrors = error?.errors || error?.response?.data?.errors;
+      console.error('Error creating post:', errMessage, '| status:', errStatus, '| errors:', errErrors);
+      console.error('Full error object:', JSON.stringify(error, null, 2));
       throw error;
     }
   }
@@ -293,7 +296,9 @@ class BlogAdminService {
         title: data.title.trim(),
         slug: data.slug?.trim() || data.title.toLowerCase().replace(/\s+/g, '-'),
         content: data.content,
+        excerpt: data.excerpt?.trim() || '',
         thumbnailUrl: data.thumbnailUrl?.trim() || null,
+        categoryIds: data.categoryId ? [data.categoryId] : [],
         status: mapStatusToNumber(data.status),
         publishedDate: data.status === 'Published' ? new Date().toISOString() : null
       };
@@ -303,7 +308,9 @@ class BlogAdminService {
         titleLength: backendData.title.length,
         slugLength: backendData.slug.length,
         contentLength: backendData.content.length,
+        excerptLength: backendData.excerpt.length,
         thumbnailUrl: backendData.thumbnailUrl,
+        categoryIds: backendData.categoryIds,
         status: backendData.status,
         publishedDate: backendData.publishedDate
       });
