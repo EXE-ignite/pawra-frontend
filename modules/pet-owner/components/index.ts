@@ -1,5 +1,8 @@
 export { StatCard } from './StatCard';
 export { PetCard } from './PetCard';
+export { AddPetModal } from './AddPetModal';
+export { AddPetFab } from './AddPetFab';
+export { PetSwitcher } from './PetSwitcher';
 export { AppointmentCard } from './AppointmentCard';
 export { HealthRecords } from './HealthRecords';
 export { GrowthChart } from './GrowthChart';

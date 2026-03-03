@@ -287,8 +287,10 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 
 #### Get All Appointments (Paginated)
 - **GET** `/api/Appointment`
+- **Auth:** Required (filters by authenticated user's JWT token)
 - **Query Parameters:** `pageSize` (default: 100), `pageNumber` (default: 1)
-- **Response:** Paginated list
+- **Response:** Paginated list of user's appointments
+- **Note:** Returns only appointments belonging to the authenticated user
 
 ---
 
@@ -483,7 +485,7 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 #### Create Pet
 - **POST** `/api/Pet/create`
 - **Auth:** Required
-- **Request:** `CreatePetDto { customerId, name, species, breed, birthDate }`
+- **Request:** `CreatePetDto { customerId, name, species, breed, birthDate, weight?, imageUrl?, color?, microchipId?, insurance?, description? }`
 - **Response:** `201` - Created
 
 #### Get Pet by ID
@@ -493,7 +495,7 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 #### Update Pet
 - **PUT** `/api/Pet/update/{id}`
 - **Auth:** Required
-- **Request:** `UpdatePetDto { name, species, breed, birthDate }`
+- **Request:** `UpdatePetDto { name, species, breed, birthDate, weight?, imageUrl?, color?, microchipId?, insurance?, description? }`
 - **Response:** `200` - Updated
 
 #### Delete Pet
@@ -503,8 +505,10 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 
 #### Get All Pets (Paginated)
 - **GET** `/api/Pet`
+- **Auth:** Required (filters by authenticated user's JWT token)
 - **Query Parameters:** `pageSize`, `pageNumber`
-- **Response:** Paginated list
+- **Response:** Paginated list of user's pets
+- **Note:** Returns only pets belonging to the authenticated user
 
 ---
 
@@ -672,6 +676,11 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 - **GET** `/api/VaccinationRecord/{id}`
 - **Response:** `VaccinationRecordDto`
 
+#### Get Vaccination Records by Pet
+- **GET** `/api/VaccinationRecord/pet/{petId}`
+- **Auth:** Required
+- **Response:** `VaccinationRecordDto[]` - All vaccination records for the specified pet
+
 #### Update Vaccination Record
 - **PUT** `/api/VaccinationRecord/update/{id}`
 - **Auth:** Required
@@ -767,6 +776,26 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 - **RegisterRequestDto**: `{ email, password, fullName }`
 - **GoogleLoginRequestDto**: `{ idToken }`
 - **FacebookLoginRequestDto**: `{ accessToken }`
+
+### PetDto
+```
+{
+  id: string,
+  customerId: string,
+  name: string,
+  species: string,
+  breed: string,
+  birthDate: string,       // ISO date
+  weight?: number,
+  imageUrl?: string,
+  color?: string,
+  microchipId?: string,
+  insurance?: string,
+  description?: string,
+  createdAt?: string,
+  updatedAt?: string
+}
+```
 
 ### Blog Post Status
 - `0` - Draft

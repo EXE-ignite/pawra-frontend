@@ -40,6 +40,12 @@ export interface PetDto {
   species: string;
   breed: string;
   birthDate: string;
+  weight?: number;
+  imageUrl?: string;
+  color?: string;
+  microchipId?: string;
+  insurance?: string;
+  description?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -214,7 +220,8 @@ function transformPetData(petDto: PetDto): Pet {
     species: petDto.species,
     breed: petDto.breed,
     age: calculateAge(petDto.birthDate),
-    // weight and imageUrl are not in backend, need to be added later
+    weight: petDto.weight,
+    imageUrl: petDto.imageUrl,
   };
 }
 
@@ -249,8 +256,7 @@ class PetService {
 
   /**
    * Get pets for current user
-   * Note: Backend may need endpoint like GET /api/Pet/customer/{customerId}
-   * For now, using GET /api/Pet with filtering on frontend
+   * Backend: GET /api/Pet (filters by auth JWT token)
    */
   async getUserPets(): Promise<Pet[]> {
     if (USE_MOCK) {
@@ -258,13 +264,37 @@ class PetService {
     }
 
     try {
-      // TODO: When backend provides customer-specific endpoint, use it
-      // For now, fetch all pets (assuming backend filters by auth token)
-      const response = await apiService.get<PetDto[]>(`${this.endpoint}`);
-      const pets = Array.isArray(response.data) ? response.data : [];
-      return pets.map(transformPetData);
+      const response = await apiService.get<PetDto[]>(`${this.endpoint}?pageSize=100&pageNumber=1`);
+
+      // BE trả ApiResponse<PetDto[]>: { success, message, data: [...] }
+      const raw = response as any;
+      let data: any;
+      if (Array.isArray(raw)) {
+        data = raw;
+      } else if (Array.isArray(raw?.data)) {
+        data = raw.data;
+      } else if (raw?.data?.success === false || raw?.success === false) {
+        console.warn('[PET-SERVICE] No pets:', raw?.data?.message || raw?.message);
+        return [];
+      } else {
+        data = [];
+      }
+
+      console.log('[PET-SERVICE] Pets loaded:', data.length);
+      return data.map(transformPetData);
     } catch (error: unknown) {
-      console.error('Error fetching user pets:', (error as any)?.message || error);
+      const apiErr = error as any;
+      // Nếu BE trả lỗi do chưa có pet / không phải customer → trả [] thay vì crash
+      const msg: string = apiErr?.message || '';
+      if (
+        apiErr?.status === 400 ||
+        msg.includes('CustomerId') ||
+        msg.includes('khách hàng')
+      ) {
+        console.warn('[PET-SERVICE] No pets for user:', msg);
+        return [];
+      }
+      console.error('Error fetching user pets:', { message: apiErr?.message, status: apiErr?.status });
       throw error;
     }
   }
@@ -400,19 +430,18 @@ class PetService {
         breed: petDto.breed,
         age: calculateAge(petDto.birthDate),
         ageMonths: ageMonths % 12,
+        weight: petDto.weight,
+        imageUrl: petDto.imageUrl,
         status: 'active',
+        color: petDto.color,
+        microchipId: petDto.microchipId,
+        insurance: petDto.insurance,
+        summary: petDto.description,
         vaccinations,
         medications: [],
         weightHistory: [],
         routine: [],
         documents: [],
-        // Fields below not in backend yet — kept empty as defaults
-        weight: undefined,
-        imageUrl: undefined,
-        color: undefined,
-        microchipId: undefined,
-        insurance: undefined,
-        summary: undefined,
         lastVisit: undefined,
         hobbies: [],
         favoriteThings: [],

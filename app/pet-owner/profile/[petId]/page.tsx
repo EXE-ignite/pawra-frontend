@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { PetProfilePage } from '@/modules/pet-owner';
+import { PetSwitcher } from '@/modules/pet-owner/components';
 import { petService } from '@/modules/pet-owner/services';
-import type { PetProfile } from '@/modules/pet-owner/types';
+import type { PetProfile, Pet } from '@/modules/pet-owner/types';
 
 export default function PetProfileByIdRoute() {
   const params = useParams();
@@ -12,17 +13,22 @@ export default function PetProfileByIdRoute() {
   const petId = params.petId as string;
 
   const [petProfile, setPetProfile] = useState<PetProfile | null>(null);
+  const [allPets, setAllPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!petId) return;
 
-    async function loadPetProfile() {
+    async function loadData() {
       try {
         setLoading(true);
-        const profile = await petService.getPetProfile(petId);
+        const [profile, pets] = await Promise.all([
+          petService.getPetProfile(petId),
+          petService.getUserPets(),
+        ]);
         setPetProfile(profile);
+        setAllPets(pets);
       } catch (err: any) {
         console.error('Failed to load pet profile:', err);
         setError(err?.message || 'Không thể tải thông tin thú cưng');
@@ -31,7 +37,7 @@ export default function PetProfileByIdRoute() {
       }
     }
 
-    loadPetProfile();
+    loadData();
   }, [petId]);
 
   function handleEditProfile() {
@@ -66,11 +72,14 @@ export default function PetProfileByIdRoute() {
   }
 
   return (
-    <PetProfilePage
-      petProfile={petProfile}
-      onEditProfile={handleEditProfile}
-      onExportPdf={handleExportPdf}
-      onAddRecord={handleAddRecord}
-    />
+    <>
+      <PetSwitcher pets={allPets} activePetId={petId} />
+      <PetProfilePage
+        petProfile={petProfile}
+        onEditProfile={handleEditProfile}
+        onExportPdf={handleExportPdf}
+        onAddRecord={handleAddRecord}
+      />
+    </>
   );
 }

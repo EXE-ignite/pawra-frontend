@@ -1,8 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/modules/shared';
-import { StatCard, PetCard, AppointmentCard } from '../../components';
+import { StatCard, PetCard, AppointmentCard, AddPetModal } from '../../components';
 import { Pet, Appointment, DashboardStats } from '../../types';
 import styles from './Dashboard.module.scss';
 
@@ -10,11 +10,18 @@ interface DashboardPageProps {
   stats: DashboardStats;
   pets: Pet[];
   appointments: Appointment[];
+  onRefresh?: () => void;
 }
 
-export function DashboardPage({ stats, pets, appointments }: DashboardPageProps) {
+export function DashboardPage({ stats, pets, appointments, onRefresh }: DashboardPageProps) {
+  const [showAddPet, setShowAddPet] = useState(false);
+
   function handleAddPet() {
-    console.log('Add new pet');
+    setShowAddPet(true);
+  }
+
+  function handlePetAdded() {
+    onRefresh?.();
   }
 
   function handleBookAppointment() {
@@ -111,6 +118,11 @@ export function DashboardPage({ stats, pets, appointments }: DashboardPageProps)
           </div>
         )}
       </section>
+      <AddPetModal
+        isOpen={showAddPet}
+        onClose={() => setShowAddPet(false)}
+        onSuccess={handlePetAdded}
+      />
     </div>
   );
 }

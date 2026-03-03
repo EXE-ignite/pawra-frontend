@@ -25,6 +25,36 @@ class TokenService {
   hasToken(): boolean {
     return !!this.getToken();
   }
+
+  /**
+   * Decode JWT payload to extract claims (client-side only)
+   */
+  getTokenClaims(): Record<string, any> | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const payload = token.split('.')[1];
+      const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+      return decoded;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Extract customerId from JWT claims
+   * .NET BE stores it as "customerId" or similar custom claim
+   */
+  getCustomerIdFromToken(): string | null {
+    const claims = this.getTokenClaims();
+    if (!claims) return null;
+    return (
+      claims['customerId'] ||
+      claims['CustomerId'] ||
+      claims['customer_id'] ||
+      null
+    );
+  }
 }
 
 export const tokenService = new TokenService();

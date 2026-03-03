@@ -3,14 +3,14 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { petService } from '@/modules/pet-owner/services';
+import { AddPetModal } from '@/modules/pet-owner/components';
+import { Button } from '@/modules/shared';
 
-/**
- * Default profile page - loads the first pet and redirects.
- * For a specific pet, navigate to /pet-owner/profile/[petId]
- */
 export default function PetProfilePageRoute() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     async function redirectToFirstPet() {
@@ -18,7 +18,7 @@ export default function PetProfilePageRoute() {
         const pets = await petService.getUserPets();
 
         if (pets.length === 0) {
-          setError('Bạn chưa có thú cưng nào. Hãy thêm thú cưng đầu tiên!');
+          setLoaded(true);
           return;
         }
 
@@ -26,11 +26,26 @@ export default function PetProfilePageRoute() {
       } catch (err: any) {
         console.error('Failed to load pets:', err);
         setError(err?.message || 'Không thể tải danh sách thú cưng');
+        setLoaded(true);
       }
     }
 
     redirectToFirstPet();
   }, [router]);
+
+  function handlePetAdded() {
+    // Reload pets list after adding
+    setLoaded(false);
+    setShowAddModal(false);
+    setError(null);
+    petService.getUserPets().then(pets => {
+      if (pets.length > 0) {
+        router.replace(`/pet-owner/profile/${pets[0].id}`);
+      } else {
+        setLoaded(true);
+      }
+    });
+  }
 
   if (error) {
     return (
@@ -40,9 +55,34 @@ export default function PetProfilePageRoute() {
     );
   }
 
+  if (!loaded) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+        <p>Đang tải...</p>
+      </div>
+    );
+  }
+
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
-      <p>Đang tải...</p>
-    </div>
+    <>
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🐾</div>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem' }}>
+          Bạn chưa có thú cưng nào
+        </h2>
+        <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>
+          Hãy thêm thú cưng đầu tiên để theo dõi sức khỏe và lịch hẹn của bé.
+        </p>
+        <Button variant="primary" onClick={() => setShowAddModal(true)}>
+          + Thêm thú cưng
+        </Button>
+      </div>
+
+      <AddPetModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onSuccess={handlePetAdded}
+      />
+    </>
   );
 }

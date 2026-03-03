@@ -6,7 +6,9 @@ export function handleApiError(error: any): ApiError {
   console.log('🔍 [ERROR-HANDLER] Error keys:', Object.keys(error));
   
   if (error.response) {
-    console.log('📡 [ERROR-HANDLER] Response error:', error.response);
+    console.log('📡 [ERROR-HANDLER] Status:', error.response.status);
+    console.log('📡 [ERROR-HANDLER] Response data:', JSON.stringify(error.response.data));
+    console.log('📡 [ERROR-HANDLER] URL:', error.config?.url);
     
     // Handle validation errors (400)
     if (error.response.data?.errors) {

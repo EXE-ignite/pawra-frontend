@@ -1,0 +1,166 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+// Modal Overlay
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  @include flex-center;
+  padding: $spacing-md;
+}
+
+// Modal Box
+.modal {
+  background: var(--color-bg-primary);
+  border-radius: $radius-xl;
+  padding: $spacing-xl;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.header {
+  @include flex-between;
+  margin-bottom: $spacing-xl;
+}
+
+.title {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: var(--color-text-primary);
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: $font-size-xl;
+  color: var(--color-text-secondary);
+  padding: $spacing-xs;
+  line-height: 1;
+  border-radius: $radius-md;
+  transition: background 0.2s;
+
+  &:hover {
+    background: var(--color-bg-tertiary);
+  }
+}
+
+// Form
+.form {
+  @include flex-column;
+  gap: $spacing-lg;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-md;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field {
+  @include flex-column;
+  gap: $spacing-xs;
+}
+
+.label {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: var(--color-text-primary);
+
+  .required {
+    color: $color-error;
+    margin-left: 2px;
+  }
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  border: 1.5px solid var(--color-border);
+  border-radius: $radius-lg;
+  font-size: $font-size-base;
+  color: var(--color-text-primary);
+  background: var(--color-bg-primary);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(177, 178, 255, 0.25);
+  }
+
+  &::placeholder {
+    color: var(--color-text-tertiary);
+  }
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.error {
+  font-size: $font-size-sm;
+  color: $color-error;
+  padding: $spacing-sm $spacing-md;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: $radius-md;
+}
+
+.footer {
+  @include flex-between;
+  gap: $spacing-md;
+  margin-top: $spacing-md;
+}
+
+.cancelBtn {
+  flex: 1;
+  padding: $spacing-sm $spacing-md;
+  background: var(--color-bg-tertiary);
+  border: 1.5px solid var(--color-border);
+  border-radius: $radius-lg;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: var(--color-bg-hover);
+  }
+}
+
+.submitBtn {
+  flex: 2;
+  padding: $spacing-sm $spacing-md;
+  background: var(--color-primary);
+  border: none;
+  border-radius: $radius-lg;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: var(--color-bg-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: var(--color-primary-dark);
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}

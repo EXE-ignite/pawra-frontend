@@ -203,8 +203,7 @@ class VaccinationService {
 
   /**
    * Get vaccination records for a pet
-   * Note: Backend may need endpoint like GET /api/VaccinationRecord/pet/{petId}
-   * For now, this is a placeholder
+   * Backend: GET /api/VaccinationRecord/pet/{petId}
    */
   async getPetVaccinations(petId: string): Promise<Vaccination[]> {
     if (USE_MOCK) {
@@ -212,12 +211,13 @@ class VaccinationService {
     }
 
     try {
-      // TODO: Backend needs to provide an endpoint to get vaccinations by pet
-      // For now, returning empty array as there's no such endpoint in the API docs
-      console.warn('getPetVaccinations: Backend endpoint not available yet');
-      return [];
-    } catch (error) {
-      console.error('Error fetching pet vaccinations:', error);
+      const response = await apiService.get<VaccinationRecordDto[]>(
+        `${this.recordEndpoint}/pet/${petId}`
+      );
+      const records = Array.isArray(response.data) ? response.data : [];
+      return records.map(transformVaccinationData);
+    } catch (error: unknown) {
+      console.error('Error fetching pet vaccinations:', (error as any)?.message || error);
       throw error;
     }
   }

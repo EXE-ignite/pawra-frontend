@@ -1,6 +1,6 @@
 # API Integration Status - Pawra Frontend
 
-**Last Updated:** February 25, 2026
+**Last Updated:** March 3, 2026
 
 ---
 
@@ -13,6 +13,10 @@ Tài liệu này theo dõi trạng thái tích hợp API giữa Frontend và Bac
 - 🔄 **Mock Data** - Đang dùng dữ liệu giả, cần chuyển sang API thật
 - ❌ **Chưa có** - Chưa có service, cần tạo mới
 - ⏳ **Đang phát triển** - Đang trong quá trình phát triển
+
+### Cấu hình:
+- `NEXT_PUBLIC_USE_MOCK=false` — **Đã chuyển sang real API**
+- Mock data vẫn giữ lại trong services để fallback khi cần dev offline
 
 ---
 
@@ -60,36 +64,40 @@ Tài liệu này theo dõi trạng thái tích hợp API giữa Frontend và Bac
 
 ---
 
-## 3. Pets (Module: pet-owner) - ĐÃ TẠO SERVICE
+## 3. Pets (Module: pet-owner) - ✅ HOÀN THÀNH
 
 | API Endpoint | Status | File Service | Ghi chú |
-|-------------|--------|--------------|---------|
+|-------------|--------|--------------|---------||
 | `POST /api/Pet/create` | ✅ | `pet.service.ts` | Đã tích hợp |
 | `GET /api/Pet/{id}` | ✅ | `pet.service.ts` | Đã tích hợp |
 | `PUT /api/Pet/update/{id}` | ✅ | `pet.service.ts` | Đã tích hợp |
 | `DELETE /api/Pet/{id}` | ✅ | `pet.service.ts` | Đã tích hợp |
-| `GET /api/Pet` | ✅ | `pet.service.ts` | Đã tích hợp - Paginated |
+| `GET /api/Pet` | ✅ | `pet.service.ts` | Filter theo JWT token |
 
 ### Các function có sẵn trong `petService`:
-- `getUserPets()` - Lấy danh sách thú cưng của user
+- `getUserPets()` - Lấy danh sách thú cưng của user (BE filter theo JWT)
 - `getPetById(id)` - Chi tiết thú cưng
+- `getPetProfile(petId)` - Full profile (pet + vaccinations)
 - `createPet(data)` - Thêm thú cưng mới
 - `updatePet(id, data)` - Cập nhật thú cưng
 - `deletePet(id)` - Xóa thú cưng
 
-**Note:** Sử dụng `NEXT_PUBLIC_USE_MOCK=true` để dùng mock data trong development.
+### PetDto mở rộng (BE đã bổ sung):
+- `weight`, `imageUrl`, `color`, `microchipId`, `insurance`, `description`
+
+**Config:** `NEXT_PUBLIC_USE_MOCK=true` để dùng mock data khi dev offline.
 
 ---
 
-## 4. Appointments (Module: pet-owner) - ĐÃ TẠO SERVICE
+## 4. Appointments (Module: pet-owner) - ✅ HOÀN THÀNH
 
 | API Endpoint | Status | File Service | Ghi chú |
-|-------------|--------|--------------|---------|
+|-------------|--------|--------------|---------||
 | `POST /api/Appointment/create` | ✅ | `appointment.service.ts` | Đã tích hợp |
 | `GET /api/Appointment/{id}` | ✅ | `appointment.service.ts` | Đã tích hợp |
 | `PUT /api/Appointment/update/{id}` | ✅ | `appointment.service.ts` | Đã tích hợp |
 | `DELETE /api/Appointment/{id}` | ✅ | `appointment.service.ts` | Đã tích hợp |
-| `GET /api/Appointment` | ✅ | `appointment.service.ts` | Đã tích hợp - Paginated |
+| `GET /api/Appointment` | ✅ | `appointment.service.ts` | Filter theo JWT token |
 
 ### Các function có sẵn trong `appointmentService`:
 - `getUpcomingAppointments()` - Lấy lịch hẹn sắp tới
@@ -102,7 +110,7 @@ Tài liệu này theo dõi trạng thái tích hợp API giữa Frontend và Bac
 
 ---
 
-## 5. Reminders (Module: pet-owner) - ĐÃ TẠO SERVICE
+## 5. Reminders (Module: pet-owner) - ✅ HOÀN THÀNH
 
 | API Endpoint | Status | File Service | Ghi chú |
 |-------------|--------|--------------|---------|
@@ -128,12 +136,13 @@ Tài liệu này theo dõi trạng thái tích hợp API giữa Frontend và Bac
 
 ---
 
-## 6. Vaccinations (Module: pet-owner) - ĐÃ TẠO SERVICE
+## 6. Vaccinations (Module: pet-owner) - ✅ HOÀN THÀNH
 
 | API Endpoint | Status | File Service | Ghi chú |
 |-------------|--------|--------------|---------|
 | `POST /api/VaccinationRecord/create` | ✅ | `vaccination.service.ts` | Đã tích hợp |
 | `GET /api/VaccinationRecord/{id}` | ✅ | `vaccination.service.ts` | Đã tích hợp |
+| `GET /api/VaccinationRecord/pet/{petId}` | ✅ | `vaccination.service.ts` | **MỚI** - BE đã bổ sung |
 | `PUT /api/VaccinationRecord/update/{id}` | ✅ | `vaccination.service.ts` | Đã tích hợp |
 | `DELETE /api/VaccinationRecord/{id}` | ✅ | `vaccination.service.ts` | Đã tích hợp |
 | `GET /api/Vaccine` | ✅ | `vaccination.service.ts` | Danh sách vaccine |
@@ -142,14 +151,11 @@ Tài liệu này theo dõi trạng thái tích hợp API giữa Frontend và Bac
 ### Các function có sẵn trong `vaccinationService`:
 - `getVaccines()` - Danh sách vaccine có sẵn
 - `getVaccineById(id)` - Chi tiết vaccine
-- `getPetVaccinations(petId)` - **⚠️ Cần BE bổ sung endpoint**
+- `getPetVaccinations(petId)` - ✅ Đã kết nối `GET /api/VaccinationRecord/pet/{petId}`
 - `getVaccinationById(id)` - Chi tiết vaccination record
 - `createVaccinationRecord(data)` - Tạo vaccination record
 - `updateVaccinationRecord(id, data)` - Cập nhật
 - `deleteVaccinationRecord(id)` - Xóa
-
-### ⚠️ Yêu cầu Backend bổ sung:
-- `GET /api/VaccinationRecord/pet/{petId}` - Lấy tất cả vaccination records của 1 pet
 
 ---
 
@@ -216,12 +222,14 @@ Tài liệu này theo dõi trạng thái tích hợp API giữa Frontend và Bac
 
 ## Ưu Tiên Phát Triển
 
-### ✅ Đã hoàn thành
-1. **Pet Service** - `pet.service.ts` ✅
-2. **Appointment Service** - `appointment.service.ts` ✅
-3. **Reminder Service** - `reminder.service.ts` ✅
-4. **Vaccination Service** - `vaccination.service.ts` ✅
-5. **Dashboard Service** - Đã cập nhật để sử dụng các services trên ✅
+### ✅ Đã hoàn thành (March 3, 2026)
+1. **Pet Service** - `pet.service.ts` ✅ — Real API, PetDto mở rộng
+2. **Appointment Service** - `appointment.service.ts` ✅ — Real API, JWT filter
+3. **Reminder Service** - `reminder.service.ts` ✅ — Real API
+4. **Vaccination Service** - `vaccination.service.ts` ✅ — Real API + `GET /pet/{petId}`
+5. **Dashboard Service** - `dashboard.service.ts` ✅ — Aggregates từ services trên
+6. **Reminders Page** - `app/pet-owner/reminders/page.tsx` ✅ — Wired to real API
+7. **Pet Profile Page** - `app/pet-owner/profile/[petId]/page.tsx` ✅ — Wired to real API
 
 ### 🟡 Trung bình (Cần làm tiếp)
 1. **Clinic Service** - Cần cho đặt lịch, hiển thị phòng khám
@@ -231,27 +239,22 @@ Tài liệu này theo dõi trạng thái tích hợp API giữa Frontend và Bac
 ### 🟢 Thấp (Sau này)
 4. **Payment Service** - Thanh toán
 5. **Subscription Service** - Gói dịch vụ
-8. **Subscription Service**
-9. **Veterinarian Service** (cho Vet Portal)
+6. **Veterinarian Service** (cho Vet Portal)
 
 ---
 
 ## Ghi Chú Cho Backend Team
 
-### API Cần Bổ Sung:
+### ✅ Đã giải quyết (March 3, 2026):
 
-1. **Lấy Pets theo Customer/Account ID**
-   - Hiện tại `GET /api/Pet` trả về tất cả pets
-   - Cần: `GET /api/Pet/customer/{customerId}` hoặc filter param
+1. ~~Lấy Pets theo Customer/Account ID~~ → BE đã filter `GET /api/Pet` theo JWT
+2. ~~Lấy Appointments theo Customer~~ → BE đã filter `GET /api/Appointment` theo JWT
+3. ~~Lấy Vaccinations theo Pet~~ → BE đã thêm `GET /api/VaccinationRecord/pet/{petId}`
+4. ~~PetDto thiếu fields~~ → BE đã thêm `weight`, `imageUrl`, `color`, `microchipId`, `insurance`, `description`
 
-2. **Lấy Appointments theo Customer**
-   - Cần: `GET /api/Appointment/customer/{customerId}`
-   - Hoặc: Query param `?customerId=xxx`
+### Còn cần (ưu tiên thấp):
 
-3. **Lấy Vaccinations theo Pet**
-   - Cần: `GET /api/VaccinationRecord/pet/{petId}`
-
-4. **Dashboard Stats cho Customer**
+1. **Dashboard Stats cho Customer**
    - Cần endpoint aggregate:
    ```
    GET /api/Customer/{id}/dashboard-stats
@@ -263,7 +266,7 @@ Tài liệu này theo dõi trạng thái tích hợp API giữa Frontend và Bac
    }
    ```
 
-5. **Clinic Services by Clinic**
+2. **Clinic Services by Clinic**
    - Cần: `GET /api/ClinicService/clinic/{clinicId}`
 
 ---
@@ -272,30 +275,37 @@ Tài liệu này theo dõi trạng thái tích hợp API giữa Frontend và Bac
 
 ### Pet
 ```typescript
-// Frontend (hiện tại)
+// Frontend
 interface Pet {
   id: string;
   name: string;
   species: string;
   breed: string;
-  age: number;
+  age: number;       // tính từ birthDate
   weight?: number;
   imageUrl?: string;
 }
 
-// Backend DTO (CreatePetDto)
+// Backend DTO (PetDto)
 {
-  customerId: string; // UUID
+  id: string;
+  customerId: string;
   name: string;
   species: string;
   breed: string;
-  birthDate: string; // ISO date - cần tính age từ đây
+  birthDate: string;     // ISO date
+  weight?: number;       // MỚI
+  imageUrl?: string;     // MỚI
+  color?: string;        // MỚI
+  microchipId?: string;  // MỚI
+  insurance?: string;    // MỚI
+  description?: string;  // MỚI
 }
 ```
 
 ### Appointment
 ```typescript
-// Frontend (hiện tại)
+// Frontend
 interface Appointment {
   id: string;
   petId: string;
@@ -307,23 +317,30 @@ interface Appointment {
   status: 'scheduled' | 'completed' | 'cancelled';
 }
 
-// Backend DTO (CreateAppointmentDto)
+// Backend DTO (AppointmentDto)
 {
-  // Cần xem chi tiết từ BE
+  id: string;
+  petId: string;
+  pet?: { id, name };
+  veterinarianId: string;
+  veterinarian?: { id, account: { fullName } };
   appointmentTime: string; // ISO datetime
-  status: number; // enum
+  status: 0|1|2|3;        // Scheduled|Completed|Cancelled|NoShow
 }
 ```
 
 ### Reminder
 ```typescript
-// Backend
+// Backend (ReminderDto)
 {
+  id: string;
   petId: string;
+  pet?: { id, name };
   title: string;
   type: 'Vaccine' | 'Medication' | 'Grooming' | 'Vet' | 'Custom';
   startDate: string;
   isRecurring: boolean;
   recurringType: 'None' | 'Monthly' | 'Yearly';
+  logs?: ReminderLogDto[];
 }
 ```
