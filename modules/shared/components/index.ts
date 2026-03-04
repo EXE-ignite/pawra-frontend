@@ -8,3 +8,7 @@ export { UserDropdown } from './UserDropdown';
 export type { UserDropdownProps } from './UserDropdown/UserDropdown.types';
 export { ThemeToggle } from './ThemeToggle';
 export type { ThemeToggleProps } from './ThemeToggle/ThemeToggle.types';
+export { ImageCropModal } from './ImageCropModal';
+export type { ImageCropModalProps } from './ImageCropModal';
+export { ConfirmModal } from './ConfirmModal';
+export type { ConfirmModalProps } from './ConfirmModal';

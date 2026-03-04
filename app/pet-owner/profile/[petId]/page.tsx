@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { PetProfilePage } from '@/modules/pet-owner';
 import { PetSwitcher, EditPetModal } from '@/modules/pet-owner/components';
 import { petService } from '@/modules/pet-owner/services';
+import { ConfirmModal } from '@/modules/shared/components';
 import type { PetProfile, Pet } from '@/modules/pet-owner/types';
 
 export default function PetProfileByIdRoute() {
@@ -17,6 +18,8 @@ export default function PetProfileByIdRoute() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
     if (!petId) return;
@@ -57,6 +60,20 @@ export default function PetProfileByIdRoute() {
       setAllPets(pets);
     } catch (err) {
       console.error('Failed to reload pet profile after edit:', err);
+    }
+  }
+
+  async function handleDeleteConfirm() {
+    try {
+      setDeleteLoading(true);
+      await petService.deletePet(petId);
+      setIsDeleteModalOpen(false);
+      router.push('/pet-owner');
+    } catch (err: any) {
+      console.error('Failed to delete pet:', err);
+      setIsDeleteModalOpen(false);
+    } finally {
+      setDeleteLoading(false);
     }
   }
 
@@ -103,6 +120,7 @@ export default function PetProfileByIdRoute() {
       <PetProfilePage
         petProfile={petProfile}
         onEditProfile={handleEditProfile}
+        onDeletePet={() => setIsDeleteModalOpen(true)}
         onExportPdf={handleExportPdf}
         onAddRecord={handleAddRecord}
       />
@@ -123,6 +141,16 @@ export default function PetProfileByIdRoute() {
           onSuccess={handleEditSuccess}
         />
       )}
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        title="Xóa thú cưng"
+        message={`Bạn có chắc chắn muốn xóa ${petProfile?.name ?? 'thú cưng này'} không? Hành động này không thể hoàn tác.`}
+        confirmLabel="Xóa"
+        variant="danger"
+        loading={deleteLoading}
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => setIsDeleteModalOpen(false)}
+      />
     </>
   );
 }

@@ -1,7 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { petService } from '../../services';
+import { storageService } from '@/modules/shared/services';
+import { ImageCropModal } from '@/modules/shared/components';
 import { tokenService } from '@/modules/shared/services/api/token.service';
 import styles from './AddPetModal.module.scss';
 import type { AddPetModalProps, AddPetFormData } from './AddPetModal.types';
@@ -31,8 +33,12 @@ const INITIAL_FORM: AddPetFormData = {
 
 export function AddPetModal({ isOpen, onClose, onSuccess }: AddPetModalProps) {
   const [form, setForm] = useState<AddPetFormData>(INITIAL_FORM);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [cropSource, setCropSource] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
 
@@ -50,6 +56,41 @@ export function AddPetModal({ isOpen, onClose, onSuccess }: AddPetModalProps) {
     }
 
     setForm(prev => ({ ...prev, [name]: value }));
+  }
+
+  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setError('Vui lòng chọn file ảnh hợp lệ.');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Ảnh phải nhỏ hơn 5MB.');
+      return;
+    }
+    setError(null);
+    // Open crop modal with the raw image
+    setCropSource(URL.createObjectURL(file));
+    // Reset input so same file can be re-selected
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  }
+
+  function handleCropDone(blob: Blob) {
+    const croppedFile = new File([blob], 'pet-avatar.jpg', { type: 'image/jpeg' });
+    setImageFile(croppedFile);
+    setImagePreview(URL.createObjectURL(blob));
+    setCropSource(null);
+  }
+
+  function handleCropCancel() {
+    setCropSource(null);
+  }
+
+  function handleRemoveImage() {
+    setImageFile(null);
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -75,14 +116,25 @@ export function AddPetModal({ isOpen, onClose, onSuccess }: AddPetModalProps) {
 
     try {
       setLoading(true);
+      let imageUrl: string | undefined;
+      if (imageFile) {
+        const result = await storageService.uploadImage(imageFile, 'pet-images');
+        imageUrl = result.url;
+      }
       await petService.createPet({
         name: form.name.trim(),
         species: form.species,
         breed: form.breed.trim(),
         birthDate: isoDate!,
         customerId,
+        ...(form.color?.trim() ? { color: form.color.trim() } : {}),
+        ...(form.weight !== '' && form.weight !== undefined ? { weight: parseFloat(form.weight as string) } : {}),
+        ...(form.description?.trim() ? { description: form.description.trim() } : {}),
+        ...(imageUrl ? { imageUrl } : {}),
       });
       setForm(INITIAL_FORM);
+      setImageFile(null);
+      setImagePreview(null);
       onSuccess();
       onClose();
     } catch (err: any) {
@@ -93,7 +145,13 @@ export function AddPetModal({ isOpen, onClose, onSuccess }: AddPetModalProps) {
   }
 
   return (
-    <div className={styles.overlay}>
+    <>
+      <ImageCropModal
+        imageSrc={cropSource}
+        onCropDone={handleCropDone}
+        onCancel={handleCropCancel}
+      />
+      <div className={styles.overlay}>
       <div className={styles.modal}>
         <div className={styles.header}>
           <h2 className={styles.title}>Thêm thú cưng mới 🐾</h2>
@@ -101,6 +159,41 @@ export function AddPetModal({ isOpen, onClose, onSuccess }: AddPetModalProps) {
         </div>
 
         <form className={styles.form} onSubmit={handleSubmit}>
+          {/* Image Upload */}
+          <div className={styles.imageUploadSection}>
+            <label className={styles.label}>Ảnh thú cưng</label>
+            <div
+              className={styles.imageUploadArea}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {imagePreview ? (
+                <>
+                  <img src={imagePreview} alt="Preview" className={styles.imagePreview} />
+                  <button
+                    type="button"
+                    className={styles.removeImageBtn}
+                    onClick={e => { e.stopPropagation(); handleRemoveImage(); }}
+                  >
+                    ✕
+                  </button>
+                </>
+              ) : (
+                <div className={styles.imagePlaceholder}>
+                  <span className={styles.imagePlaceholderIcon}>📷</span>
+                  <span className={styles.imagePlaceholderText}>Nhấn để chọn ảnh</span>
+                  <span className={styles.imagePlaceholderHint}>PNG, JPG – tối đa 5MB</span>
+                </div>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className={styles.fileInput}
+              onChange={handleImageChange}
+            />
+          </div>
+
           {/* Name + Species */}
           <div className={styles.row}>
             <div className={styles.field}>
@@ -228,5 +321,6 @@ export function AddPetModal({ isOpen, onClose, onSuccess }: AddPetModalProps) {
         </form>
       </div>
     </div>
+    </>
   );
 }

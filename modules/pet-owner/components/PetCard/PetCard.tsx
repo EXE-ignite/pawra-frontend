@@ -8,11 +8,23 @@ interface PetCardProps {
   onClick?: () => void;
 }
 
+const SPECIES_EMOJI: Record<string, string> = {
+  Dog: '🐕',
+  Cat: '🐱',
+  Rabbit: '🐰',
+  Bird: '🐦',
+  Hamster: '🐹',
+};
+
 export function PetCard({ pet, onClick }: PetCardProps) {
   return (
     <Link href={`/pet-owner/profile/${pet.id}`} className={styles.card} onClick={onClick}>
       <div className={styles.petImage}>
-        {pet.species === 'Dog' ? '🐕' : '🐱'}
+        {pet.imageUrl ? (
+          <img src={pet.imageUrl} alt={pet.name} className={styles.petAvatar} />
+        ) : (
+          SPECIES_EMOJI[pet.species] || '🐾'
+        )}
       </div>
       <div className={styles.petInfo}>
         <h3 className={styles.petName}>{pet.name}</h3>

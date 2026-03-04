@@ -3,6 +3,7 @@ import { PetProfile } from '../../types';
 export interface PetProfilePageProps {
   petProfile: PetProfile;
   onEditProfile?: () => void;
+  onDeletePet?: () => void;
   onExportPdf?: () => void;
   onAddRecord?: () => void;
   // Legacy handlers kept for compatibility

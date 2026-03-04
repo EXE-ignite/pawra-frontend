@@ -24,6 +24,10 @@ export interface CreatePetDto {
   species: string;
   breed: string;
   birthDate: string; // ISO date string
+  color?: string;
+  weight?: number;
+  description?: string;
+  imageUrl?: string;
 }
 
 export interface UpdatePetDto {
@@ -31,6 +35,10 @@ export interface UpdatePetDto {
   species?: string;
   breed?: string;
   birthDate?: string;
+  color?: string;
+  weight?: number;
+  description?: string;
+  imageUrl?: string;
 }
 
 export interface PetDto {
@@ -329,6 +337,10 @@ class PetService {
     breed: string;
     birthDate: Date | string;
     customerId?: string;
+    color?: string;
+    weight?: number;
+    description?: string;
+    imageUrl?: string;
   }): Promise<Pet> {
     if (USE_MOCK) {
       const newPet: Pet = {
@@ -351,6 +363,10 @@ class PetService {
         birthDate: data.birthDate instanceof Date 
           ? data.birthDate.toISOString() 
           : data.birthDate,
+        ...(data.color ? { color: data.color } : {}),
+        ...(data.weight !== undefined && data.weight !== null ? { weight: data.weight } : {}),
+        ...(data.description ? { description: data.description } : {}),
+        ...(data.imageUrl ? { imageUrl: data.imageUrl } : {}),
       };
 
       const response = await apiService.post<PetDto>(`${this.endpoint}/create`, createDto);
@@ -370,6 +386,10 @@ class PetService {
     species: string;
     breed: string;
     birthDate: Date | string;
+    color: string;
+    weight: number;
+    description: string;
+    imageUrl: string;
   }>): Promise<Pet> {
     if (USE_MOCK) {
       const petIndex = mockPets.findIndex(p => p.id === id);
@@ -390,6 +410,10 @@ class PetService {
           ? data.birthDate.toISOString() 
           : data.birthDate;
       }
+      if (data.color !== undefined) updateDto.color = data.color;
+      if (data.weight !== undefined) updateDto.weight = data.weight;
+      if (data.description !== undefined) updateDto.description = data.description;
+      if (data.imageUrl !== undefined) updateDto.imageUrl = data.imageUrl;
 
       const response = await apiService.put<PetDto>(`${this.endpoint}/update/${id}`, updateDto);
       return transformPetData(response.data);

@@ -20,6 +20,7 @@ export interface EditPetModalProps {
     color?: string;
     weight?: number;
     description?: string;
+    imageUrl?: string;
   };
   onClose: () => void;
   /** Called with the updated pet data after a successful save */

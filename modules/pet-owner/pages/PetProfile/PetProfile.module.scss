@@ -124,6 +124,25 @@
   }
 }
 
+.deleteButton {
+  @include flex-start;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-md;
+  border: 1.5px solid rgba(239, 68, 68, 0.4);
+  border-radius: 8px;
+  background: var(--color-bg-primary);
+  color: #ef4444;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.08);
+    border-color: #ef4444;
+  }
+}
+
 .exportButton {
   @include flex-start;
   gap: $spacing-xs;

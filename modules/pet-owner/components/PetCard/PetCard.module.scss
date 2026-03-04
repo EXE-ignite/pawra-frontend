@@ -14,11 +14,19 @@
 .petImage {
   width: 80px;
   height: 80px;
-  border-radius: $radius-xl;
+  border-radius: 50%;
   background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
   @include flex-center;
   font-size: $font-size-2xl;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.petAvatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .petInfo {

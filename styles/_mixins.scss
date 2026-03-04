@@ -131,8 +131,8 @@
 // CARD STYLES
 // ============================================
 @mixin card {
-  background-color: $bg-default;
-  border: 1px solid $border-default;
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
   border-radius: $radius-lg;
   padding: $spacing-lg;
   box-shadow: $shadow-sm;
@@ -183,7 +183,7 @@
   font-size: $font-size-4xl;
   font-weight: $font-weight-bold;
   line-height: $line-height-tight;
-  color: $text-primary;
+  color: var(--color-text-primary);
 
   @include mobile {
     font-size: $font-size-3xl;
@@ -194,7 +194,7 @@
   font-size: $font-size-3xl;
   font-weight: $font-weight-bold;
   line-height: $line-height-tight;
-  color: $text-primary;
+  color: var(--color-text-primary);
 
   @include mobile {
     font-size: $font-size-2xl;
@@ -205,7 +205,7 @@
   font-size: $font-size-2xl;
   font-weight: $font-weight-semibold;
   line-height: $line-height-tight;
-  color: $text-primary;
+  color: var(--color-text-primary);
 
   @include mobile {
     font-size: $font-size-xl;

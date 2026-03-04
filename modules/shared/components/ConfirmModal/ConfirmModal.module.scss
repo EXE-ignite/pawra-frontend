@@ -1,0 +1,135 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 3000;
+  @include flex-center;
+  padding: $spacing-md;
+}
+
+.modal {
+  background: var(--color-bg-primary);
+  border-radius: $radius-xl;
+  padding: $spacing-xl;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  @include flex-column;
+  align-items: center;
+  gap: $spacing-md;
+  text-align: center;
+}
+
+.iconWrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  @include flex-center;
+  flex-shrink: 0;
+
+  &[data-variant='danger'] {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef4444;
+  }
+
+  &[data-variant='warning'] {
+    background: rgba(245, 158, 11, 0.12);
+    color: #f59e0b;
+  }
+
+  &[data-variant='primary'] {
+    background: rgba(99, 102, 241, 0.12);
+    color: var(--color-primary);
+  }
+}
+
+.title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.message {
+  font-size: $font-size-sm;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.footer {
+  display: flex;
+  gap: $spacing-sm;
+  width: 100%;
+  margin-top: $spacing-xs;
+}
+
+.cancelBtn {
+  flex: 1;
+  padding: $spacing-sm $spacing-md;
+  background: var(--color-bg-tertiary);
+  border: 1.5px solid var(--color-border);
+  border-radius: $radius-lg;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover:not(:disabled) {
+    background: var(--color-bg-hover);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.confirmBtn {
+  flex: 1;
+  padding: $spacing-sm $spacing-md;
+  border: none;
+  border-radius: $radius-lg;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  color: #fff;
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &.danger {
+    background: #ef4444;
+
+    &:hover:not(:disabled) {
+      background: #dc2626;
+    }
+  }
+
+  &.warning {
+    background: #f59e0b;
+
+    &:hover:not(:disabled) {
+      background: #d97706;
+    }
+  }
+
+  &.primary {
+    background: var(--color-primary);
+
+    &:hover:not(:disabled) {
+      opacity: 0.9;
+    }
+  }
+}

@@ -31,7 +31,11 @@ export function PetSwitcher({ pets, activePetId }: PetSwitcherProps) {
             className={`${styles.tab} ${pet.id === activePetId ? styles.active : ''}`}
           >
             <span className={styles.avatar}>
-              {SPECIES_EMOJI[pet.species] || '🐾'}
+              {pet.imageUrl ? (
+                <img src={pet.imageUrl} alt={pet.name} className={styles.avatarImg} />
+              ) : (
+                SPECIES_EMOJI[pet.species] || '🐾'
+              )}
             </span>
             {pet.name}
           </Link>

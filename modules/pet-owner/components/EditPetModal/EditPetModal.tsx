@@ -1,7 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { petService } from '../../services';
+import { storageService } from '@/modules/shared/services';
+import { ImageCropModal } from '@/modules/shared/components';
 import styles from './EditPetModal.module.scss';
 import type { EditPetModalProps, EditPetFormData } from './EditPetModal.types';
 
@@ -36,8 +38,12 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
     weight: '',
     description: '',
   });
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [cropSource, setCropSource] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Sync initial data whenever the modal opens
   useEffect(() => {
@@ -51,6 +57,8 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
         weight: initialData.weight != null ? String(initialData.weight) : '',
         description: initialData.description ?? '',
       });
+      setImageFile(null);
+      setImagePreview(initialData.imageUrl ?? null);
       setError(null);
     }
   }, [isOpen, initialData]);
@@ -75,6 +83,39 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
     setForm(prev => ({ ...prev, [name]: value }));
   }
 
+  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setError('Vui lòng chọn file ảnh hợp lệ.');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Ảnh phải nhỏ hơn 5MB.');
+      return;
+    }
+    setError(null);
+    setCropSource(URL.createObjectURL(file));
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  }
+
+  function handleCropDone(blob: Blob) {
+    const croppedFile = new File([blob], 'pet-avatar.jpg', { type: 'image/jpeg' });
+    setImageFile(croppedFile);
+    setImagePreview(URL.createObjectURL(blob));
+    setCropSource(null);
+  }
+
+  function handleCropCancel() {
+    setCropSource(null);
+  }
+
+  function handleRemoveImage() {
+    setImageFile(null);
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -97,11 +138,20 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
 
     try {
       setLoading(true);
+      let imageUrl: string | undefined;
+      if (imageFile) {
+        const result = await storageService.uploadImage(imageFile, 'pet-images');
+        imageUrl = result.url;
+      }
       await petService.updatePet(petId, {
         name: form.name.trim(),
         species: form.species,
         breed: form.breed.trim(),
         ...(isoDate ? { birthDate: isoDate } : {}),
+        ...(form.color?.trim() ? { color: form.color.trim() } : { color: '' }),
+        ...(form.weight !== '' && form.weight !== undefined ? { weight: parseFloat(form.weight as string) } : {}),
+        ...(form.description !== undefined ? { description: form.description?.trim() ?? '' } : {}),
+        ...(imageUrl !== undefined ? { imageUrl } : {}),
       });
       onSuccess();
       onClose();
@@ -113,8 +163,14 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
   }
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={e => e.stopPropagation()}>
+    <>
+      <ImageCropModal
+        imageSrc={cropSource}
+        onCropDone={handleCropDone}
+        onCancel={handleCropCancel}
+      />
+      <div className={styles.overlay}>
+      <div className={styles.modal}>
         {/* Header */}
         <div className={styles.header}>
           <h2 className={styles.title}>Chỉnh sửa thú cưng ✏️</h2>
@@ -124,6 +180,41 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
         </div>
 
         <form className={styles.form} onSubmit={handleSubmit}>
+          {/* Image Upload */}
+          <div className={styles.imageUploadSection}>
+            <label className={styles.label}>Ảnh thú cưng</label>
+            <div
+              className={styles.imageUploadArea}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {imagePreview ? (
+                <>
+                  <img src={imagePreview} alt="Preview" className={styles.imagePreview} />
+                  <button
+                    type="button"
+                    className={styles.removeImageBtn}
+                    onClick={e => { e.stopPropagation(); handleRemoveImage(); }}
+                  >
+                    ✕
+                  </button>
+                </>
+              ) : (
+                <div className={styles.imagePlaceholder}>
+                  <span className={styles.imagePlaceholderIcon}>📷</span>
+                  <span className={styles.imagePlaceholderText}>Nhấn để chọn ảnh</span>
+                  <span className={styles.imagePlaceholderHint}>PNG, JPG – tối đa 5MB</span>
+                </div>
+              )}
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className={styles.fileInput}
+              onChange={handleImageChange}
+            />
+          </div>
+
           {/* Name + Species */}
           <div className={styles.row}>
             <div className={styles.field}>
@@ -247,5 +338,6 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
         </form>
       </div>
     </div>
+    </>
   );
 }
