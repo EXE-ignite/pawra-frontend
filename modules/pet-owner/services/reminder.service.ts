@@ -44,7 +44,7 @@ export interface CreateReminderDto {
   title: string;
   type: ReminderType;
   startDate: string; // ISO date
-  description?: string;
+  description: string;
   isRecurring: boolean;
   recurringType: RecurringType;
 }
@@ -327,13 +327,17 @@ class ReminderService {
     }
 
     try {
+      // Build ISO datetime: combine date (YYYY-MM-DD) + time (HH:mm or undefined)
+      const timeStr = data.time && /^\d{2}:\d{2}$/.test(data.time) ? data.time : '09:00';
+      const isoStartDate = `${data.date}T${timeStr}:00`;
+
       const createDto: CreateReminderDto = {
         petId: data.petId,
         title: data.title,
         type: mapTaskTypeToReminderType(data.type),
-        startDate: data.date,
-        description: data.description,
-        isRecurring: data.isRecurring || false,
+        startDate: isoStartDate,
+        description: data.description ?? '',
+        isRecurring: data.isRecurring ?? false,
         recurringType: data.recurringType === 'monthly' 
           ? RecurringType.Monthly 
           : data.recurringType === 'yearly' 
@@ -341,6 +345,7 @@ class ReminderService {
             : RecurringType.None,
       };
 
+      console.log('[ReminderService] createDto payload:', JSON.stringify(createDto, null, 2));
       const response = await apiService.post<ReminderDto>(`${this.endpoint}/create`, createDto);
       return transformReminderToTask(response.data);
     } catch (error) {

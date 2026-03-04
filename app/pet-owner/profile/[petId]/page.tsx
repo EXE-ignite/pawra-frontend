@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { PetProfilePage } from '@/modules/pet-owner';
-import { PetSwitcher, EditPetModal } from '@/modules/pet-owner/components';
+import { PetSwitcher, EditPetModal, AddVaccinationModal } from '@/modules/pet-owner/components';
 import { petService } from '@/modules/pet-owner/services';
 import { ConfirmModal } from '@/modules/shared/components';
 import type { PetProfile, Pet } from '@/modules/pet-owner/types';
@@ -19,6 +19,7 @@ export default function PetProfileByIdRoute() {
   const [error, setError] = useState<string | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isAddVaccinationOpen, setIsAddVaccinationOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
@@ -82,7 +83,18 @@ export default function PetProfileByIdRoute() {
   }
 
   function handleAddRecord() {
-    console.log('Add vaccination record for:', petId);
+    setIsAddVaccinationOpen(true);
+  }
+
+  async function handleVaccinationSuccess() {
+    setIsAddVaccinationOpen(false);
+    // Reload profile to refresh vaccination list
+    try {
+      const profile = await petService.getPetProfile(petId);
+      setPetProfile(profile);
+    } catch (err) {
+      console.error('Failed to reload profile after vaccination:', err);
+    }
   }
 
   if (loading) {
@@ -141,6 +153,12 @@ export default function PetProfileByIdRoute() {
           onSuccess={handleEditSuccess}
         />
       )}
+      <AddVaccinationModal
+        isOpen={isAddVaccinationOpen}
+        onClose={() => setIsAddVaccinationOpen(false)}
+        onSuccess={handleVaccinationSuccess}
+        petId={petId}
+      />
       <ConfirmModal
         isOpen={isDeleteModalOpen}
         title="Xóa thú cưng"

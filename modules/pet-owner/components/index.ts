@@ -12,3 +12,5 @@ export { DocumentVault } from './DocumentVault';
 export { PetProfileHeader } from './PetProfileHeader';
 export { CalendarView } from './CalendarView';
 export { TaskSidebar } from './TaskSidebar';
+export { AddReminderModal } from './AddReminderModal';
+export { AddVaccinationModal } from './AddVaccinationModal';

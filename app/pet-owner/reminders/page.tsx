@@ -2,22 +2,27 @@
 
 import { useEffect, useState } from 'react';
 import { RemindersPage } from '@/modules/pet-owner';
-import { CalendarEvent, Task, HealthMilestone } from '@/modules/pet-owner/types';
+import { AddReminderModal } from '@/modules/pet-owner/components';
+import { CalendarEvent, Task, HealthMilestone, Pet } from '@/modules/pet-owner/types';
 import { petService, reminderService } from '@/modules/pet-owner/services';
 
 export default function RemindersPageRoute() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [milestones, setMilestones] = useState<HealthMilestone[]>([]);
+  const [pets, setPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     async function loadReminders() {
       try {
         setLoading(true);
         // 1. Lấy danh sách pet của user
-        const pets = await petService.getUserPets();
-        const petIds = pets.map(p => p.id);
+        const fetchedPets = await petService.getUserPets();
+        const petIds = fetchedPets.map(p => p.id);
+        setPets(fetchedPets);
 
         if (petIds.length === 0) {
           setLoading(false);
@@ -62,7 +67,27 @@ export default function RemindersPageRoute() {
   }
 
   function handleAddTask() {
-    console.log('Add task — TODO: open create reminder modal');
+    setModalOpen(true);
+  }
+
+  function handleDateSelect(date: string) {
+    setSelectedDate(date);
+  }
+
+  async function handleReminderCreated() {
+    setModalOpen(false);
+    // Reload reminders after creation
+    try {
+      const petIds = pets.map(p => p.id);
+      if (petIds.length > 0) {
+        const data = await reminderService.getAllUserReminders(petIds);
+        setTasks(data.tasks);
+        setEvents(data.events);
+        setMilestones(data.milestones);
+      }
+    } catch (err) {
+      console.error('Failed to reload reminders:', err);
+    }
   }
 
   if (loading) {
@@ -74,12 +99,23 @@ export default function RemindersPageRoute() {
   }
 
   return (
-    <RemindersPage
-      events={events}
-      tasks={tasks}
-      milestones={milestones}
-      onAddTask={handleAddTask}
-      onToggleTask={handleToggleTask}
-    />
+    <>
+      <RemindersPage
+        events={events}
+        tasks={tasks}
+        milestones={milestones}
+        onAddTask={handleAddTask}
+        onToggleTask={handleToggleTask}
+        onDateSelect={handleDateSelect}
+      />
+
+      <AddReminderModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSuccess={handleReminderCreated}
+        defaultDate={selectedDate}
+        pets={pets}
+      />
+    </>
   );
 }
