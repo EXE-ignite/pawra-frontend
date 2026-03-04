@@ -3,6 +3,13 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
+  turbopack: {
+    root: __dirname,
+  },
+  sassOptions: {
+    silenceDeprecations: ['import', 'global-builtin', 'color-functions'],
+    quietDeps: true,
+  },
   images: {
     remotePatterns: [
       {

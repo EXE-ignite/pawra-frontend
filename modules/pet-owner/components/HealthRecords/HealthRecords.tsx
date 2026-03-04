@@ -4,7 +4,7 @@ import styles from './HealthRecords.module.scss';
 
 export function HealthRecords({ vaccinations, medications, onEdit }: HealthRecordsProps) {
   function getStatusClass(status: string) {
-    return status === 'soon' ? styles.soon : status === 'ok' ? styles.ok : styles.overdue;
+    return status === 'due-soon' ? styles.soon : status === 'valid' ? styles.ok : styles.overdue;
   }
 
   return (
@@ -32,7 +32,7 @@ export function HealthRecords({ vaccinations, medications, onEdit }: HealthRecor
                   <p className={styles.itemDetail}>{vaccination.dueDate}</p>
                 </div>
                 <span className={`${styles.badge} ${getStatusClass(vaccination.status)}`}>
-                  {vaccination.status === 'soon' ? 'SOON' : vaccination.status === 'ok' ? 'OK' : 'OVERDUE'}
+                  {vaccination.status === 'due-soon' ? 'SOON' : vaccination.status === 'valid' ? 'OK' : 'OVERDUE'}
                 </span>
               </div>
             ))}

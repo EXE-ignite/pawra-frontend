@@ -21,7 +21,7 @@ export default async function Blog() {
 
     return <BlogPage featuredPost={featured} latestPosts={latestPosts} />;
   } catch (error) {
-    console.error('[BLOG PAGE] Error loading blog:', error);
+    console.warn('[BLOG PAGE] Error loading blog:', error);
     // Fallback to empty state
     return <BlogPage featuredPost={null} latestPosts={[]} />;
   }

@@ -14,14 +14,20 @@ export const mockPetProfiles: PetProfile[] = [
       {
         id: '1',
         name: 'Rabies Booster',
+        dateAdministered: '2024-01-15',
+        expirationDate: '2025-01-15',
+        batchNumber: 'RB-2024-001',
+        status: 'due-soon',
         dueDate: 'Due in 12 days',
-        status: 'soon',
       },
       {
         id: '2',
         name: 'Distemper/Parvo',
+        dateAdministered: '2023-10-01',
+        expirationDate: '2025-10-01',
+        batchNumber: 'DP-2023-042',
+        status: 'valid',
         dueDate: 'Last: Oct 2023',
-        status: 'ok',
       },
     ],
     medications: [
@@ -100,6 +106,7 @@ export const mockCalendarEvents: CalendarEvent[] = [
 export const mockTasks: Task[] = [
   {
     id: '1',
+    date: '2024-01-01',
     time: '09:00 AM',
     title: 'Morning Feeding',
     petName: 'Buddy',
@@ -110,6 +117,7 @@ export const mockTasks: Task[] = [
   },
   {
     id: '2',
+    date: '2024-01-01',
     time: '10:30 AM',
     title: 'Heartguard Medicine',
     petName: 'Buddy',
@@ -120,6 +128,7 @@ export const mockTasks: Task[] = [
   },
   {
     id: '3',
+    date: '2024-01-01',
     time: '02:00 PM',
     title: 'Nail Trimming',
     petName: 'Luna',
