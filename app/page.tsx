@@ -1,7 +1,6 @@
 'use client';
 
-import Link from 'next/link';
-import { Button, MainLayout } from '@/modules/shared';
+import { MainLayout } from '@/modules/shared';
 import styles from './page.module.scss';
 
 export default function Home() {
@@ -15,18 +14,6 @@ export default function Home() {
           <p className={styles.subtitle}>
             Your comprehensive pet healthcare management platform
           </p>
-          <div className={styles.cta}>
-            <Link href="/pet-owner">
-              <Button variant="primary" size="lg">
-                Pet Owner Dashboard
-              </Button>
-            </Link>
-            <Link href="/vet">
-              <Button variant="secondary" size="lg">
-                Veterinarian Portal
-              </Button>
-            </Link>
-          </div>
         </div>
 
       <div className={styles.features}>
