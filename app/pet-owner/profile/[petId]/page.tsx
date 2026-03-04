@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { PetProfilePage } from '@/modules/pet-owner';
-import { PetSwitcher } from '@/modules/pet-owner/components';
+import { PetSwitcher, EditPetModal } from '@/modules/pet-owner/components';
 import { petService } from '@/modules/pet-owner/services';
 import type { PetProfile, Pet } from '@/modules/pet-owner/types';
 
@@ -16,6 +16,7 @@ export default function PetProfileByIdRoute() {
   const [allPets, setAllPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
     if (!petId) return;
@@ -41,7 +42,22 @@ export default function PetProfileByIdRoute() {
   }, [petId]);
 
   function handleEditProfile() {
-    console.log('Edit profile:', petId);
+    setIsEditModalOpen(true);
+  }
+
+  async function handleEditSuccess() {
+    setIsEditModalOpen(false);
+    // Reload profile to reflect updated data
+    try {
+      const [profile, pets] = await Promise.all([
+        petService.getPetProfile(petId),
+        petService.getUserPets(),
+      ]);
+      setPetProfile(profile);
+      setAllPets(pets);
+    } catch (err) {
+      console.error('Failed to reload pet profile after edit:', err);
+    }
   }
 
   function handleExportPdf() {
@@ -71,6 +87,16 @@ export default function PetProfileByIdRoute() {
     );
   }
 
+  /** Compute approximate ISO birth date from age / ageMonths for pre-filling the edit form */
+  function getApproxBirthDate(): string {
+    if (!petProfile) return '';
+    const today = new Date();
+    const year = today.getFullYear() - petProfile.age;
+    const month = today.getMonth() - (petProfile.ageMonths ?? 0);
+    const approx = new Date(year, month, today.getDate());
+    return approx.toISOString().split('T')[0];
+  }
+
   return (
     <>
       <PetSwitcher pets={allPets} activePetId={petId} />
@@ -80,6 +106,23 @@ export default function PetProfileByIdRoute() {
         onExportPdf={handleExportPdf}
         onAddRecord={handleAddRecord}
       />
+      {petProfile && (
+        <EditPetModal
+          isOpen={isEditModalOpen}
+          petId={petId}
+          initialData={{
+            name: petProfile.name,
+            species: petProfile.species,
+            breed: petProfile.breed,
+            birthDate: getApproxBirthDate(),
+            color: petProfile.color,
+            weight: petProfile.weight,
+            description: petProfile.summary,
+          }}
+          onClose={() => setIsEditModalOpen(false)}
+          onSuccess={handleEditSuccess}
+        />
+      )}
     </>
   );
 }
