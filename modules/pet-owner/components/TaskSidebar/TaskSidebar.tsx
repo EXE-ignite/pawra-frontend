@@ -10,9 +10,12 @@ export function TaskSidebar({
   onToggleTask,
   onClose,
 }: TaskSidebarProps) {
-  const date = new Date(selectedDate);
+  const date = new Date(selectedDate + 'T00:00:00');
   const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
-  const monthDay = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  const dd = String(date.getDate()).padStart(2, '0');
+  const mm = String(date.getMonth() + 1).padStart(2, '0');
+  const yyyy = date.getFullYear();
+  const formattedDate = `${dd}/${mm}/${yyyy}`;
 
   const morningTasks = tasks.filter(t => {
     const hour = parseInt(t.time.split(':')[0]);
@@ -83,7 +86,7 @@ export function TaskSidebar({
     <div className={styles.container}>
       <div className={styles.header}>
         <div>
-          <h2 className={styles.title}>{dayName}, {monthDay}</h2>
+          <h2 className={styles.title}>{dayName}, {formattedDate}</h2>
           <p className={styles.subtitle}>
             {tasks.length} Task{tasks.length !== 1 ? 's' : ''} scheduled
           </p>
@@ -144,7 +147,7 @@ export function TaskSidebar({
                   <div className={styles.milestoneInfo}>
                     <p className={styles.milestoneTitle}>{milestone.title}</p>
                     <p className={styles.milestoneDue}>
-                      In {milestone.daysUntil} days • {milestone.dueDate}
+                      In {milestone.daysUntil} days • {milestone.dueDate.split('-').reverse().join('/')}
                     </p>
                   </div>
                 </div>

@@ -9,11 +9,12 @@ export interface AddReminderFormData {
   petId: string;
   type: ReminderFormType;
   priority: ReminderPriority;
-  date: string;
+  startDate: string;
   time: string;
   description: string;
   isRecurring: boolean;
   recurringType: RecurringType;
+  endDate: string;
 }
 
 export interface AddReminderModalProps {

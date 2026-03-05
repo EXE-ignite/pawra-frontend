@@ -42,11 +42,13 @@ export enum ReminderLogStatus {
 export interface CreateReminderDto {
   petId: string;
   title: string;
-  type: ReminderType;
-  startDate: string; // ISO date
   description: string;
+  type: string;
+  startDate: string; // YYYY-MM-DD
+  time: string;      // HH:mm
   isRecurring: boolean;
-  recurringType: RecurringType;
+  recurringType: string;
+  endDate?: string;  // YYYY-MM-DD, required when isRecurring is true
 }
 
 export interface UpdateReminderDto {
@@ -82,10 +84,12 @@ export interface ReminderDto {
   };
   title: string;
   type: ReminderType;
-  startDate: string;
+  startDate: string; // YYYY-MM-DD
+  time?: string;     // HH:mm
   description?: string;
   isRecurring: boolean;
   recurringType: RecurringType;
+  endDate?: string;  // YYYY-MM-DD
   logs?: ReminderLogDto[];
   createdAt?: string;
   updatedAt?: string;
@@ -163,19 +167,30 @@ function getColorForType(type: ReminderType): string {
 }
 
 /**
+ * Format HH:mm to 12h display (e.g. "09:30" → "9:30 AM")
+ */
+function formatTime12h(time?: string): string {
+  if (!time || !/^\d{1,2}:\d{2}$/.test(time)) return '12:00 AM';
+  const [h, m] = time.split(':').map(Number);
+  const period = h < 12 ? 'AM' : 'PM';
+  const hour12 = h % 12 || 12;
+  return `${hour12}:${String(m).padStart(2, '0')} ${period}`;
+}
+
+/**
  * Transform backend ReminderDto to frontend Task
  */
 function transformReminderToTask(reminder: ReminderDto): Task {
-  const startDate = new Date(reminder.startDate);
-  const isCompleted = reminder.logs?.some(log => 
+  if (!reminder) return null as unknown as Task;
+  const isCompleted = reminder.logs?.some(log =>
     log.status === ReminderLogStatus.Completed &&
     log.occurrenceDate === reminder.startDate
   ) || false;
 
   return {
     id: reminder.id,
-    date: reminder.startDate.split('T')[0],
-    time: startDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }),
+    date: reminder.startDate?.split('T')[0] ?? '',
+    time: formatTime12h(reminder.time),
     title: reminder.title,
     petName: reminder.pet?.name || 'Unknown',
     petId: reminder.petId,
@@ -189,9 +204,10 @@ function transformReminderToTask(reminder: ReminderDto): Task {
  * Transform backend ReminderDto to frontend CalendarEvent
  */
 function transformReminderToEvent(reminder: ReminderDto): CalendarEvent {
+  if (!reminder) return null as unknown as CalendarEvent;
   return {
     id: reminder.id,
-    date: reminder.startDate.split('T')[0],
+    date: reminder.startDate?.split('T')[0] ?? '',
     title: `${reminder.pet?.name || ''} ${reminder.title}`.trim(),
     color: getColorForType(reminder.type),
     petId: reminder.petId,
@@ -215,7 +231,7 @@ class ReminderService {
 
     try {
       const response = await apiService.get<ReminderDto[]>(`${this.endpoint}/pet/${petId}`);
-      const reminders = Array.isArray(response.data) ? response.data : [];
+      const reminders = (Array.isArray(response.data) ? response.data : []).filter(Boolean);
       
       return {
         tasks: reminders.map(transformReminderToTask),
@@ -247,7 +263,7 @@ class ReminderService {
       // Fetch reminders for each pet
       for (const petId of petIds) {
         const response = await apiService.get<ReminderDto[]>(`${this.endpoint}/pet/${petId}`);
-        const reminders = Array.isArray(response.data) ? response.data : [];
+        const reminders = (Array.isArray(response.data) ? response.data : []).filter(Boolean);
         allReminders.push(...reminders);
       }
       
@@ -303,17 +319,18 @@ class ReminderService {
   async createReminder(data: {
     petId: string;
     title: string;
-    type: Task['type'];
-    date: string;
-    time?: string;
     description?: string;
+    type: Task['type'];
+    startDate: string;
+    time?: string;
     isRecurring?: boolean;
     recurringType?: 'none' | 'monthly' | 'yearly';
+    endDate?: string;
   }): Promise<Task> {
     if (USE_MOCK) {
       const newTask: Task = {
         id: String(Date.now()),
-        date: data.date,
+        date: data.startDate,
         time: data.time || '09:00 AM',
         title: data.title,
         petName: 'Pet',
@@ -327,22 +344,22 @@ class ReminderService {
     }
 
     try {
-      // Build ISO datetime: combine date (YYYY-MM-DD) + time (HH:mm or undefined)
       const timeStr = data.time && /^\d{2}:\d{2}$/.test(data.time) ? data.time : '09:00';
-      const isoStartDate = `${data.date}T${timeStr}:00`;
 
       const createDto: CreateReminderDto = {
         petId: data.petId,
         title: data.title,
-        type: mapTaskTypeToReminderType(data.type),
-        startDate: isoStartDate,
         description: data.description ?? '',
+        type: mapTaskTypeToReminderType(data.type),
+        startDate: data.startDate,
+        time: timeStr,
         isRecurring: data.isRecurring ?? false,
-        recurringType: data.recurringType === 'monthly' 
-          ? RecurringType.Monthly 
-          : data.recurringType === 'yearly' 
-            ? RecurringType.Yearly 
+        recurringType: data.recurringType === 'monthly'
+          ? RecurringType.Monthly
+          : data.recurringType === 'yearly'
+            ? RecurringType.Yearly
             : RecurringType.None,
+        endDate: data.endDate,
       };
 
       console.log('[ReminderService] createDto payload:', JSON.stringify(createDto, null, 2));

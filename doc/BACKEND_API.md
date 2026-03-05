@@ -559,9 +559,15 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 - **Auth:** Required
 - **Request:** `CreateReminderDto`
 - **Fields:**
-  - `type`: Vaccine | Medication | Grooming | Vet | Custom
-  - `recurringType`: None | Monthly | Yearly
-  - Required: petId, title, type, startDate, isRecurring, recurringType
+  - `petId` (string, required): Pet UUID
+  - `title` (string, required): Reminder title
+  - `description` (string, required): Description / notes
+  - `type` (string, required): e.g. `Vaccine` | `Medication` | `Grooming` | `Vet` | `Custom`
+  - `startDate` (string, required): Date in `YYYY-MM-DD` format
+  - `time` (string, required): Time in `HH:mm` format
+  - `isRecurring` (boolean, required)
+  - `recurringType` (string, required): `None` | `Monthly` | `Yearly`
+  - `endDate` (string, optional): End date in `YYYY-MM-DD` format — relevant when `isRecurring` is true
 - **Response:** `201` - `ReminderDto`
 
 #### Update Reminder

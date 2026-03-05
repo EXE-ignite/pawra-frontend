@@ -60,7 +60,9 @@ export function CalendarView({
       }
       return `${MONTH_NAMES[first.getMonth()]} ${first.getDate()} – ${MONTH_NAMES[last.getMonth()]} ${last.getDate()}, ${first.getFullYear()}`;
     }
-    return `${DAY_NAMES[currentSelectedDate.getDay()]}, ${MONTH_NAMES[currentSelectedDate.getMonth()]} ${currentSelectedDate.getDate()}, ${currentSelectedDate.getFullYear()}`;
+    const d = String(currentSelectedDate.getDate()).padStart(2, '0');
+    const m = String(currentSelectedDate.getMonth() + 1).padStart(2, '0');
+    return `${DAY_NAMES[currentSelectedDate.getDay()]}, ${d}/${m}/${currentSelectedDate.getFullYear()}`;
   }
 
   // ----- navigation -----

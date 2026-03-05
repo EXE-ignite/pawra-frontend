@@ -42,11 +42,12 @@ function buildInitialForm(defaultDate?: string): AddReminderFormData {
     petId: '',
     type: 'other',
     priority: 'medium',
-    date: defaultDate || getTodayString(),
+    startDate: defaultDate || getTodayString(),
     time: '09:00',
     description: '',
     isRecurring: false,
     recurringType: 'none',
+    endDate: '',
   };
 }
 
@@ -113,7 +114,7 @@ export function AddReminderModal({
       setError('Vui lòng chọn thú cưng.');
       return;
     }
-    if (!form.date) {
+    if (!form.startDate) {
       setError('Vui lòng chọn ngày.');
       return;
     }
@@ -124,12 +125,13 @@ export function AddReminderModal({
       await reminderService.createReminder({
         petId: form.petId,
         title: form.title.trim(),
-        type: form.type,
-        date: form.date,
-        time: form.time, // raw HH:mm — service will build the ISO datetime
         description: form.description.trim() || undefined,
+        type: form.type,
+        startDate: form.startDate,
+        time: form.time,
         isRecurring: form.isRecurring,
         recurringType: form.recurringType,
+        endDate: form.isRecurring && form.endDate ? form.endDate : undefined,
       });
 
       onSuccess?.();
@@ -235,13 +237,13 @@ export function AddReminderModal({
           <div className={styles.row}>
             <div className={styles.field}>
               <label className={styles.label}>
-                Date <span className={styles.required}>*</span>
+                Start Date <span className={styles.required}>*</span>
               </label>
               <input
                 className={styles.input}
                 type="date"
-                value={form.date}
-                onChange={e => handleField('date', e.target.value)}
+                value={form.startDate}
+                onChange={e => handleField('startDate', e.target.value)}
               />
             </div>
 
@@ -274,22 +276,34 @@ export function AddReminderModal({
             </div>
           </div>
 
-          {/* Recurring type (only when toggled on) */}
+          {/* Recurring type + End Date (only when toggled on) */}
           {form.isRecurring && (
-            <div className={styles.field}>
-              <label className={styles.label}>Repeat every</label>
-              <select
-                className={styles.select}
-                value={form.recurringType}
-                onChange={e => handleField('recurringType', e.target.value as RecurringType)}
-              >
-                {RECURRING_OPTIONS.map(opt => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <>
+              <div className={styles.field}>
+                <label className={styles.label}>Repeat every</label>
+                <select
+                  className={styles.select}
+                  value={form.recurringType}
+                  onChange={e => handleField('recurringType', e.target.value as RecurringType)}
+                >
+                  {RECURRING_OPTIONS.map(opt => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className={styles.field}>
+                <label className={styles.label}>End Date</label>
+                <input
+                  className={styles.input}
+                  type="date"
+                  value={form.endDate}
+                  min={form.startDate}
+                  onChange={e => handleField('endDate', e.target.value)}
+                />
+              </div>
+            </>
           )}
 
           {/* Description */}
