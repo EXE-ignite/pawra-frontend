@@ -287,7 +287,7 @@ export const en = {
     evening: 'Evening',
     healthMilestones: 'Health Milestones',
     inDays: 'In {count} days',
-    addTask: '+ Add Task',
+    addTask: 'Add Task',
     editTask: 'Edit task',
     deleteTask: 'Delete task',
   },
@@ -321,6 +321,52 @@ export const en = {
   // Add Pet Fab
   addPetFab: {
     addPet: 'Add Pet',
+  },
+
+  // Blog
+  blog: {
+    // Public Blog
+    latestArticles: 'Latest Articles',
+    loadMore: 'Load More Articles',
+    featuredLabel: 'FEATURED POST',
+    minRead: 'min read',
+    readMore: 'Read More',
+    readArrow: 'Read →',
+    findAdvice: 'Find Advice',
+    searchPlaceholder: 'Search pet advice...',
+    popularCategories: 'Popular Categories',
+    joinNewsletter: 'Join our pack!',
+    newsletterDesc: 'Get the latest pet health tips delivered to your inbox every week.',
+    emailPlaceholder: 'Your email address',
+    subscribeNow: 'Subscribe Now',
+    home: 'Home',
+    veterinarySpecialist: 'Veterinary Specialist',
+    shareArticle: 'SHARE THIS ARTICLE',
+    noImage: 'No image',
+    noImageAvailable: 'No image available',
+    // Category names
+    catHealth: 'Health',
+    catNutrition: 'Nutrition',
+    catTraining: 'Training',
+    catBehavior: 'Behavior',
+    catGrooming: 'Grooming',
+    // Admin Blog
+    adminTitle: 'Blog Content Overview',
+    totalViews: 'Total Page Views',
+    totalPosts: 'Total Blog Posts',
+    totalComments: 'Total Comments',
+    tableTitle: 'TITLE & IMAGE',
+    tableAuthor: 'AUTHOR',
+    tableCategory: 'CATEGORY',
+    tableStatus: 'STATUS',
+    tableDate: 'DATE',
+    tableActions: 'ACTIONS',
+    noPosts: 'No posts found',
+    confirmDelete: 'Are you sure you want to delete this post?',
+    searchPostsPlaceholder: 'Search blog posts...',
+    filter: 'Filter',
+    createPost: 'Create New Post',
+    active: 'Active',
   },
 
   // Language

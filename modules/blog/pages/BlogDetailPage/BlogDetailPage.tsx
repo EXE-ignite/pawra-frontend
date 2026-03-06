@@ -1,9 +1,12 @@
+'use client';
+
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { BlogDetailPageProps } from './BlogDetailPage.types';
 import { RelatedPosts, CommentSection, SearchBox, NewsletterBox, ReactionBar } from '../../components';
 import { ReactionType, Reaction } from '../../components/ReactionBar/ReactionBar.types';
+import { useTranslation } from '@/modules/shared/contexts';
 import styles from './BlogDetailPage.module.scss';
 
 const categoryColors: Record<string, string> = {
@@ -14,6 +17,7 @@ const categoryColors: Record<string, string> = {
 };
 
 export function BlogDetailPage({ post, relatedPosts }: BlogDetailPageProps) {
+  const { t } = useTranslation();
   // Ensure post has all required fields with defaults
   const safePost = {
     ...post,
@@ -49,7 +53,7 @@ export function BlogDetailPage({ post, relatedPosts }: BlogDetailPageProps) {
       <div className={styles.container}>
         {/* Breadcrumb */}
         <nav className={styles.breadcrumb}>
-          <Link href="/">Home</Link>
+          <Link href="/">{ t('blog.home') }</Link>
           <span className={styles.separator}>›</span>
           <Link href="/blog">Blog</Link>
           <span className={styles.separator}>›</span>
@@ -69,7 +73,7 @@ export function BlogDetailPage({ post, relatedPosts }: BlogDetailPageProps) {
             />
           ) : (
             <div style={{ width: '100%', height: '500px', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ color: '#999', fontSize: '1.2rem' }}>No image available</span>
+              <span style={{ color: '#999', fontSize: '1.2rem' }}>{t('blog.noImageAvailable')}</span>
             </div>
           )}
         </div>
@@ -98,7 +102,7 @@ export function BlogDetailPage({ post, relatedPosts }: BlogDetailPageProps) {
                 <div className={styles.authorDetails}>
                   <div className={styles.authorName}>{safePost.author.name}</div>
                   <div className={styles.meta}>
-                    Veterinary Specialist • {safePost.publishedAt} • {safePost.readTime} min read
+                    {t('blog.veterinarySpecialist')} • {safePost.publishedAt} • {safePost.readTime} {t('blog.minRead')}
                   </div>
                 </div>
               </div>
@@ -133,7 +137,7 @@ export function BlogDetailPage({ post, relatedPosts }: BlogDetailPageProps) {
 
             {/* Share Section */}
             <div className={styles.shareSection}>
-              <h3 className={styles.shareTitle}>SHARE THIS ARTICLE</h3>
+              <h3 className={styles.shareTitle}>{t('blog.shareArticle')}</h3>
               <div className={styles.socialButtons}>
                 <button className={styles.socialBtn} aria-label="Share on Facebook">
                   f

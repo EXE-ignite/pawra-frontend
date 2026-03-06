@@ -9,6 +9,7 @@ import {
   CategoryList, 
   NewsletterBox 
 } from '../../components';
+import { useTranslation } from '@/modules/shared/contexts';
 import styles from './BlogPage.module.scss';
 
 interface BlogPageProps {
@@ -17,6 +18,7 @@ interface BlogPageProps {
 }
 
 export function BlogPage({ featuredPost, latestPosts }: BlogPageProps) {
+  const { t } = useTranslation();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   return (
@@ -30,7 +32,7 @@ export function BlogPage({ featuredPost, latestPosts }: BlogPageProps) {
           {/* Left Column - Articles */}
           <div className={styles.mainContent}>
             <div className={styles.header}>
-              <h2 className={styles.sectionTitle}>Latest Articles</h2>
+              <h2 className={styles.sectionTitle}>{t('blog.latestArticles')}</h2>
               <div className={styles.viewToggle}>
                 <button 
                   className={`${styles.toggleBtn} ${viewMode === 'grid' ? styles.active : ''}`}
@@ -57,7 +59,7 @@ export function BlogPage({ featuredPost, latestPosts }: BlogPageProps) {
 
             <div className={styles.loadMore}>
               <button className={styles.loadMoreBtn}>
-                Load More Articles
+                {t('blog.loadMore')}
               </button>
             </div>
           </div>

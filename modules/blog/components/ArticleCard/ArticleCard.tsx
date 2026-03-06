@@ -1,7 +1,10 @@
+'use client';
+
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArticleCardProps } from './ArticleCard.types';
+import { useTranslation } from '@/modules/shared/contexts';
 import styles from './ArticleCard.module.scss';
 
 const categoryColors: Record<string, string> = {
@@ -13,6 +16,7 @@ const categoryColors: Record<string, string> = {
 };
 
 export function ArticleCard({ post }: ArticleCardProps) {
+  const { t } = useTranslation();
   const categoryStr = typeof post.category === 'string' ? post.category : (post.category as any)?.name || (post.category as any)?.slug || 'health';
   const categoryColor = categoryColors[categoryStr] || '#999';
 
@@ -29,7 +33,7 @@ export function ArticleCard({ post }: ArticleCardProps) {
           />
         ) : (
           <div style={{ width: '400px', height: '240px', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ color: '#999' }}>No image</span>
+            <span style={{ color: '#999' }}>{t('blog.noImage')}</span>
           </div>
         )}
         <span 
@@ -43,9 +47,9 @@ export function ArticleCard({ post }: ArticleCardProps) {
         <h3 className={styles.title}>{post.title}</h3>
         <p className={styles.excerpt}>{post.excerpt}</p>
         <div className={styles.footer}>
-          <span className={styles.readTime}>{post.readTime} min read</span>
+          <span className={styles.readTime}>{post.readTime} {t('blog.minRead')}</span>
           <Link href={`/blog/${post.id}`} className={styles.readLink}>
-            Read →
+            {t('blog.readArrow')}
           </Link>
         </div>
       </div>

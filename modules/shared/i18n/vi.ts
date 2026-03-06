@@ -287,7 +287,7 @@ export const vi = {
     evening: 'Buổi tối',
     healthMilestones: 'Mốc sức khỏe',
     inDays: 'Còn {count} ngày',
-    addTask: '+ Thêm công việc',
+    addTask: 'Thêm công việc',
     editTask: 'Sửa công việc',
     deleteTask: 'Xóa công việc',
   },
@@ -321,6 +321,52 @@ export const vi = {
   // Add Pet Fab
   addPetFab: {
     addPet: 'Thêm thú cưng',
+  },
+
+  // Blog
+  blog: {
+    // Public Blog
+    latestArticles: 'Bài viết mới nhất',
+    loadMore: 'Tải thêm bài viết',
+    featuredLabel: 'BÀI NỔI BẬT',
+    minRead: 'phút đọc',
+    readMore: 'Đọc thêm',
+    readArrow: 'Đọc →',
+    findAdvice: 'Tìm kiếm lời khuyên',
+    searchPlaceholder: 'Tìm kiếm lời khuyên thú cưng...',
+    popularCategories: 'Chủ đề phổ biến',
+    joinNewsletter: 'Gia nhập cộng đồng!',
+    newsletterDesc: 'Nhận các mẹo chăm sóc thú cưng mới nhất hàng tuần vào hòm thư của bạn.',
+    emailPlaceholder: 'Địa chỉ email của bạn',
+    subscribeNow: 'Đăng ký ngay',
+    home: 'Trang chủ',
+    veterinarySpecialist: 'Chuyên gia thú y',
+    shareArticle: 'CHIA SẺ BÀI VIẾT',
+    noImage: 'Không có ảnh',
+    noImageAvailable: 'Không có ảnh',
+    // Category names
+    catHealth: 'Sức khỏe',
+    catNutrition: 'Dinh dưỡng',
+    catTraining: 'Huấn luyện',
+    catBehavior: 'Hành vi',
+    catGrooming: 'Vệ sinh',
+    // Admin Blog
+    adminTitle: 'Tổng quan nội dung Blog',
+    totalViews: 'Tổng lượt xem',
+    totalPosts: 'Tổng bài viết',
+    totalComments: 'Tổng bình luận',
+    tableTitle: 'TIÊU ĐỀ & ẢNH',
+    tableAuthor: 'TÁC GIẢ',
+    tableCategory: 'DANH MỤC',
+    tableStatus: 'TRẠNG THÁI',
+    tableDate: 'NGÀY',
+    tableActions: 'HÀNH ĐỘNG',
+    noPosts: 'Không tìm thấy bài viết',
+    confirmDelete: 'Bạn có chắc chắn muốn xóa bài viết này không?',
+    searchPostsPlaceholder: 'Tìm kiếm bài viết...',
+    filter: 'Lọc',
+    createPost: 'Tạo bài viết mới',
+    active: 'Đang hoạt động',
   },
 
   // Language
