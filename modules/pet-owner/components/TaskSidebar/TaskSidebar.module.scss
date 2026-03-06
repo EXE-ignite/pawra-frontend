@@ -75,6 +75,39 @@
   font-size: 1.5rem;
 }
 
+.filterBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-lg;
+}
+
+.filterTag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px $spacing-sm;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-border, #{$primary-300});
+  background: none;
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+}
+
+.filterTagActive {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff !important;
+}
+
 .sections {
   display: flex;
   flex-direction: column;
@@ -170,6 +203,61 @@
 
 .petIcon {
   font-size: 0.875rem;
+}
+
+.deleteButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: $spacing-xs;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  opacity: 0;
+  transition: all 0.2s;
+  align-self: center;
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    opacity: 1 !important;
+  }
+
+  .task:hover & {
+    opacity: 1;
+  }
+}
+
+.taskActions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.editButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: $spacing-xs;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  opacity: 0;
+  transition: all 0.2s;
+  align-self: center;
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    opacity: 1 !important;
+  }
+
+  .task:hover & {
+    opacity: 1;
+  }
 }
 
 .milestone {

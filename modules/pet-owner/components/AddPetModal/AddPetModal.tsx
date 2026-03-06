@@ -28,7 +28,6 @@ const INITIAL_FORM: AddPetFormData = {
   birthDate: '',
   color: '',
   weight: '',
-  description: '',
 };
 
 export function AddPetModal({ isOpen, onClose, onSuccess }: AddPetModalProps) {
@@ -129,7 +128,6 @@ export function AddPetModal({ isOpen, onClose, onSuccess }: AddPetModalProps) {
         customerId,
         ...(form.color?.trim() ? { color: form.color.trim() } : {}),
         ...(form.weight !== '' && form.weight !== undefined ? { weight: parseFloat(form.weight as string) } : {}),
-        ...(form.description?.trim() ? { description: form.description.trim() } : {}),
         ...(imageUrl ? { imageUrl } : {}),
       });
       setForm(INITIAL_FORM);
@@ -285,18 +283,6 @@ export function AddPetModal({ isOpen, onClose, onSuccess }: AddPetModalProps) {
                 step="0.1"
               />
             </div>
-          </div>
-
-          {/* Description */}
-          <div className={styles.field}>
-            <label className={styles.label}>Mô tả</label>
-            <textarea
-              className={styles.textarea}
-              name="description"
-              value={form.description}
-              onChange={handleChange}
-              placeholder="Đặc điểm, tính cách..."
-            />
           </div>
 
           {error && <p className={styles.error}>{error}</p>}

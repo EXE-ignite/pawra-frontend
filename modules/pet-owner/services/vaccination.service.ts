@@ -20,28 +20,31 @@ const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === 'true';
 // Types matching backend DTOs
 export interface CreateVaccinationRecordDto {
   petId: string;
-  vaccineId: string;
-  clinicId: string;
-  vaccinationDate: string; // ISO date
+  vaccineName: string;  // max 255
+  clinicName: string;   // max 255
+  vaccinationDate: string; // ISO datetime
+  nextDueDate?: string;
+  note?: string;
 }
 
 export interface UpdateVaccinationRecordDto {
   vaccinationDate?: string;
+  vaccineName?: string;
+  clinicName?: string;
+  nextDueDate?: string;
+  note?: string;
 }
 
 export interface VaccinationRecordDto {
   id: string;
   petId: string;
-  vaccineId: string;
-  vaccine?: VaccineDto;
-  clinicId: string;
-  clinic?: {
-    id: string;
-    name: string;
-  };
+  vaccineName?: string;
+  clinicName?: string;
   vaccinationDate: string;
-  createdAt?: string;
-  updatedAt?: string;
+  nextDueDate?: string;
+  note?: string;
+  createdDate?: string;
+  updatedDate?: string;
 }
 
 export interface VaccineDto {
@@ -142,15 +145,16 @@ function estimateExpirationDate(vaccinationDate: string, vaccineName?: string): 
  * Transform backend VaccinationRecordDto to frontend Vaccination type
  */
 function transformVaccinationData(record: VaccinationRecordDto): Vaccination {
-  const expirationDate = estimateExpirationDate(record.vaccinationDate, record.vaccine?.name);
+  const expirationDate = estimateExpirationDate(record.vaccinationDate, record.vaccineName);
   
   return {
     id: record.id,
-    name: record.vaccine?.name || 'Unknown Vaccine',
+    name: record.vaccineName || 'Unknown Vaccine',
     dateAdministered: record.vaccinationDate.split('T')[0],
     expirationDate,
-    batchNumber: '', // Not in backend DTO - would need to be added
+    batchNumber: '',
     status: calculateVaccinationStatus(expirationDate),
+    dueDate: record.nextDueDate,
   };
 }
 
@@ -248,21 +252,22 @@ class VaccinationService {
    */
   async createVaccinationRecord(data: {
     petId: string;
-    vaccineId: string;
-    clinicId: string;
+    vaccineName: string;
+    clinicName: string;
     vaccinationDate: Date | string;
+    nextDueDate?: string;
+    note?: string;
   }): Promise<Vaccination> {
     if (USE_MOCK) {
-      const vaccine = mockVaccines.find(v => v.id === data.vaccineId);
       const dateStr = data.vaccinationDate instanceof Date 
         ? data.vaccinationDate.toISOString().split('T')[0]
         : data.vaccinationDate;
       
       const newVaccination: Vaccination = {
         id: String(Date.now()),
-        name: vaccine?.name || 'Unknown',
+        name: data.vaccineName,
         dateAdministered: dateStr,
-        expirationDate: estimateExpirationDate(dateStr, vaccine?.name),
+        expirationDate: estimateExpirationDate(dateStr, data.vaccineName),
         batchNumber: `MOCK-${Date.now()}`,
         status: 'valid',
       };
@@ -273,11 +278,13 @@ class VaccinationService {
     try {
       const createDto: CreateVaccinationRecordDto = {
         petId: data.petId,
-        vaccineId: data.vaccineId,
-        clinicId: data.clinicId,
+        vaccineName: data.vaccineName,
+        clinicName: data.clinicName,
         vaccinationDate: data.vaccinationDate instanceof Date 
           ? data.vaccinationDate.toISOString() 
           : data.vaccinationDate,
+        ...(data.nextDueDate ? { nextDueDate: data.nextDueDate } : {}),
+        ...(data.note ? { note: data.note } : {}),
       };
 
       const response = await apiService.post<VaccinationRecordDto>(
@@ -297,6 +304,10 @@ class VaccinationService {
    */
   async updateVaccinationRecord(id: string, data: {
     vaccinationDate?: Date | string;
+    vaccineName?: string;
+    clinicName?: string;
+    nextDueDate?: string;
+    note?: string;
   }): Promise<Vaccination> {
     if (USE_MOCK) {
       const index = mockVaccinations.findIndex(v => v.id === id);
@@ -322,6 +333,10 @@ class VaccinationService {
           ? data.vaccinationDate.toISOString() 
           : data.vaccinationDate;
       }
+      if (data.vaccineName) updateDto.vaccineName = data.vaccineName;
+      if (data.clinicName) updateDto.clinicName = data.clinicName;
+      if (data.nextDueDate) updateDto.nextDueDate = data.nextDueDate;
+      if (data.note) updateDto.note = data.note;
 
       const response = await apiService.put<VaccinationRecordDto>(
         `${this.recordEndpoint}/update/${id}`, 

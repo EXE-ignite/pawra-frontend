@@ -6,16 +6,24 @@ export function TaskSidebar({
   selectedDate,
   tasks,
   milestones,
+  pets = [],
+  selectedPetId,
+  onPetFilterChange,
   onAddTask,
   onToggleTask,
+  onDeleteTask,
+  onEditTask,
   onClose,
 }: TaskSidebarProps) {
-  const date = new Date(selectedDate + 'T00:00:00');
-  const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
-  const dd = String(date.getDate()).padStart(2, '0');
-  const mm = String(date.getMonth() + 1).padStart(2, '0');
-  const yyyy = date.getFullYear();
-  const formattedDate = `${dd}/${mm}/${yyyy}`;
+  const dateLabel = (() => {
+    if (!selectedDate) return null;
+    const date = new Date(selectedDate + 'T00:00:00');
+    const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+    const dd = String(date.getDate()).padStart(2, '0');
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const yyyy = date.getFullYear();
+    return `${dayName}, ${dd}/${mm}/${yyyy}`;
+  })();
 
   const morningTasks = tasks.filter(t => {
     const hour = parseInt(t.time.split(':')[0]);
@@ -78,6 +86,24 @@ export function TaskSidebar({
             </span>
           </div>
         </div>
+        <div className={styles.taskActions}>
+          <button
+            className={styles.editButton}
+            onClick={() => onEditTask?.(task.id)}
+            title="Edit task"
+            aria-label="Edit task"
+          >
+            ✏️
+          </button>
+          <button
+            className={styles.deleteButton}
+            onClick={() => onDeleteTask?.(task.id)}
+            title="Delete task"
+            aria-label="Delete task"
+          >
+            🗑️
+          </button>
+        </div>
       </div>
     );
   }
@@ -86,7 +112,9 @@ export function TaskSidebar({
     <div className={styles.container}>
       <div className={styles.header}>
         <div>
-          <h2 className={styles.title}>{dayName}, {formattedDate}</h2>
+          <h2 className={styles.title}>
+            {dateLabel ?? 'All Tasks'}
+          </h2>
           <p className={styles.subtitle}>
             {tasks.length} Task{tasks.length !== 1 ? 's' : ''} scheduled
           </p>
@@ -102,6 +130,26 @@ export function TaskSidebar({
         <span className={styles.addIcon}>+</span>
         Add Task
       </button>
+
+      {pets.length > 0 && (
+        <div className={styles.filterBar}>
+          <button
+            className={`${styles.filterTag} ${!selectedPetId ? styles.filterTagActive : ''}`}
+            onClick={() => onPetFilterChange?.(null)}
+          >
+            🐾 All
+          </button>
+          {pets.map(pet => (
+            <button
+              key={pet.id}
+              className={`${styles.filterTag} ${selectedPetId === pet.id ? styles.filterTagActive : ''}`}
+              onClick={() => onPetFilterChange?.(selectedPetId === pet.id ? null : pet.id)}
+            >
+              {pet.name}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className={styles.sections}>
         {morningTasks.length > 0 && (

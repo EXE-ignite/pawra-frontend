@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { RemindersPageProps } from './Reminders.types';
 import { CalendarView, TaskSidebar } from '../../components';
 import styles from './Reminders.module.scss';
@@ -9,19 +9,32 @@ export function RemindersPage({
   events,
   tasks,
   milestones,
+  pets = [],
   onDateSelect,
   onAddTask,
   onToggleTask,
+  onDeleteTask,
+  onEditTask,
 }: RemindersPageProps) {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
-  const [selectedDate, setSelectedDate] = useState(
-    `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
-  );
+  const [dateFilter, setDateFilter] = useState<string | null>(null);
+  const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
+  const calendarRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleMouseDown(e: MouseEvent) {
+      if (calendarRef.current && !calendarRef.current.contains(e.target as Node)) {
+        setDateFilter(null);
+      }
+    }
+    document.addEventListener('mousedown', handleMouseDown);
+    return () => document.removeEventListener('mousedown', handleMouseDown);
+  }, []);
 
   function handleDateSelect(date: string) {
-    setSelectedDate(date);
+    setDateFilter(prev => prev === date ? null : date);
     onDateSelect?.(date);
   }
 
@@ -30,7 +43,11 @@ export function RemindersPage({
     setCurrentYear(year);
   }
 
-  const tasksForSelectedDate = tasks.filter(task => task.date === selectedDate);
+  const filteredTasks = selectedPetId ? tasks.filter(t => t.petId === selectedPetId) : tasks;
+  const filteredEvents = selectedPetId ? events.filter(e => e.petId === selectedPetId) : events;
+  const tasksForSidebar = dateFilter
+    ? filteredTasks.filter(task => task.date === dateFilter)
+    : filteredTasks;
 
   return (
     <div className={styles.container}>
@@ -44,13 +61,13 @@ export function RemindersPage({
       </div>
 
       <div className={styles.content}>
-        <div className={styles.calendarSection}>
+        <div className={styles.calendarSection} ref={calendarRef}>
           <CalendarView
             month={currentMonth}
             year={currentYear}
-            events={events}
-            tasks={tasks}
-            selectedDate={selectedDate}
+            events={filteredEvents}
+            tasks={filteredTasks}
+            selectedDate={dateFilter ?? undefined}
             onDateSelect={handleDateSelect}
             onMonthChange={handleMonthChange}
             onAddTask={onAddTask}
@@ -59,11 +76,16 @@ export function RemindersPage({
 
         <div className={styles.sidebarSection}>
           <TaskSidebar
-            selectedDate={selectedDate}
-            tasks={tasksForSelectedDate}
+            selectedDate={dateFilter}
+            tasks={tasksForSidebar}
             milestones={milestones}
+            pets={pets}
+            selectedPetId={selectedPetId}
+            onPetFilterChange={setSelectedPetId}
             onAddTask={onAddTask}
             onToggleTask={onToggleTask}
+            onDeleteTask={onDeleteTask}
+            onEditTask={onEditTask}
           />
         </div>
       </div>

@@ -51,26 +51,58 @@ function buildInitialForm(defaultDate?: string): AddReminderFormData {
   };
 }
 
+function parse12hTo24h(time12?: string): string {
+  if (!time12) return '09:00';
+  const match = time12.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+  if (!match) return time12;
+  let hour = parseInt(match[1]);
+  const minutes = match[2];
+  const period = match[3].toUpperCase();
+  if (period === 'AM') {
+    if (hour === 12) hour = 0;
+  } else {
+    if (hour !== 12) hour += 12;
+  }
+  return `${String(hour).padStart(2, '0')}:${minutes}`;
+}
+
 export function AddReminderModal({
   isOpen,
   onClose,
   onSuccess,
   defaultDate,
   pets: propsPets,
+  editTask,
 }: AddReminderModalProps) {
+  const isEditMode = !!editTask;
   const [form, setForm] = useState<AddReminderFormData>(() => buildInitialForm(defaultDate));
   const [pets, setPets] = useState<Pet[]>(propsPets || []);
   const [loading, setLoading] = useState(false);
   const [fetchingPets, setFetchingPets] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Sync defaultDate when it changes
+  // Sync form when modal opens
   useEffect(() => {
     if (isOpen) {
-      setForm(buildInitialForm(defaultDate));
+      if (editTask) {
+        setForm({
+          title: editTask.title,
+          petId: editTask.petId,
+          type: editTask.type as AddReminderFormData['type'],
+          priority: (editTask.priority ?? 'medium') as AddReminderFormData['priority'],
+          startDate: editTask.date,
+          time: parse12hTo24h(editTask.time),
+          description: '',
+          isRecurring: false,
+          recurringType: 'none',
+          endDate: '',
+        });
+      } else {
+        setForm(buildInitialForm(defaultDate));
+      }
       setError(null);
     }
-  }, [isOpen, defaultDate]);
+  }, [isOpen, defaultDate, editTask]);
 
   // Load pets if not provided via props
   useEffect(() => {
@@ -122,24 +154,36 @@ export function AddReminderModal({
     try {
       setLoading(true);
 
-      await reminderService.createReminder({
-        petId: form.petId,
-        title: form.title.trim(),
-        description: form.description.trim() || undefined,
-        type: form.type,
-        startDate: form.startDate,
-        time: form.time,
-        isRecurring: form.isRecurring,
-        recurringType: form.recurringType,
-        endDate: form.isRecurring && form.endDate ? form.endDate : undefined,
-      });
+      if (isEditMode && editTask) {
+        await reminderService.updateReminder(editTask.id, {
+          title: form.title.trim(),
+          type: form.type,
+          date: form.startDate,
+          time: form.time,
+          description: form.description.trim() || undefined,
+          isRecurring: form.isRecurring,
+          recurringType: form.recurringType,
+        });
+      } else {
+        await reminderService.createReminder({
+          petId: form.petId,
+          title: form.title.trim(),
+          description: form.description.trim() || undefined,
+          type: form.type,
+          startDate: form.startDate,
+          time: form.time,
+          isRecurring: form.isRecurring,
+          recurringType: form.recurringType,
+          endDate: form.isRecurring && form.endDate ? form.endDate : undefined,
+        });
+      }
 
       onSuccess?.();
       onClose();
     } catch (err: unknown) {
       // ApiError plain object returned by the response interceptor
       const apiErr = err as { message?: string };
-      setError(apiErr?.message || 'Không thể tạo reminder. Vui lòng thử lại.');
+      setError(apiErr?.message || (isEditMode ? 'Không thể cập nhật reminder. Vui lòng thử lại.' : 'Không thể tạo reminder. Vui lòng thử lại.'));
     } finally {
       setLoading(false);
     }
@@ -151,8 +195,8 @@ export function AddReminderModal({
         {/* Header */}
         <div className={styles.header}>
           <div className={styles.headerLeft}>
-            <h2 className={styles.title}>Add Reminder</h2>
-            <p className={styles.subtitle}>Schedule a new pet care task</p>
+            <h2 className={styles.title}>{isEditMode ? 'Edit Reminder' : 'Add Reminder'}</h2>
+            <p className={styles.subtitle}>{isEditMode ? 'Update your pet care task' : 'Schedule a new pet care task'}</p>
           </div>
           <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
             ×
@@ -185,7 +229,7 @@ export function AddReminderModal({
                 className={styles.select}
                 value={form.petId}
                 onChange={e => handleField('petId', e.target.value)}
-                disabled={fetchingPets}
+                disabled={fetchingPets || isEditMode}
               >
                 <option value="">
                   {fetchingPets ? 'Loading...' : 'Select pet'}
@@ -195,6 +239,10 @@ export function AddReminderModal({
                     {pet.name}
                   </option>
                 ))}
+                {/* Fallback when pet not in list (edit mode) */}
+                {isEditMode && editTask && !pets.find(p => p.id === editTask.petId) && (
+                  <option value={editTask.petId}>{editTask.petName}</option>
+                )}
               </select>
             </div>
 
@@ -328,7 +376,7 @@ export function AddReminderModal({
               Cancel
             </button>
             <button type="submit" className={styles.submitBtn} disabled={loading}>
-              {loading ? 'Saving...' : 'Add Reminder'}
+              {loading ? 'Saving...' : isEditMode ? 'Save Changes' : 'Add Reminder'}
             </button>
           </div>
         </form>

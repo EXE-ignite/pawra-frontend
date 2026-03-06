@@ -5,7 +5,6 @@ export interface EditPetFormData {
   birthDate: string; // dd/mm/yyyy display format
   color: string;
   weight: string;
-  description: string;
 }
 
 export interface EditPetModalProps {
@@ -19,7 +18,6 @@ export interface EditPetModalProps {
     birthDate?: string;
     color?: string;
     weight?: number;
-    description?: string;
     imageUrl?: string;
   };
   onClose: () => void;

@@ -41,3 +41,33 @@ export type {
 
 // Pet Profile (mock data - eventually should be moved to services)
 export * from './pet-profile.service';
+
+// Clinic
+export { clinicService, default as clinicServiceDefault } from './clinic.service';
+export type { ClinicDto } from './clinic.service';
+
+// Medication
+export { medicationService, default as medicationServiceDefault } from './medication.service';
+export type {
+  MedicationDto,
+  MedicationLogDto,
+  CreateMedicationDto,
+  UpdateMedicationDto,
+  CreateMedicationLogDto,
+  MedicationUnit,
+  MedicationFrequency,
+  MedicationStatus,
+  MedicationLogStatus,
+} from './medication.service';
+
+// Weight Record
+export { weightRecordService, default as weightRecordServiceDefault } from './weight-record.service';
+export type {
+  WeightRecordDto,
+  WeightGrowthChartDto,
+  WeightDataPointDto,
+  CreateWeightRecordDto,
+  UpdateWeightRecordDto,
+  WeightUnit,
+  WeightSource,
+} from './weight-record.service';

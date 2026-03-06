@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { vaccinationService, petService } from '../../services';
-import type { VaccineDto } from '../../services';
 import { Pet } from '../../types';
 import styles from './AddVaccinationModal.module.scss';
 import type { AddVaccinationModalProps, AddVaccinationFormData } from './AddVaccinationModal.types';
@@ -15,8 +14,8 @@ function getTodayString(): string {
 function buildInitialForm(petId?: string): AddVaccinationFormData {
   return {
     petId: petId || '',
-    vaccineId: '',
-    clinicId: '',
+    vaccineName: '',
+    clinicName: '',
     vaccinationDate: getTodayString(),
   };
 }
@@ -30,10 +29,8 @@ export function AddVaccinationModal({
 }: AddVaccinationModalProps) {
   const [form, setForm] = useState<AddVaccinationFormData>(() => buildInitialForm(propPetId));
   const [pets, setPets] = useState<Pet[]>(propsPets || []);
-  const [vaccines, setVaccines] = useState<VaccineDto[]>([]);
   const [loading, setLoading] = useState(false);
   const [fetchingPets, setFetchingPets] = useState(false);
-  const [fetchingVaccines, setFetchingVaccines] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Reset form on open
@@ -68,23 +65,6 @@ export function AddVaccinationModal({
     loadPets();
   }, [isOpen, propsPets, propPetId]);
 
-  // Load vaccine list
-  useEffect(() => {
-    if (!isOpen) return;
-    async function loadVaccines() {
-      setFetchingVaccines(true);
-      try {
-        const list = await vaccinationService.getVaccines();
-        setVaccines(list);
-      } catch {
-        // silently ignore
-      } finally {
-        setFetchingVaccines(false);
-      }
-    }
-    loadVaccines();
-  }, [isOpen]);
-
   if (!isOpen) return null;
 
   function handleField<K extends keyof AddVaccinationFormData>(
@@ -102,12 +82,12 @@ export function AddVaccinationModal({
       setError('Vui lòng chọn thú cưng.');
       return;
     }
-    if (!form.vaccineId) {
-      setError('Vui lòng chọn loại vaccine.');
+    if (!form.vaccineName.trim()) {
+      setError('Vui lòng nhập tên vaccine.');
       return;
     }
-    if (!form.clinicId.trim()) {
-      setError('Vui lòng nhập tên / ID phòng khám.');
+    if (!form.clinicName.trim()) {
+      setError('Vui lòng nhập tên phòng khám.');
       return;
     }
     if (!form.vaccinationDate) {
@@ -119,8 +99,8 @@ export function AddVaccinationModal({
       setLoading(true);
       await vaccinationService.createVaccinationRecord({
         petId: form.petId,
-        vaccineId: form.vaccineId,
-        clinicId: form.clinicId.trim(),
+        vaccineName: form.vaccineName.trim(),
+        clinicName: form.clinicName.trim(),
         vaccinationDate: form.vaccinationDate,
       });
       onSuccess?.();
@@ -180,40 +160,22 @@ export function AddVaccinationModal({
             </div>
           )}
 
-          {/* Vaccine selector */}
+          {/* Vaccine name */}
           <div className={styles.field}>
             <label className={styles.label}>
               Vaccine <span className={styles.required}>*</span>
             </label>
-            {fetchingVaccines ? (
-              <p className={styles.hint}>Loading vaccines…</p>
-            ) : vaccines.length > 0 ? (
-              <div className={styles.vaccineGrid}>
-                {vaccines.map(v => (
-                  <button
-                    key={v.id}
-                    type="button"
-                    className={`${styles.vaccineChip} ${form.vaccineId === v.id ? styles.active : ''}`}
-                    onClick={() => handleField('vaccineId', v.id)}
-                  >
-                    <span className={styles.vaccineChipName}>{v.name}</span>
-                    <span className={styles.vaccineChipMfr}>{v.manufacturer}</span>
-                  </button>
-                ))}
-              </div>
-            ) : (
-              /* Fallback: manual text input when no vaccine list is available */
-              <input
-                className={styles.input}
-                type="text"
-                placeholder="Enter vaccine ID"
-                value={form.vaccineId}
-                onChange={e => handleField('vaccineId', e.target.value)}
-              />
-            )}
+            <input
+              className={styles.input}
+              type="text"
+              placeholder="VD: Rabies (3-Year)"
+              value={form.vaccineName}
+              onChange={e => handleField('vaccineName', e.target.value)}
+              maxLength={255}
+            />
           </div>
 
-          {/* Clinic + Date */}
+          {/* Clinic name + Date */}
           <div className={styles.row}>
             <div className={styles.field}>
               <label className={styles.label}>
@@ -222,10 +184,10 @@ export function AddVaccinationModal({
               <input
                 className={styles.input}
                 type="text"
-                placeholder="Clinic name or ID"
-                value={form.clinicId}
-                onChange={e => handleField('clinicId', e.target.value)}
-                maxLength={200}
+                placeholder="VD: PawCare Clinic"
+                value={form.clinicName}
+                onChange={e => handleField('clinicName', e.target.value)}
+                maxLength={255}
               />
             </div>
 

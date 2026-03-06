@@ -36,7 +36,6 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
     birthDate: '',
     color: '',
     weight: '',
-    description: '',
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -55,7 +54,6 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
         birthDate: formatDateForDisplay(initialData.birthDate),
         color: initialData.color ?? '',
         weight: initialData.weight != null ? String(initialData.weight) : '',
-        description: initialData.description ?? '',
       });
       setImageFile(null);
       setImagePreview(initialData.imageUrl ?? null);
@@ -150,7 +148,6 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
         ...(isoDate ? { birthDate: isoDate } : {}),
         ...(form.color?.trim() ? { color: form.color.trim() } : { color: '' }),
         ...(form.weight !== '' && form.weight !== undefined ? { weight: parseFloat(form.weight as string) } : {}),
-        ...(form.description !== undefined ? { description: form.description?.trim() ?? '' } : {}),
         ...(imageUrl !== undefined ? { imageUrl } : {}),
       });
       onSuccess();
@@ -306,18 +303,6 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
                 step="0.1"
               />
             </div>
-          </div>
-
-          {/* Description */}
-          <div className={styles.field}>
-            <label className={styles.label}>Mô tả</label>
-            <textarea
-              className={styles.textarea}
-              name="description"
-              value={form.description}
-              onChange={handleChange}
-              placeholder="Đặc điểm, tính cách..."
-            />
           </div>
 
           {error && <p className={styles.error}>{error}</p>}

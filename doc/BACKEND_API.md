@@ -5,7 +5,7 @@
 
 ## Overview
 
-Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provides comprehensive endpoints for managing pets, appointments, clinics, veterinarians, vaccinations, blog posts, and more.
+Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provides comprehensive endpoints for managing pets, appointments, clinics, veterinarians, vaccinations, medications, reminders, weight tracking, blog posts, and more.
 
 ---
 
@@ -25,7 +25,6 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 - **GET** `/api/Account`
 - **Auth:** Required (Admin)
 - **Response:** List of accounts
-- **DTO:** `AccountDto`
 
 #### Create Account
 - **POST** `/api/Account`
@@ -36,7 +35,7 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 #### Get Account by ID
 - **GET** `/api/Account/{id}`
 - **Auth:** Required
-- **Response:** `AccountDto`
+- **Response:** Account details
 
 #### Update Account
 - **PUT** `/api/Account/{id}`
@@ -97,7 +96,7 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 
 #### Register
 - **POST** `/api/Auth/register`
-- **Request:** `RegisterRequestDto { email, password, fullName, phoneNumber }`
+- **Request:** `RegisterRequestDto { email, password, fullName }`
 - **Response:** `{ accessToken, user }`
 
 #### Get Profile
@@ -136,7 +135,7 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 
 ##### Get Blog Post by Slug
 - **GET** `/api/BlogPosts/slug/{slug}`
-- **Response:** `CreateBlogPostDto` details
+- **Response:** Blog post details
 
 ##### Get Blog Categories
 - **GET** `/api/BlogCategories`
@@ -148,7 +147,7 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 
 ##### Get Featured Posts
 - **GET** `/api/BlogPosts/featured`
-- **Query Parameters:** `limit` (default: 3)
+- **Query Parameters:** `limit` (default: 1)
 - **Response:** Featured blog posts
 
 ##### Get Related Posts
@@ -168,19 +167,19 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 
 ##### Get All Blog Posts
 - **GET** `/api/BlogPosts`
-- **Auth:** Required
-- **Response:** List of `CreateBlogPostDto`
+- **Auth:** Required (Admin/Veterinarian)
+- **Response:** List of blog posts
 
 ##### Create Blog Post
 - **POST** `/api/BlogPosts`
 - **Auth:** Required
 - **Request:** `CreateBlogPostDto`
-- **Response:** `201` - Created
+- **Response:** `200` - Created
 
 ##### Get Post by ID
 - **GET** `/api/BlogPosts/{id}`
 - **Auth:** Required
-- **Response:** `CreateBlogPostDto`
+- **Response:** Blog post details
 
 ##### Update Blog Post
 - **PUT** `/api/BlogPosts/{id}`
@@ -221,10 +220,10 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 - **Auth:** Required (Admin)
 - **Query Parameters:**
   - `Search` (optional)
-  - `Status` (optional)
-  - `AuthorId` (optional)
+  - `Status` (optional) — `BlogPostStatus` enum
+  - `AuthorId` (optional, uuid)
   - `CategorySlug` (optional)
-  - `IncludeDeleted` (optional)
+  - `IncludeDeleted` (optional, boolean)
   - `Page`, `PageSize`
 - **Response:** Filtered blog posts
 
@@ -235,8 +234,8 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 #### Create Comment
 - **POST** `/api/BlogPosts/{postId}/comments`
 - **Auth:** Required
-- **Request:** `CreateBlogCommentDto { content, parentCommentId }`
-- **Response:** `201` - Comment created
+- **Request:** `CreateBlogCommentDto { content, parentCommentId? }`
+- **Response:** `200` - Comment created
 
 #### Delete Comment (Soft Delete)
 - **DELETE** `/api/blog-comments/{commentId}`
@@ -251,12 +250,13 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
   - No reaction → Add new
   - Same reaction → Remove (toggle off)
   - Different reaction → Update
+- **`targetType`:** `"Post"` | `"Comment"`
 - **Response:** `200`
 
 #### Get My Reactions (Batch)
 - **POST** `/api/blog-posts/my-reactions`
 - **Auth:** Required
-- **Request:** `BatchGetMyReactionsDto { postIds[] }`
+- **Request:** `BatchGetMyReactionsDto { postIds[] }` (min 1 item)
 - **Response:** User's reactions for multiple posts
 
 ---
@@ -310,7 +310,7 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 #### Update Clinic
 - **PUT** `/api/Clinic/update/{id}`
 - **Auth:** Required
-- **Request:** `UpdateClinicDto`
+- **Request:** `UpdateClinicDto { name, address, phone, clinicManagerId }`
 - **Response:** `200` - Updated
 
 #### Delete Clinic
@@ -320,8 +320,20 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 
 #### Get All Clinics (Paginated)
 - **GET** `/api/Clinic`
-- **Query Parameters:** `pageSize`, `pageNumber`
+- **Query Parameters:** `pageSize` (default: 100), `pageNumber` (default: 1)
 - **Response:** Paginated list
+
+#### Search Clinics by Name
+- **GET** `/api/Clinic/search`
+- **Auth:** Required
+- **Query Parameters:** `name`
+- **Response:** Matching clinics
+
+#### Search Clinics by Service
+- **GET** `/api/Clinic/search-by-service`
+- **Auth:** Required
+- **Query Parameters:** `serviceName`
+- **Response:** Clinics that provide the specified service
 
 ---
 
@@ -425,7 +437,70 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 
 ---
 
-### 12. Payments
+### 12. Medications
+
+#### Get All Medications
+- **GET** `/api/medication`
+- **Auth:** Required (Admin)
+- **Response:** `MedicationDto[]`
+
+#### Get Medication by ID
+- **GET** `/api/medication/{id}`
+- **Auth:** Required
+- **Response:** `MedicationDto` (includes medication logs)
+
+#### Get Medications by Pet
+- **GET** `/api/medication/pet/{petId}`
+- **Auth:** Required
+- **Response:** `MedicationDto[]`
+
+#### Create Medication
+- **POST** `/api/medication/create`
+- **Auth:** Required
+- **Request:** `CreateMedicationDto`
+- **Fields:**
+  - `petId` (uuid, required)
+  - `medicationName` (string, required, max 255)
+  - `dosage` (number, required, 0.001–99999.999)
+  - `unit` (string, required): `mg` | `ml` | `tablets` | `drops` | `other`
+  - `frequency` (string, required): `Once` | `Daily` | `TwiceDaily` | `Weekly` | `BiWeekly` | `Monthly` | `AsNeeded`
+  - `startDate` (date, required): `YYYY-MM-DD`
+  - `endDate` (date, optional): `YYYY-MM-DD`
+  - `notes` (string, optional, max 1000)
+  - `status` (string, optional): `Active` | `Completed` | `Paused` | `Discontinued`
+- **Response:** `201` - `MedicationDto`
+
+#### Update Medication
+- **PUT** `/api/medication/update/{id}`
+- **Auth:** Required
+- **Request:** `UpdateMedicationDto` (same as create minus `petId`, `status` required)
+- **Response:** `200` - `MedicationDto`
+
+#### Delete Medication (Soft Delete)
+- **DELETE** `/api/medication/{id}`
+- **Auth:** Required
+- **Response:** `204` - No Content
+
+#### Get Medication Logs
+- **GET** `/api/medication/{medicationId}/logs`
+- **Auth:** Required
+- **Response:** `MedicationLogDto[]`
+
+#### Add Medication Log
+- **POST** `/api/medication/logs/add`
+- **Auth:** Required
+- **Request:** `CreateMedicationLogDto`
+- **Fields:**
+  - `medicationId` (uuid, required)
+  - `administeredDate` (date, required): `YYYY-MM-DD`
+  - `administeredTime` (time, optional): `HH:mm:ss`
+  - `status` (string, required): `Given` | `Missed` | `Skipped`
+  - `notes` (string, optional, max 500)
+- **Response:** `201` - `MedicationLogDto`
+
+---
+
+### 13. Payments
 
 #### Create Payment
 - **POST** `/api/Payment/create`
@@ -450,12 +525,12 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 
 #### Get All Payments (Paginated)
 - **GET** `/api/Payment`
-- **Query Parameters:** `pageSize`, `pageNumber`
+- **Query Parameters:** `pageSize` (default: 100), `pageNumber` (default: 1)
 - **Response:** Paginated list
 
 ---
 
-### 13. Payment Methods
+### 14. Payment Methods
 
 #### Create Payment Method
 - **POST** `/api/PaymentMethod/create`
@@ -480,22 +555,22 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 
 ---
 
-### 14. Pets
+### 15. Pets
 
 #### Create Pet
 - **POST** `/api/Pet/create`
 - **Auth:** Required
-- **Request:** `CreatePetDto { customerId, name, species, breed, birthDate, weight?, imageUrl?, color?, microchipId?, insurance?, description? }`
+- **Request:** `CreatePetDto { customerId, name, species, breed, birthDate, weight?, imageUrl?, color?, microchipId? }`
 - **Response:** `201` - Created
 
 #### Get Pet by ID
 - **GET** `/api/Pet/{id}`
-- **Response:** `PetDto`
+- **Response:** Pet details
 
 #### Update Pet
 - **PUT** `/api/Pet/update/{id}`
 - **Auth:** Required
-- **Request:** `UpdatePetDto { name, species, breed, birthDate, weight?, imageUrl?, color?, microchipId?, insurance?, description? }`
+- **Request:** `UpdatePetDto { name, species, breed, birthDate, weight?, imageUrl?, color?, microchipId? }`
 - **Response:** `200` - Updated
 
 #### Delete Pet
@@ -506,13 +581,13 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 #### Get All Pets (Paginated)
 - **GET** `/api/Pet`
 - **Auth:** Required (filters by authenticated user's JWT token)
-- **Query Parameters:** `pageSize`, `pageNumber`
+- **Query Parameters:** `pageSize` (default: 100), `pageNumber` (default: 1)
 - **Response:** Paginated list of user's pets
 - **Note:** Returns only pets belonging to the authenticated user
 
 ---
 
-### 15. Prescriptions
+### 16. Prescriptions
 
 #### Create Prescription
 - **POST** `/api/Prescription/create`
@@ -537,7 +612,7 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 
 ---
 
-### 16. Reminders
+### 17. Reminders
 
 #### Get All Reminders
 - **GET** `/api/reminder`
@@ -559,21 +634,21 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 - **Auth:** Required
 - **Request:** `CreateReminderDto`
 - **Fields:**
-  - `petId` (string, required): Pet UUID
-  - `title` (string, required): Reminder title
-  - `description` (string, required): Description / notes
-  - `type` (string, required): e.g. `Vaccine` | `Medication` | `Grooming` | `Vet` | `Custom`
-  - `startDate` (string, required): Date in `YYYY-MM-DD` format
-  - `time` (string, required): Time in `HH:mm` format
+  - `petId` (uuid, required)
+  - `title` (string, required, max 255)
+  - `description` (string, optional)
+  - `type` (string, required): `Vaccine` | `Medication` | `Grooming` | `Vet` | `Custom`
+  - `startDate` (date, required): `YYYY-MM-DD`
+  - `time` (time, optional): `HH:mm:ss`
   - `isRecurring` (boolean, required)
   - `recurringType` (string, required): `None` | `Monthly` | `Yearly`
-  - `endDate` (string, optional): End date in `YYYY-MM-DD` format — relevant when `isRecurring` is true
+  - `endDate` (date, optional): `YYYY-MM-DD`
 - **Response:** `201` - `ReminderDto`
 
 #### Update Reminder
 - **PUT** `/api/reminder/update/{id}`
 - **Auth:** Required
-- **Request:** `UpdateReminderDto`
+- **Request:** `UpdateReminderDto` (same fields as create minus `petId`)
 - **Response:** `200` - `ReminderDto`
 
 #### Delete Reminder (Soft Delete)
@@ -590,12 +665,12 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 - **POST** `/api/reminder/logs/add`
 - **Auth:** Required
 - **Request:** `CreateReminderLogDto { reminderId, occurrenceDate, status, completedAt }`
-- **Status:** Completed
+- **`status`:** `Completed`
 - **Response:** `201` - `ReminderLogDto`
 
 ---
 
-### 17. Services
+### 18. Services
 
 #### Create Service
 - **POST** `/api/Service/create`
@@ -620,7 +695,7 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 
 ---
 
-### 18. Subscriptions
+### 19. Subscriptions
 
 #### Account Subscriptions
 
@@ -650,7 +725,7 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 ##### Create Plan
 - **POST** `/api/SubscriptionPlan/create`
 - **Auth:** Required
-- **Request:** `CreateSubscriptionPlanDto { name, price, durationInDays, description, isActive }`
+- **Request:** `CreateSubscriptionPlanDto { name, price, durationInDays, description, isActive? }`
 - **Response:** `201` - Created
 
 ##### Get Plan by ID
@@ -660,7 +735,7 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 ##### Update Plan
 - **PUT** `/api/SubscriptionPlan/update/{id}`
 - **Auth:** Required
-- **Request:** `UpdateSubscriptionPlanDto`
+- **Request:** `UpdateSubscriptionPlanDto { name, price, durationInDays, description, isActive? }`
 - **Response:** `200` - Updated
 
 ##### Delete Plan
@@ -670,12 +745,19 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 
 ---
 
-### 19. Vaccinations
+### 20. Vaccinations
 
 #### Create Vaccination Record
 - **POST** `/api/VaccinationRecord/create`
 - **Auth:** Required
-- **Request:** `CreateVaccinationRecordDto { petId, vaccineId, clinicId, vaccinationDate }`
+- **Request:** `CreateVaccinationRecordDto`
+- **Fields:**
+  - `petId` (uuid, required)
+  - `vaccineName` (string, required, max 255)
+  - `clinicName` (string, required, max 255)
+  - `vaccinationDate` (datetime, required)
+  - `nextDueDate` (datetime, optional)
+  - `note` (string, optional)
 - **Response:** `201` - Created
 
 #### Get Vaccination Record by ID
@@ -685,12 +767,12 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 #### Get Vaccination Records by Pet
 - **GET** `/api/VaccinationRecord/pet/{petId}`
 - **Auth:** Required
-- **Response:** `VaccinationRecordDto[]` - All vaccination records for the specified pet
+- **Response:** `VaccinationRecordDto[]`
 
 #### Update Vaccination Record
 - **PUT** `/api/VaccinationRecord/update/{id}`
 - **Auth:** Required
-- **Request:** `UpdateVaccinationRecordDto { vaccinationDate }`
+- **Request:** `UpdateVaccinationRecordDto { vaccineName, clinicName, vaccinationDate, nextDueDate?, note? }`
 - **Response:** `200` - Updated
 
 #### Delete Vaccination Record
@@ -700,7 +782,7 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 
 ---
 
-### 20. Vaccines
+### 21. Vaccines
 
 #### Create Vaccine
 - **POST** `/api/Vaccine/create`
@@ -725,12 +807,12 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 
 #### Get All Vaccines (Paginated)
 - **GET** `/api/Vaccine`
-- **Query Parameters:** `pageSize`, `pageNumber`
+- **Query Parameters:** `pageSize` (default: 100), `pageNumber` (default: 1)
 - **Response:** Paginated list
 
 ---
 
-### 21. Veterinarians
+### 22. Veterinarians
 
 #### Create Veterinarian
 - **POST** `/api/Veterinarian/create`
@@ -755,8 +837,54 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 
 #### Get All Veterinarians (Paginated)
 - **GET** `/api/Veterinarian`
-- **Query Parameters:** `pageSize`, `pageNumber`
+- **Query Parameters:** `pageSize` (default: 100), `pageNumber` (default: 1)
 - **Response:** Paginated list
+
+---
+
+### 23. Weight Records
+
+#### Get Weight Records by Pet
+- **GET** `/api/weight-record/pet/{petId}`
+- **Auth:** Required
+- **Response:** `WeightRecordDto[]` (sorted by date ascending)
+
+#### Get Weight Record by ID
+- **GET** `/api/weight-record/{id}`
+- **Auth:** Required
+- **Response:** `WeightRecordDto`
+
+#### Get Growth Chart Data
+- **GET** `/api/weight-record/pet/{petId}/chart`
+- **Auth:** Required
+- **Query Parameters:**
+  - `from` (date, optional): `YYYY-MM-DD`
+  - `to` (date, optional): `YYYY-MM-DD`
+- **Response:** `WeightGrowthChartDto`
+
+#### Create Weight Record
+- **POST** `/api/weight-record/create`
+- **Auth:** Required
+- **Request:** `CreateWeightRecordDto`
+- **Fields:**
+  - `petId` (uuid, required)
+  - `weight` (number, required, 0.01–9999.99)
+  - `unit` (string, required): `kg` | `lbs`
+  - `recordedDate` (date, required): `YYYY-MM-DD`
+  - `source` (string, required): `Owner` | `Vet` | `Clinic`
+  - `notes` (string, optional, max 500)
+- **Response:** `201` - `WeightRecordDto`
+
+#### Update Weight Record
+- **PUT** `/api/weight-record/update/{id}`
+- **Auth:** Required
+- **Request:** `UpdateWeightRecordDto { weight, unit, recordedDate, source, notes? }`
+- **Response:** `200` - `WeightRecordDto`
+
+#### Delete Weight Record (Soft Delete)
+- **DELETE** `/api/weight-record/{id}`
+- **Auth:** Required
+- **Response:** `204` - No Content
 
 ---
 
@@ -786,20 +914,96 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 ### PetDto
 ```
 {
-  id: string,
-  customerId: string,
+  id: string,              // UUID
+  customerId: string,      // UUID
   name: string,
   species: string,
   breed: string,
-  birthDate: string,       // ISO date
+  birthDate: string,       // ISO datetime
   weight?: number,
   imageUrl?: string,
   color?: string,
   microchipId?: string,
-  insurance?: string,
-  description?: string,
-  createdAt?: string,
-  updatedAt?: string
+  createdDate: string,
+  updatedDate?: string
+}
+```
+
+### MedicationDto
+```
+{
+  id: string,
+  petId: string,
+  petName?: string,
+  medicationName: string,
+  dosage: number,
+  unit: string,            // mg | ml | tablets | drops | other
+  frequency: string,       // Once | Daily | TwiceDaily | Weekly | BiWeekly | Monthly | AsNeeded
+  startDate: string,       // YYYY-MM-DD
+  endDate?: string,
+  notes?: string,
+  status?: string,         // Active | Completed | Paused | Discontinued
+  createdDate: string,
+  updatedDate?: string,
+  medicationLogs?: MedicationLogDto[]
+}
+```
+
+### MedicationLogDto
+```
+{
+  id: string,
+  medicationId: string,
+  administeredDate: string, // YYYY-MM-DD
+  administeredTime?: string,
+  status?: string,          // Given | Missed | Skipped
+  notes?: string,
+  createdDate: string
+}
+```
+
+### WeightRecordDto
+```
+{
+  id: string,
+  petId: string,
+  petName?: string,
+  weight: number,
+  unit?: string,           // kg | lbs
+  recordedDate: string,    // YYYY-MM-DD
+  source?: string,         // Owner | Vet | Clinic
+  notes?: string,
+  createdDate: string,
+  updatedDate?: string
+}
+```
+
+### WeightGrowthChartDto
+```
+{
+  petId: string,
+  petName?: string,
+  species?: string,
+  unit?: string,
+  currentWeight?: number,
+  minWeight?: number,
+  maxWeight?: number,
+  dataPoints?: WeightDataPointDto[]
+}
+```
+
+### VaccinationRecordDto
+```
+{
+  id: string,
+  petId: string,
+  vaccineName?: string,
+  clinicName?: string,
+  vaccinationDate: string,  // ISO datetime
+  nextDueDate?: string,
+  note?: string,
+  createdDate: string,
+  updatedDate?: string
 }
 ```
 
@@ -815,7 +1019,7 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 - `2` - Failed
 - `3` - Refunded
 
-### Subscription Status
+### Subscription Status (`SubcriptionStatus`)
 - `0` - Active
 - `1` - Cancelled
 - `2` - Expired
@@ -832,7 +1036,8 @@ Most list endpoints support pagination with:
 - All timestamps are in ISO 8601 format
 - All IDs are UUIDs
 - Empty/null optional fields are allowed in DTOs
-- Soft deletes are used for most resources
+- Soft deletes are used for most resources (Reminder, Medication, WeightRecord use `204` response)
 - Blog posts are publicly accessible without authentication
 - Admin-only endpoints require Admin role
-- Most endpoints requiring update use PUT with full DTO replacement
+- Most endpoints requiring update use PUT with the full DTO
+- `RegisterRequestDto` does **not** include `phoneNumber` — phone is set separately via the Customer profile

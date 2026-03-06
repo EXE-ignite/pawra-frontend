@@ -171,7 +171,6 @@ export function PetProfilePage({
                     <th>VACCINE TYPE</th>
                     <th>DATE ADMINISTERED</th>
                     <th>EXPIRATION DATE</th>
-                    <th>BATCH #</th>
                     <th>STATUS</th>
                   </tr>
                 </thead>
@@ -181,7 +180,6 @@ export function PetProfilePage({
                       <td className={styles.vaccineName}>{v.name}</td>
                       <td>{v.dateAdministered}</td>
                       <td>{v.expirationDate}</td>
-                      <td className={styles.batchNum}>{v.batchNumber}</td>
                       <td>
                         <span className={`${styles.statusBadge} ${getStatusClass(v.status)}`}>
                           <span className={styles.statusDot} />

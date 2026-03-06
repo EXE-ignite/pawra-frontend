@@ -26,7 +26,6 @@ export interface CreatePetDto {
   birthDate: string; // ISO date string
   color?: string;
   weight?: number;
-  description?: string;
   imageUrl?: string;
 }
 
@@ -37,7 +36,6 @@ export interface UpdatePetDto {
   birthDate?: string;
   color?: string;
   weight?: number;
-  description?: string;
   imageUrl?: string;
 }
 
@@ -52,10 +50,8 @@ export interface PetDto {
   imageUrl?: string;
   color?: string;
   microchipId?: string;
-  insurance?: string;
-  description?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  createdDate?: string;
+  updatedDate?: string;
 }
 
 export interface PaginatedResponse<T> {
@@ -339,7 +335,6 @@ class PetService {
     customerId?: string;
     color?: string;
     weight?: number;
-    description?: string;
     imageUrl?: string;
   }): Promise<Pet> {
     if (USE_MOCK) {
@@ -365,7 +360,6 @@ class PetService {
           : data.birthDate,
         ...(data.color ? { color: data.color } : {}),
         ...(data.weight !== undefined && data.weight !== null ? { weight: data.weight } : {}),
-        ...(data.description ? { description: data.description } : {}),
         ...(data.imageUrl ? { imageUrl: data.imageUrl } : {}),
       };
 
@@ -388,7 +382,6 @@ class PetService {
     birthDate: Date | string;
     color: string;
     weight: number;
-    description: string;
     imageUrl: string;
   }>): Promise<Pet> {
     if (USE_MOCK) {
@@ -412,7 +405,6 @@ class PetService {
       }
       if (data.color !== undefined) updateDto.color = data.color;
       if (data.weight !== undefined) updateDto.weight = data.weight;
-      if (data.description !== undefined) updateDto.description = data.description;
       if (data.imageUrl !== undefined) updateDto.imageUrl = data.imageUrl;
 
       const response = await apiService.put<PetDto>(`${this.endpoint}/update/${id}`, updateDto);
@@ -459,8 +451,6 @@ class PetService {
         status: 'active',
         color: petDto.color,
         microchipId: petDto.microchipId,
-        insurance: petDto.insurance,
-        summary: petDto.description,
         vaccinations,
         medications: [],
         weightHistory: [],

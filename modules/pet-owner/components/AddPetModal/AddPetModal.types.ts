@@ -5,7 +5,6 @@ export interface AddPetFormData {
   birthDate: string;
   color?: string;
   weight?: string;
-  description?: string;
 }
 
 export interface AddPetModalProps {

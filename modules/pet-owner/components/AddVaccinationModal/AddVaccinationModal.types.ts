@@ -2,8 +2,8 @@ import { Pet } from '../../types';
 
 export interface AddVaccinationFormData {
   petId: string;
-  vaccineId: string;
-  clinicId: string;
+  vaccineName: string;
+  clinicName: string;
   vaccinationDate: string; // YYYY-MM-DD
 }
 

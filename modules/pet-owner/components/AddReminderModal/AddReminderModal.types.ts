@@ -1,4 +1,4 @@
-import { Pet } from '../../types';
+import { Pet, Task } from '../../types';
 
 export type ReminderFormType = 'feeding' | 'medication' | 'grooming' | 'other';
 export type ReminderPriority = 'low' | 'medium' | 'high';
@@ -25,4 +25,6 @@ export interface AddReminderModalProps {
   defaultDate?: string;
   /** List of pets available to select */
   pets?: Pet[];
+  /** When provided, the modal operates in edit mode */
+  editTask?: Task;
 }

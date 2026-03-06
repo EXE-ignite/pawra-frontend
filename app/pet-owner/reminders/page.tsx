@@ -13,6 +13,7 @@ export default function RemindersPageRoute() {
   const [pets, setPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | undefined>(undefined);
 
   useEffect(() => {
@@ -30,7 +31,7 @@ export default function RemindersPageRoute() {
         }
 
         // 2. Lấy tất cả reminders
-        const data = await reminderService.getAllUserReminders(petIds);
+        const data = await reminderService.getAllUserReminders();
         setTasks(data.tasks);
         setEvents(data.events);
         setMilestones(data.milestones);
@@ -66,7 +67,36 @@ export default function RemindersPageRoute() {
     }
   }
 
+  async function handleDeleteTask(taskId: string) {
+    // Optimistic update
+    setTasks(prev => prev.filter(t => t.id !== taskId));
+    setEvents(prev => prev.filter(e => e.id !== taskId));
+
+    try {
+      await reminderService.deleteReminder(taskId);
+    } catch (err) {
+      console.error('Failed to delete task:', err);
+      // Reload on error
+      try {
+        const data = await reminderService.getAllUserReminders();
+          setTasks(data.tasks);
+          setEvents(data.events);
+          setMilestones(data.milestones);
+      } catch {
+        // ignore secondary error
+      }
+    }
+  }
+
   function handleAddTask() {
+    setEditingTask(null);
+    setModalOpen(true);
+  }
+
+  function handleEditTask(taskId: string) {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+    setEditingTask(task);
     setModalOpen(true);
   }
 
@@ -74,17 +104,15 @@ export default function RemindersPageRoute() {
     setSelectedDate(date);
   }
 
-  async function handleReminderCreated() {
+  async function handleReminderSaved() {
     setModalOpen(false);
-    // Reload reminders after creation
+    setEditingTask(null);
+    // Reload reminders
     try {
-      const petIds = pets.map(p => p.id);
-      if (petIds.length > 0) {
-        const data = await reminderService.getAllUserReminders(petIds);
-        setTasks(data.tasks);
-        setEvents(data.events);
-        setMilestones(data.milestones);
-      }
+      const data = await reminderService.getAllUserReminders();
+      setTasks(data.tasks);
+      setEvents(data.events);
+      setMilestones(data.milestones);
     } catch (err) {
       console.error('Failed to reload reminders:', err);
     }
@@ -104,17 +132,21 @@ export default function RemindersPageRoute() {
         events={events}
         tasks={tasks}
         milestones={milestones}
+        pets={pets}
         onAddTask={handleAddTask}
         onToggleTask={handleToggleTask}
+        onDeleteTask={handleDeleteTask}
+        onEditTask={handleEditTask}
         onDateSelect={handleDateSelect}
       />
 
       <AddReminderModal
         isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onSuccess={handleReminderCreated}
+        onClose={() => { setModalOpen(false); setEditingTask(null); }}
+        onSuccess={handleReminderSaved}
         defaultDate={selectedDate}
         pets={pets}
+        editTask={editingTask ?? undefined}
       />
     </>
   );

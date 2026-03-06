@@ -10,6 +10,7 @@ const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === 'true';
  * 
  * Backend endpoints:
  * - GET /api/reminder - Get all reminders (Admin)
+ * - GET /api/reminder/customer - Get all reminders for current customer
  * - GET /api/reminder/{id} - Get reminder by ID
  * - GET /api/reminder/pet/{petId} - Get reminders by pet
  * - POST /api/reminder/create - Create new reminder
@@ -55,6 +56,7 @@ export interface UpdateReminderDto {
   title?: string;
   type?: ReminderType;
   startDate?: string;
+  time?: string;
   description?: string;
   isRecurring?: boolean;
   recurringType?: RecurringType;
@@ -93,6 +95,31 @@ export interface ReminderDto {
   logs?: ReminderLogDto[];
   createdAt?: string;
   updatedAt?: string;
+}
+
+/** DTO returned by GET /api/reminder/customer */
+export interface CustomerReminderDto {
+  id: string;
+  petId: string;
+  petName: string;
+  title: string;
+  description?: string;
+  type: string;
+  startDate: string;   // YYYY-MM-DD
+  time?: string;       // HH:mm
+  isRecurring: boolean;
+  recurringType: string;
+  endDate?: string;
+  createdDate?: string;
+  updatedDate?: string;
+  reminderLogs?: {
+    id: string;
+    reminderId: string;
+    occurrenceDate: string;
+    status: string;
+    completedAt?: string;
+    createdDate?: string;
+  }[];
 }
 
 // Mock data generator
@@ -214,6 +241,43 @@ function transformReminderToEvent(reminder: ReminderDto): CalendarEvent {
   };
 }
 
+/**
+ * Transform CustomerReminderDto (from /reminder/customer) to frontend Task
+ */
+function transformCustomerReminderToTask(reminder: CustomerReminderDto): Task {
+  if (!reminder) return null as unknown as Task;
+  const type = mapReminderTypeToTaskType(reminder.type as ReminderType);
+  const isCompleted = reminder.reminderLogs?.some(
+    log => log.status === ReminderLogStatus.Completed && log.occurrenceDate === reminder.startDate
+  ) || false;
+
+  return {
+    id: reminder.id,
+    date: reminder.startDate?.split('T')[0] ?? '',
+    time: formatTime12h(reminder.time),
+    title: reminder.title,
+    petName: reminder.petName || 'Unknown',
+    petId: reminder.petId,
+    type,
+    priority: reminder.type === ReminderType.Vaccine || reminder.type === ReminderType.Medication ? 'high' : 'medium',
+    completed: isCompleted,
+  };
+}
+
+/**
+ * Transform CustomerReminderDto to frontend CalendarEvent
+ */
+function transformCustomerReminderToEvent(reminder: CustomerReminderDto): CalendarEvent {
+  if (!reminder) return null as unknown as CalendarEvent;
+  return {
+    id: reminder.id,
+    date: reminder.startDate?.split('T')[0] ?? '',
+    title: `${reminder.petName || ''} ${reminder.title}`.trim(),
+    color: getColorForType(reminder.type as ReminderType),
+    petId: reminder.petId,
+  };
+}
+
 class ReminderService {
   private readonly endpoint = '/reminder';
 
@@ -244,11 +308,10 @@ class ReminderService {
   }
 
   /**
-   * Get all reminders for user (combining all pets)
-   * Backend: Multiple calls to GET /api/reminder/pet/{petId}
-   * Or GET /api/reminder if admin
+   * Get all reminders for current customer
+   * Backend: GET /api/reminder/customer
    */
-  async getAllUserReminders(petIds: string[]): Promise<{ tasks: Task[], events: CalendarEvent[], milestones: HealthMilestone[] }> {
+  async getAllUserReminders(): Promise<{ tasks: Task[], events: CalendarEvent[], milestones: HealthMilestone[] }> {
     if (USE_MOCK) {
       return {
         tasks: mockTasks,
@@ -258,18 +321,12 @@ class ReminderService {
     }
 
     try {
-      const allReminders: ReminderDto[] = [];
-      
-      // Fetch reminders for each pet
-      for (const petId of petIds) {
-        const response = await apiService.get<ReminderDto[]>(`${this.endpoint}/pet/${petId}`);
-        const reminders = (Array.isArray(response.data) ? response.data : []).filter(Boolean);
-        allReminders.push(...reminders);
-      }
-      
-      const tasks = allReminders.map(transformReminderToTask);
-      const events = allReminders.map(transformReminderToEvent);
-      
+      const response = await apiService.get<CustomerReminderDto[]>(`${this.endpoint}/customer`);
+      const allReminders = (Array.isArray(response.data) ? response.data : []).filter(Boolean);
+
+      const tasks = allReminders.map(transformCustomerReminderToTask);
+      const events = allReminders.map(transformCustomerReminderToEvent);
+
       // Generate milestones from upcoming vaccine/vet reminders
       const milestones = allReminders
         .filter(r => r.type === ReminderType.Vaccine || r.type === ReminderType.Vet)
@@ -287,7 +344,7 @@ class ReminderService {
 
       return { tasks, events, milestones };
     } catch (error) {
-      console.error('Error fetching all user reminders:', error);
+      console.error('Error fetching customer reminders:', error);
       throw error;
     }
   }
@@ -379,6 +436,7 @@ class ReminderService {
     title: string;
     type: Task['type'];
     date: string;
+    time: string;
     description: string;
     isRecurring: boolean;
     recurringType: 'none' | 'monthly' | 'yearly';
@@ -390,6 +448,7 @@ class ReminderService {
       if (data.title) mockTasks[index].title = data.title;
       if (data.type) mockTasks[index].type = data.type;
       if (data.date) mockTasks[index].date = data.date;
+      if (data.time) mockTasks[index].time = data.time;
       
       return mockTasks[index];
     }
@@ -400,7 +459,8 @@ class ReminderService {
       if (data.title) updateDto.title = data.title;
       if (data.type) updateDto.type = mapTaskTypeToReminderType(data.type);
       if (data.date) updateDto.startDate = data.date;
-      if (data.description) updateDto.description = data.description;
+      if (data.time) updateDto.time = data.time;
+      if (data.description !== undefined) updateDto.description = data.description;
       if (data.isRecurring !== undefined) updateDto.isRecurring = data.isRecurring;
       if (data.recurringType) {
         updateDto.recurringType = data.recurringType === 'monthly' 
