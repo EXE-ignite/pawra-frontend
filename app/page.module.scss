@@ -1,0 +1,77 @@
+@import '../styles/variables';
+@import '../styles/mixins';
+
+.home {
+  @include container;
+  padding-top: $spacing-3xl;
+  padding-bottom: $spacing-3xl;
+}
+
+.hero {
+  text-align: center;
+  padding: $spacing-3xl 0;
+  @include flex-column-center;
+  gap: $spacing-lg;
+}
+
+.title {
+  @include heading-1;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: $spacing-sm;
+}
+
+.subtitle {
+  font-size: $font-size-xl;
+  color: var(--color-text-secondary);
+  max-width: 600px;
+  margin-bottom: $spacing-lg;
+}
+
+.cta {
+  display: flex;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  @include mobile {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: $spacing-xl;
+  margin-top: $spacing-3xl;
+}
+
+.featureCard {
+  @include card;
+  text-align: center;
+  padding: $spacing-xl;
+  transition: all $transition-base;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: $shadow-lg;
+  }
+}
+
+.featureIcon {
+  font-size: 3rem;
+  margin-bottom: $spacing-md;
+}
+
+.featureTitle {
+  @include heading-3;
+  margin-bottom: $spacing-sm;
+}
+
+.featureText {
+  color: var(--color-text-secondary);
+  line-height: $line-height-relaxed;
+}

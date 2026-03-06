@@ -1,0 +1,294 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.container {
+  background-color: var(--color-bg-primary);
+  border-radius: 12px;
+  padding: $spacing-xl;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+  position: sticky;
+  top: $spacing-xl;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: $spacing-lg;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 $spacing-xs 0;
+}
+
+.subtitle {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: $spacing-xs;
+  border-radius: 4px;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: var(--color-bg-hover);
+    color: var(--color-text-primary);
+  }
+}
+
+.addButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  padding: $spacing-md;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: $spacing-lg;
+
+  &:hover {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(177, 178, 255, 0.3);
+  }
+}
+
+.addIcon {
+  font-size: 1.5rem;
+}
+
+.filterBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-lg;
+}
+
+.filterTag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px $spacing-sm;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-border, #{$primary-300});
+  background: none;
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+
+  &:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+}
+
+.filterTagActive {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff !important;
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.sectionTitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.taskList,
+.milestoneList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.task {
+  display: flex;
+  gap: $spacing-md;
+  padding: $spacing-md;
+  background-color: var(--color-bg-secondary);
+  border-radius: 8px;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: var(--color-bg-tertiary);
+  }
+}
+
+.checkbox {
+  margin-top: 2px;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.taskInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.taskHeader {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.taskIcon {
+  font-size: 1rem;
+}
+
+.taskTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.taskMeta {
+  display: flex;
+  gap: $spacing-md;
+  align-items: center;
+}
+
+.taskTime {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.taskPet {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.petIcon {
+  font-size: 0.875rem;
+}
+
+.deleteButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: $spacing-xs;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  opacity: 0;
+  transition: all 0.2s;
+  align-self: center;
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    opacity: 1 !important;
+  }
+
+  .task:hover & {
+    opacity: 1;
+  }
+}
+
+.taskActions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.editButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: $spacing-xs;
+  border-radius: 6px;
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  opacity: 0;
+  transition: all 0.2s;
+  align-self: center;
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    opacity: 1 !important;
+  }
+
+  .task:hover & {
+    opacity: 1;
+  }
+}
+
+.milestone {
+  display: flex;
+  gap: $spacing-md;
+  padding: $spacing-md;
+  background-color: var(--color-bg-tertiary);
+  border-radius: 8px;
+  border-left: 3px solid $color-warning;
+}
+
+.milestoneIcon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.milestoneInfo {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.milestoneTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.milestoneDue {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}

@@ -1,0 +1,131 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.container {
+  background-color: var(--color-bg-primary);
+  border-radius: 12px;
+  padding: $spacing-lg;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-lg;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.icon {
+  font-size: 1.5rem;
+}
+
+.editButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  padding: $spacing-sm;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  color: var(--color-text-primary);
+
+  &:hover {
+    background-color: var(--color-bg-hover);
+  }
+}
+
+.content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: $spacing-xl;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.sectionTitle {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-md;
+  background-color: var(--color-bg-secondary);
+  border-radius: 8px;
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.itemName {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.pillIcon {
+  font-size: 1rem;
+}
+
+.itemDetail {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.badge {
+  padding: $spacing-xs $spacing-md;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.soon {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.ok {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.overdue {
+  background-color: #fee2e2;
+  color: #991b1b;
+}

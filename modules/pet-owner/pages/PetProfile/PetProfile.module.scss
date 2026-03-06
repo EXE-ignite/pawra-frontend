@@ -1,0 +1,536 @@
+﻿@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+// ── Page Shell ────────────────────────────────────────────
+.page {
+  min-height: 100vh;
+  background-color: var(--color-bg-secondary);
+  padding: $spacing-xl $spacing-xl $spacing-2xl;
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+}
+
+// ── Header ────────────────────────────────────────────────
+.header {
+  @include flex-between;
+  gap: $spacing-lg;
+  flex-wrap: wrap;
+}
+
+.headerLeft {
+  @include flex-start;
+  gap: $spacing-lg;
+}
+
+.headerAvatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: var(--color-bg-tertiary);
+  flex-shrink: 0;
+  border: 3px solid var(--color-bg-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.headerAvatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.headerAvatarPlaceholder {
+  @include flex-center;
+  width: 100%;
+  height: 100%;
+  font-size: 2rem;
+}
+
+.headerInfo {
+  @include flex-column;
+  gap: $spacing-xs;
+}
+
+.headerNameRow {
+  @include flex-start;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+}
+
+.headerName {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+  line-height: 1.2;
+}
+
+.activeBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background-color: rgba($color-success, 0.12);
+  color: $color-success;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border: 1px solid rgba($color-success, 0.3);
+}
+
+.headerAttributes {
+  @include flex-start;
+  gap: $spacing-lg;
+  flex-wrap: wrap;
+}
+
+.attribute {
+  @include flex-start;
+  gap: $spacing-xs;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+
+  svg {
+    color: var(--color-text-tertiary);
+    flex-shrink: 0;
+  }
+}
+
+.headerActions {
+  @include flex-start;
+  gap: $spacing-sm;
+}
+
+.editButton {
+  @include flex-start;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-md;
+  border: 1.5px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: var(--color-bg-tertiary);
+    border-color: var(--color-text-secondary);
+  }
+}
+
+.deleteButton {
+  @include flex-start;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-md;
+  border: 1.5px solid rgba(239, 68, 68, 0.4);
+  border-radius: 8px;
+  background: var(--color-bg-primary);
+  color: #ef4444;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: rgba(239, 68, 68, 0.08);
+    border-color: #ef4444;
+  }
+}
+
+.exportButton {
+  @include flex-start;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-md;
+  border: none;
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 0.15s;
+
+  &:hover {
+    filter: brightness(0.92);
+  }
+}
+
+// ── Main Two-Column Layout ─────────────────────────────────
+.content {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: $spacing-xl;
+  align-items: start;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ── Left Panel ────────────────────────────────────────────
+.leftPanel {
+  @include flex-column;
+  gap: $spacing-lg;
+  background: var(--color-bg-primary);
+  border-radius: 16px;
+  padding: $spacing-lg;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+}
+
+.petImageWrapper {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--color-bg-tertiary);
+}
+
+.petImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.petImagePlaceholder {
+  @include flex-center;
+  width: 100%;
+  height: 100%;
+  font-size: 4rem;
+}
+
+.summarySection {
+  @include flex-column;
+  gap: $spacing-xs;
+}
+
+.summaryTitle {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.summaryText {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.infoSection {
+  @include flex-column;
+  gap: 0;
+  border-top: 1px solid var(--color-border-light);
+  padding-top: $spacing-md;
+}
+
+.infoRow {
+  @include flex-between;
+  padding: $spacing-xs 0;
+  font-size: 0.8125rem;
+}
+
+.infoLabel {
+  color: var(--color-text-secondary);
+  font-weight: 400;
+}
+
+.infoValue {
+  color: var(--color-text-primary);
+  font-weight: 500;
+  text-align: right;
+}
+
+// ── Interests ─────────────────────────────────────────────
+.interestsSection {
+  @include flex-column;
+  gap: $spacing-md;
+  border-top: 1px solid var(--color-border-light);
+  padding-top: $spacing-md;
+}
+
+.interestsTitle {
+  @include flex-start;
+  gap: $spacing-xs;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+
+  .heartIcon {
+    color: $color-error;
+    flex-shrink: 0;
+  }
+}
+
+.tagGroup {
+  @include flex-column;
+  gap: $spacing-xs;
+}
+
+.tagGroupLabel {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+}
+
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: default;
+  user-select: none;
+}
+
+// rgba-based tags — background uses opacity so they adapt to any theme background
+.tagBlue   { background: rgba($color-info, 0.12);    color: $color-info; }
+.tagOrange { background: rgba($color-warning, 0.14);  color: $color-warning; }
+.tagGreen  { background: rgba($color-success, 0.12);  color: $color-success; }
+.tagYellow { background: rgba($color-warning, 0.12);  color: $color-warning; }
+.tagPink   { background: rgba($color-error, 0.12);    color: $color-error; }
+.tagPurple { background: rgba($primary-500, 0.18);    color: $dark-purple; }
+
+// ── Right Panel ───────────────────────────────────────────
+.rightPanel {
+  @include flex-column;
+  gap: $spacing-xl;
+}
+
+.vaccinationCard {
+  background: var(--color-bg-primary);
+  border-radius: 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+}
+
+.vaccinationHeader {
+  @include flex-between;
+  padding: $spacing-lg $spacing-lg $spacing-md;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.vaccinationTitleGroup {
+  @include flex-start;
+  gap: $spacing-sm;
+
+  .vaccinationIcon {
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+}
+
+.vaccinationTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 2px;
+}
+
+.vaccinationSubtitle {
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+  margin: 0;
+}
+
+.addButton {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-bg-primary);
+  @include flex-center;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  transition: background 0.15s, border-color 0.15s;
+  flex-shrink: 0;
+
+  &:hover {
+    background: var(--color-bg-tertiary);
+    border-color: var(--color-text-secondary);
+  }
+}
+
+// ── Vaccination Table ──────────────────────────────────────
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+
+  thead tr {
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  th {
+    padding: $spacing-sm $spacing-lg;
+    text-align: left;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    color: var(--color-text-tertiary);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--color-border-light);
+    transition: background 0.1s;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: var(--color-bg-secondary);
+    }
+  }
+
+  td {
+    padding: $spacing-md $spacing-lg;
+    color: var(--color-text-primary);
+    vertical-align: middle;
+  }
+}
+
+.vaccineName {
+  font-weight: 500;
+}
+
+.batchNum {
+  font-family: monospace;
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary);
+}
+
+// ── Status Badges ──────────────────────────────────────────
+.statusBadge {
+  @include flex-start;
+  gap: 6px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.statusValid   { .statusDot { background: $color-success; } color: $color-success; }
+.statusDueSoon { .statusDot { background: $color-warning; } color: $color-warning; }
+.statusOverdue { .statusDot { background: $color-error; }   color: $color-error; }
+
+// ── Vaccination Alert ──────────────────────────────────────
+.alertBox {
+  @include flex-start;
+  align-items: flex-start;
+  gap: $spacing-sm;
+  margin: $spacing-md $spacing-lg $spacing-lg;
+  padding: $spacing-md;
+  background: rgba($color-info, 0.08);
+  border-radius: 10px;
+  border: 1px solid rgba($color-info, 0.22);
+}
+
+.alertIcon {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: $color-info;
+}
+
+.alertTitle {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: $color-info;
+  margin: 0 0 4px;
+}
+
+.alertText {
+  font-size: 0.8125rem;
+  color: $color-info;
+  opacity: 0.85;
+  margin: 0;
+  line-height: 1.5;
+}
+
+// ── Footer ────────────────────────────────────────────────
+.footer {
+  text-align: center;
+  padding-top: $spacing-md;
+  @include flex-column;
+  align-items: center;
+  gap: 4px;
+}
+
+.footerSync {
+  @include flex-center;
+  gap: $spacing-xs;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.04em;
+  margin: 0;
+}
+
+.syncDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: $color-success;
+  flex-shrink: 0;
+}
+
+.footerInfo {
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+  margin: 0;
+}
+
+// ── Floating Action Button ─────────────────────────────────
+.fab {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  border: none;
+  color: #ffffff;
+  @include flex-center;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(177, 178, 255, 0.5);
+  transition: transform 0.15s, box-shadow 0.15s;
+  z-index: 100;
+
+  &:hover {
+    transform: scale(1.06);
+    box-shadow: 0 6px 20px rgba(177, 178, 255, 0.6);
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+}

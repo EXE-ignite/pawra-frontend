@@ -1,0 +1,50 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: $spacing-xl;
+  min-height: 100vh;
+  background-color: var(--color-bg-secondary);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: $spacing-xl;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 $spacing-xs 0;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: $spacing-xl;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.calendarSection {
+  min-width: 0;
+}
+
+.sidebarSection {
+  @media (max-width: 1024px) {
+    order: -1;
+  }
+}

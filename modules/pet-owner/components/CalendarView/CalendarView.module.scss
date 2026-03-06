@@ -1,0 +1,397 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.container {
+  background-color: var(--color-bg-primary);
+  border-radius: 12px;
+  padding: $spacing-xl;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-lg;
+}
+
+.monthYear {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.controls {
+  display: flex;
+  gap: $spacing-sm;
+  align-items: center;
+}
+
+.todayButton {
+  padding: $spacing-sm $spacing-md;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: var(--color-primary-dark);
+  }
+}
+
+.navButton {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg-secondary);
+  border: none;
+  border-radius: 6px;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--color-text-primary);
+
+  &:hover {
+    background-color: var(--color-bg-tertiary);
+  }
+}
+
+.viewToggle {
+  display: flex;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-lg;
+}
+
+.toggleButton {
+  padding: $spacing-sm $spacing-md;
+  background-color: transparent;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: var(--color-bg-secondary);
+  }
+
+  &.active {
+    background-color: var(--color-bg-tertiary);
+    color: var(--color-primary);
+    font-weight: 600;
+  }
+}
+
+.calendar {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: $spacing-xs;
+  margin-bottom: $spacing-sm;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  padding: $spacing-sm;
+}
+
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: $spacing-xs;
+}
+
+.emptyDay {
+  aspect-ratio: 1;
+  background-color: transparent;
+}
+
+.day {
+  aspect-ratio: 1;
+  padding: $spacing-sm;
+  background-color: var(--color-bg-secondary);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  overflow: hidden;
+
+  &:hover {
+    background-color: var(--color-bg-tertiary);
+    transform: scale(1.02);
+  }
+
+  &.today {
+    background-color: rgba(177, 178, 255, 0.1);
+    border: 2px solid var(--color-primary);
+  }
+
+  &.selected {
+    background-color: rgba(177, 178, 255, 0.2);
+    box-shadow: 0 0 0 2px var(--color-primary);
+  }
+}
+
+.dayNumber {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.events {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.event {
+  font-size: 0.65rem;
+  padding: 2px 4px;
+  border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: white;
+  font-weight: 500;
+}
+
+.moreEvents {
+  font-size: 0.65rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+// ─── Week View ─────────────────────────────────────────────────────────────
+
+.weekGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: $spacing-xs;
+  min-height: 320px;
+}
+
+.weekDayColumn {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  background-color: var(--color-bg-secondary);
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: var(--color-bg-tertiary);
+  }
+
+  &.weekDaySelected {
+    background-color: rgba(177, 178, 255, 0.15);
+    box-shadow: 0 0 0 2px var(--color-primary);
+  }
+}
+
+.weekDayHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $spacing-sm $spacing-xs;
+  border-bottom: 1px solid var(--color-bg-tertiary);
+
+  &.weekDayToday {
+    background-color: rgba(177, 178, 255, 0.12);
+  }
+}
+
+.weekDayAbbr {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.05em;
+}
+
+.weekDayNum {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.4;
+
+  &.weekDayNumToday {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-primary);
+    color: white;
+    border-radius: 50%;
+    font-size: 0.875rem;
+  }
+}
+
+.weekDayEvents {
+  padding: $spacing-xs;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.weekEvent {
+  font-size: 0.65rem;
+  padding: 3px 6px;
+  border-radius: 4px;
+  color: white;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.noEvents {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+  padding: $spacing-xs 0;
+  opacity: 0.5;
+}
+
+// ─── Day View ──────────────────────────────────────────────────────────────
+
+.dayView {
+  display: flex;
+  flex-direction: column;
+}
+
+.allDayRow {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  padding: $spacing-sm 0;
+  border-bottom: 1px solid var(--color-bg-tertiary);
+  margin-bottom: $spacing-sm;
+}
+
+.allDayLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  min-width: 56px;
+  text-align: right;
+  padding-top: 3px;
+}
+
+.allDayEvents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+  flex: 1;
+}
+
+.allDayEvent {
+  font-size: 0.75rem;
+  padding: 3px 10px;
+  border-radius: 4px;
+  color: white;
+  font-weight: 500;
+}
+
+.timeSlots {
+  display: flex;
+  flex-direction: column;
+}
+
+.timeSlot {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  min-height: 48px;
+  border-bottom: 1px solid var(--color-bg-tertiary);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.timeLabel {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  min-width: 56px;
+  text-align: right;
+  padding-top: $spacing-xs;
+}
+
+.timeSlotContent {
+  flex: 1;
+  min-height: 48px;
+  border-left: 1px solid var(--color-bg-tertiary);
+  padding-left: $spacing-sm;
+  padding-top: $spacing-xs;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.slotTask {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  background-color: var(--color-bg-secondary);
+  border-radius: 6px;
+  padding: 4px $spacing-sm;
+  font-size: 0.8rem;
+  border-left: 3px solid var(--color-primary);
+
+  &.slotTaskDone {
+    opacity: 0.5;
+    text-decoration: line-through;
+    border-left-color: var(--color-text-secondary);
+  }
+}
+
+.slotTaskIcon {
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.slotTaskTitle {
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.slotTaskPet {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.noEventsDay {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  padding: $spacing-xl 0;
+  margin: 0;
+  opacity: 0.6;
+}

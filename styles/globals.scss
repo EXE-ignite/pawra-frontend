@@ -1,0 +1,152 @@
+@import './variables';
+@import './mixins';
+
+// ============================================
+// CSS VARIABLES FOR THEME SWITCHING
+// ============================================
+:root {
+  // Light mode (default)
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f9fafb;
+  --color-bg-tertiary: #f3f4f6;
+  --color-bg-hover: #EEF1FF;
+  
+  --color-text-primary: #1f2937;
+  --color-text-secondary: #6b7280;
+  --color-text-tertiary: #9ca3af;
+  
+  --color-border: #e5e7eb;
+  --color-border-light: #f3f4f6;
+  
+  --color-primary: #B1B2FF;
+  --color-primary-light: #D2DAFF;
+  --color-primary-dark: #AAC4FF;
+}
+
+[data-theme='dark'] {
+  // Dark mode with new palette
+  --color-bg-primary: #574964;
+  --color-bg-secondary: #6a5a6f;
+  --color-bg-tertiary: #7d6b7d;
+  --color-bg-hover: #6a5a6f;
+  
+  --color-text-primary: #FFDAB3;
+  --color-text-secondary: #C8AAAA;
+  --color-text-tertiary: #9F8383;
+  
+  --color-border: #7d6b7d;
+  --color-border-light: #6a5a6f;
+  
+  --color-primary: #C8AAAA;
+  --color-primary-light: #FFDAB3;
+  --color-primary-dark: #9F8383;
+}
+
+// ============================================
+// RESET & BASE STYLES
+// ============================================
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  line-height: $line-height-normal;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+// ============================================
+// TYPOGRAPHY
+// ============================================
+h1, h2, h3, h4, h5, h6 {
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+  color: var(--color-text-primary);
+}
+
+h1 {
+  @include heading-1;
+}
+
+h2 {
+  @include heading-2;
+}
+
+h3 {
+  @include heading-3;
+}
+
+p {
+  margin-bottom: $spacing-md;
+  color: var(--color-text-secondary);
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: darken($primary-500, 10%);
+  }
+}
+
+// ============================================
+// FORM ELEMENTS
+// ============================================
+button {
+  font-family: inherit;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+// ============================================
+// UTILITY CLASSES
+// ============================================
+.container {
+  @include container;
+}
+
+.sr-only {
+  @include visually-hidden;
+}
+
+// ============================================
+// SCROLLBAR STYLING (Optional)
+// ============================================
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: $bg-subtle;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $border-dark;
+  border-radius: $radius-full;
+
+  &:hover {
+    background: darken($border-dark, 10%);
+  }
+}

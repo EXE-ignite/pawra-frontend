@@ -1,0 +1,315 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.commentSection {
+  padding-top: $spacing-2xl;
+  margin-top: $spacing-2xl;
+  border-top: 2px solid var(--color-border);
+}
+
+.title {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: var(--color-text-primary);
+  margin-bottom: $spacing-xl;
+}
+
+.commentForm {
+  display: flex;
+  gap: $spacing-md;
+  margin-bottom: $spacing-2xl;
+  padding: $spacing-lg;
+  background: var(--color-bg-secondary);
+  border-radius: $radius-lg;
+}
+
+.avatarPlaceholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-bg-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-lg;
+  flex-shrink: 0;
+}
+
+.formContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.textarea {
+  width: 100%;
+  padding: $spacing-md;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  font-size: $font-size-base;
+  font-family: inherit;
+  resize: vertical;
+  transition: all $transition-fast;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
+  }
+
+  &:disabled {
+    background: var(--color-bg-secondary);
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  &::placeholder {
+    color: var(--color-text-tertiary);
+  }
+}
+
+.submitBtn {
+  align-self: flex-start;
+  padding: $spacing-sm $spacing-xl;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: $radius-md;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-base;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.commentsList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+}
+
+.loading {
+  text-align: center;
+  padding: $spacing-2xl;
+  color: var(--color-text-secondary);
+  font-size: $font-size-base;
+}
+
+.emptyState {
+  text-align: center;
+  padding: $spacing-2xl;
+  background: var(--color-bg-secondary);
+  border-radius: $radius-lg;
+  
+  p {
+    color: var(--color-text-secondary);
+    font-size: $font-size-base;
+    margin: 0;
+  }
+}
+
+.comment {
+  display: flex;
+  gap: $spacing-md;
+}
+
+.commentAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-base;
+  flex-shrink: 0;
+  overflow: hidden;
+  
+  .avatarImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.commentContent {
+  flex: 1;
+}
+
+.commentHeader {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  margin-bottom: $spacing-sm;
+}
+
+.authorName {
+  font-weight: $font-weight-bold;
+  color: var(--color-text-primary);
+  font-size: $font-size-base;
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.authorRole {
+  padding: $spacing-xs $spacing-sm;
+  background: var(--color-bg-tertiary);
+  color: var(--color-primary);
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  border-radius: $radius-sm;
+}
+
+.commentTime {
+  font-size: $font-size-sm;
+  color: var(--color-text-tertiary);
+}
+
+.commentText {
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  margin-bottom: $spacing-sm;
+}
+
+.replyBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  padding: 0;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: var(--color-primary-light);
+  }
+}
+
+// ── Reply form ──────────────────────────────
+.replyForm {
+  margin-top: $spacing-md;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.replyTextarea {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  font-size: $font-size-sm;
+  font-family: inherit;
+  resize: vertical;
+  transition: all $transition-fast;
+  background: var(--color-bg-secondary);
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba($primary-500, 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &::placeholder {
+    color: var(--color-text-tertiary);
+  }
+}
+
+.replyFormActions {
+  display: flex;
+  gap: $spacing-sm;
+  justify-content: flex-end;
+}
+
+.cancelReplyBtn {
+  padding: $spacing-xs $spacing-md;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: var(--color-bg-tertiary);
+  }
+}
+
+.submitReplyBtn {
+  padding: $spacing-xs $spacing-md;
+  background: var(--color-primary);
+  border: none;
+  border-radius: $radius-md;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: white;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: $shadow-sm;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// ── Nested replies ───────────────────────────
+.replies {
+  margin-top: $spacing-md;
+  padding-left: $spacing-lg;
+  border-left: 2px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.reply {
+  display: flex;
+  gap: $spacing-sm;
+}
+
+.replyAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-bg-tertiary);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-sm;
+  flex-shrink: 0;
+  overflow: hidden;
+
+  .avatarImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}

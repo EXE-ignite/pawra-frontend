@@ -1,0 +1,133 @@
+@import '../../../../../styles/variables';
+@import '../../../../../styles/mixins';
+
+.container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: var(--color-text-primary);
+}
+
+.socialButtons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.socialButton {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  font-size: 18px;
+  color: var(--color-text-secondary);
+
+  &:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+}
+
+.divider {
+  margin: 20px 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+.error {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  background-color: #fee;
+  color: #c33;
+  border-radius: 4px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.form {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 20px;
+  margin-bottom: 15px;
+  border: none;
+  background-color: var(--color-bg-secondary);
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+  transition: background-color 0.3s ease;
+
+  &:focus {
+    background-color: var(--color-bg-tertiary);
+    border: 1px solid $primary-300;
+  }
+
+  &::placeholder {
+    color: var(--color-text-tertiary);
+  }
+}
+
+.forgotPassword {
+  text-align: center;
+  margin-bottom: 20px;
+  
+  a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: var(--color-primary);
+    }
+  }
+}
+
+.submitButton {
+  width: 100%;
+  max-width: 200px;
+  padding: 12px 40px;
+  margin-top: 10px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  letter-spacing: 1px;
+
+  &:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(177, 178, 255, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+}

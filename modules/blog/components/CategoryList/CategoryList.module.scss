@@ -1,0 +1,55 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.categoryList {
+  background: var(--color-bg-primary);
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  box-shadow: $shadow-sm;
+  margin-bottom: $spacing-lg;
+}
+
+.title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: var(--color-text-primary);
+  margin-bottom: $spacing-md;
+}
+
+.categories {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.categoryItem {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-sm $spacing-md;
+  background: transparent;
+  border: none;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: all $transition-fast;
+  text-align: left;
+  width: 100%;
+
+  &:hover {
+    background: var(--color-bg-secondary);
+  }
+}
+
+.icon {
+  font-size: $font-size-lg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+}
+
+.label {
+  color: var(--color-text-primary);
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+}

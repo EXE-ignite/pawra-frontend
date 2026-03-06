@@ -1,0 +1,46 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.card {
+  @include card;
+  @include flex-column;
+  gap: $spacing-sm;
+  transition: all $transition-base;
+
+  &:hover {
+    box-shadow: $shadow-md;
+  }
+}
+
+.cardHeader {
+  @include flex-between;
+  margin-bottom: $spacing-xs;
+}
+
+.cardIcon {
+  font-size: $font-size-2xl;
+}
+
+.cardLabel {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cardValue {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  color: var(--color-primary);
+}
+
+.cardChange {
+  font-size: $font-size-sm;
+  color: $color-success;
+  margin-top: $spacing-xs;
+
+  &.negative {
+    color: $color-error;
+  }
+}

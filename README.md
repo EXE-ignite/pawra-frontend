@@ -1,3 +1,56 @@
+# Pawra Frontend
+
+A pet care management platform built with Next.js — helping pet owners track health, schedule appointments, manage medications, and stay connected with vets.
+
+---
+
+## Changelog
+
+### v1.0.0 — 2026-03-06
+
+**Initial release.**
+
+#### Pet Owner Module
+- Pet dashboard with stat cards, daily routine, and task sidebar
+- Pet profile page: header, health records, growth chart, vaccination tracking, document vault
+- Pet switcher for managing multiple pets
+- Add / Edit / Delete pet via modal
+- Reminders page with calendar view and add reminder modal
+- Appointment cards and medication tracking
+- Add vaccination modal
+
+#### Blog Module
+- Public blog listing page with featured post, article cards, category filter, search, and newsletter box
+- Blog detail page with comment section, reaction bar, and related posts
+- Admin blog dashboard with data table and stat cards
+- Create / Edit blog post with full rich text editor (TipTap) — bold, italic, underline, headings, lists, image insert
+- Blog search bar and category management
+
+#### Admin Module
+- Admin dashboard page
+- Blog management (create, edit, list) under `/admin/blog`
+
+#### Shared Infrastructure
+- Module-based architecture (`modules/`) with components, pages, services, types per feature
+- SCSS Modules styling system with shared `_variables.scss` and `_mixins.scss`
+- i18n (internationalization) support via shared translation context
+- Main layout with shared navigation
+- Google OAuth integration (`@react-oauth/google`)
+- Firebase integration (storage for image uploads)
+- Axios-based API service layer (mock-data ready, API-switchable)
+- TypeScript throughout — strict types, separate `.types.ts` files
+
+#### Stack
+- **Framework:** Next.js 16 / React 19
+- **Language:** TypeScript 5
+- **Styling:** SCSS Modules
+- **Editor:** TipTap 3
+- **Auth:** Google OAuth + Firebase
+- **HTTP:** Axios
+- **Runtime:** Bun
+
+---
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

@@ -1,0 +1,101 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.container {
+  background-color: var(--color-bg-primary);
+  border-radius: 12px;
+  padding: $spacing-lg;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-lg;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.icon {
+  font-size: 1.5rem;
+}
+
+.editButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.25rem;
+  padding: $spacing-sm;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  color: var(--color-text-primary);
+
+  &:hover {
+    background-color: var(--color-bg-hover);
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.item {
+  display: flex;
+  align-items: flex-start;
+  padding: $spacing-md;
+  background-color: var(--color-bg-secondary);
+  border-radius: 8px;
+  border-left: 3px solid var(--color-primary);
+}
+
+.itemLeft {
+  display: flex;
+  gap: $spacing-md;
+  width: 100%;
+}
+
+.checkbox {
+  margin-top: 2px;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  flex: 1;
+}
+
+.itemTime {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.itemTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.itemDescription {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
