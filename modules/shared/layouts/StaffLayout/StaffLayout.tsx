@@ -44,23 +44,8 @@ export function StaffLayout({ children }: StaffLayoutProps) {
           <a href="/admin/dashboard" className={styles.navItem}>
             📊 Dashboard
           </a>
-          <a href="/admin/users" className={styles.navItem}>
-            👥 Users
-          </a>
-          <a href="/admin/appointments" className={styles.navItem}>
-            📅 Appointments
-          </a>
-          <a href="/admin/pets" className={styles.navItem}>
-            🐕 Pets
-          </a>
           <a href="/admin/blog" className={styles.navItem}>
             📝 Blog Posts
-          </a>
-          <a href="/admin/reports" className={styles.navItem}>
-            📈 Reports
-          </a>
-          <a href="/admin/settings" className={styles.navItem}>
-            ⚙️ Settings
           </a>
         </nav>
 
