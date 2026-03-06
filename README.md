@@ -13,7 +13,7 @@ A pet care management platform built with Next.js — helping pet owners track h
 #### Bug Fixes
 - **Blog i18n:** All blog components (`FeaturedPost`, `ArticleCard`, `CategoryList`, `SearchBox`, `NewsletterBox`, `BlogTable`, `BlogSearchBar`, `BlogDetailPage`, `BlogPage`, `AdminBlogPage`) were using hardcoded English strings — now fully wired up to the shared translation context (`useTranslation`) with Vietnamese & English keys added to `en.ts` / `vi.ts`
 - **Double `+` on Add Task button:** `taskSidebar.addTask` translation key contained a leading `+` character while the `TaskSidebar` component already renders a `+` icon separately, causing `++ Add Task` / `++ Thêm công việc` to appear — removed the redundant `+` from both locale files
-- **Admin Blog delete calling wrong endpoint:** `AdminBlogPage` was calling `blogService.deleteBlogPost()` (public endpoint) instead of `blogService.deletePost()` (admin endpoint) — fixed to use the correct admin delete method
+- **Admin Blog delete calling wrong endpoint:** `AdminBlogPage` was calling `blogService.deleteBlogPost()` (public endpoint) instead of `blogService.deletePost()` (admin endpoint) — fixed to use the correct admin delete method.
 
 ---
 
