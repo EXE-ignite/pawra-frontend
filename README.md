@@ -13,7 +13,7 @@ A pet care management platform built with Next.js — helping pet owners track h
 #### Changes
 - **Admin Sidebar:** Ẩn các mục điều hướng chưa hoàn thiện — **Users**, **Appointments**, **Pets**, **Reports**, **Settings** — khỏi sidebar admin; chỉ giữ lại **Dashboard** và **Blog Posts**
 
----
+----
 
 ### v1.0.1 — 2026-03-06 *(Hotfix)*
 
