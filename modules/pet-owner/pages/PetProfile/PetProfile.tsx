@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { PetProfilePageProps } from './PetProfile.types';
+import { useTranslation } from '@/modules/shared/contexts';
 import styles from './PetProfile.module.scss';
 
 export function PetProfilePage({
@@ -11,6 +12,7 @@ export function PetProfilePage({
   onExportPdf,
   onAddRecord,
 }: PetProfilePageProps) {
+  const { t } = useTranslation();
   function getStatusClass(status: string) {
     switch (status) {
       case 'valid': return styles.statusValid;
@@ -22,10 +24,10 @@ export function PetProfilePage({
 
   function getStatusLabel(status: string) {
     switch (status) {
-      case 'valid': return 'Valid';
-      case 'due-soon': return 'Due Soon';
-      case 'overdue': return 'Overdue';
-      default: return 'Valid';
+      case 'valid': return t('petProfile.valid');
+      case 'due-soon': return t('petProfile.dueSoon');
+      case 'overdue': return t('petProfile.overdue');
+      default: return t('petProfile.valid');
     }
   }
 
@@ -57,7 +59,7 @@ export function PetProfilePage({
             <div className={styles.headerNameRow}>
               <h1 className={styles.headerName}>{petProfile.name}</h1>
               {petProfile.status === 'active' && (
-                <span className={styles.activeBadge}>ACTIVE</span>
+                <span className={styles.activeBadge}>{t('petProfile.active')}</span>
               )}
             </div>
             <div className={styles.headerAttributes}>
@@ -73,7 +75,7 @@ export function PetProfilePage({
               )}
               <span className={styles.attribute}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                {petProfile.age} Years {petProfile.ageMonths} Months
+                {petProfile.age} {t('petProfile.years')} {petProfile.ageMonths} {t('petProfile.months')}
               </span>
             </div>
           </div>
@@ -82,12 +84,12 @@ export function PetProfilePage({
         <div className={styles.headerActions}>
           <button className={styles.editButton} onClick={onEditProfile}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-            Edit Profile
+            {t('petProfile.editProfile')}
           </button>
           {onDeletePet && (
             <button className={styles.deleteButton} onClick={onDeletePet}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-              Xóa
+              {t('common.delete')}
             </button>
           )}
         </div>
@@ -107,7 +109,7 @@ export function PetProfilePage({
 
           {petProfile.summary && (
             <div className={styles.summarySection}>
-              <h3 className={styles.summaryTitle}>Pet Summary</h3>
+              <h3 className={styles.summaryTitle}>{t('petProfile.petSummary')}</h3>
               <p className={styles.summaryText}>{petProfile.summary}</p>
             </div>
           )}
@@ -116,12 +118,12 @@ export function PetProfilePage({
             <div className={styles.interestsSection}>
               <h3 className={styles.interestsTitle}>
                 <svg className={styles.heartIcon} width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-                Personal Interests
+                {t('petProfile.personalInterests')}
               </h3>
 
               {petProfile.hobbies && petProfile.hobbies.length > 0 && (
                 <div className={styles.tagGroup}>
-                  <span className={styles.tagGroupLabel}>FAVORITE HOBBIES</span>
+                  <span className={styles.tagGroupLabel}>{t('petProfile.favoriteHobbies')}</span>
                   <div className={styles.tagList}>
                     {petProfile.hobbies.map((tag, i) => (
                       <span key={i} className={`${styles.tag} ${getTagClass(tag.color)}`}>
@@ -134,7 +136,7 @@ export function PetProfilePage({
 
               {petProfile.favoriteThings && petProfile.favoriteThings.length > 0 && (
                 <div className={styles.tagGroup}>
-                  <span className={styles.tagGroupLabel}>FAVORITE THINGS</span>
+                  <span className={styles.tagGroupLabel}>{t('petProfile.favoriteThings')}</span>
                   <div className={styles.tagList}>
                     {petProfile.favoriteThings.map((tag, i) => (
                       <span key={i} className={`${styles.tag} ${getTagClass(tag.color)}`}>
@@ -155,8 +157,8 @@ export function PetProfilePage({
               <div className={styles.vaccinationTitleGroup}>
                 <svg className={styles.vaccinationIcon} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
                 <div>
-                  <h2 className={styles.vaccinationTitle}>Vaccination History</h2>
-                  <p className={styles.vaccinationSubtitle}>Full medical immunization record</p>
+                  <h2 className={styles.vaccinationTitle}>{t('petProfile.vaccinationHistory')}</h2>
+                  <p className={styles.vaccinationSubtitle}>{t('petProfile.vaccinationSubtitle')}</p>
                 </div>
               </div>
               <button className={styles.addButton} onClick={onAddRecord} aria-label="Add vaccination">
@@ -168,10 +170,10 @@ export function PetProfilePage({
               <table className={styles.table}>
                 <thead>
                   <tr>
-                    <th>VACCINE TYPE</th>
-                    <th>DATE ADMINISTERED</th>
-                    <th>EXPIRATION DATE</th>
-                    <th>STATUS</th>
+                    <th>{t('petProfile.vaccineType')}</th>
+                    <th>{t('petProfile.dateAdministered')}</th>
+                    <th>{t('petProfile.expirationDate')}</th>
+                    <th>{t('petProfile.status')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -198,7 +200,7 @@ export function PetProfilePage({
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                 </div>
                 <div>
-                  <p className={styles.alertTitle}>Vaccination Alert</p>
+                  <p className={styles.alertTitle}>{t('petProfile.vaccinationAlert')}</p>
                   <p className={styles.alertText}>{petProfile.vaccinationAlert}</p>
                 </div>
               </div>

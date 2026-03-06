@@ -6,11 +6,13 @@ import { PetProfilePage } from '@/modules/pet-owner';
 import { PetSwitcher, EditPetModal, AddVaccinationModal } from '@/modules/pet-owner/components';
 import { petService } from '@/modules/pet-owner/services';
 import { ConfirmModal } from '@/modules/shared/components';
+import { useTranslation } from '@/modules/shared/contexts';
 import type { PetProfile, Pet } from '@/modules/pet-owner/types';
 
 export default function PetProfileByIdRoute() {
   const params = useParams();
   const router = useRouter();
+  const { t } = useTranslation();
   const petId = params.petId as string;
 
   const [petProfile, setPetProfile] = useState<PetProfile | null>(null);
@@ -36,7 +38,7 @@ export default function PetProfileByIdRoute() {
         setAllPets(pets);
       } catch (err: any) {
         console.error('Failed to load pet profile:', err);
-        setError(err?.message || 'Không thể tải thông tin thú cưng');
+        setError(err?.message || t('common.loadError'));
       } finally {
         setLoading(false);
       }
@@ -100,7 +102,7 @@ export default function PetProfileByIdRoute() {
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
-        <p>Đang tải...</p>
+        <p>{t('common.loading')}</p>
       </div>
     );
   }
@@ -108,9 +110,9 @@ export default function PetProfileByIdRoute() {
   if (error || !petProfile) {
     return (
       <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <p style={{ color: 'red' }}>{error || 'Không tìm thấy thú cưng'}</p>
+        <p style={{ color: 'red' }}>{error || t('petProfile.notFound')}</p>
         <button onClick={() => router.back()} style={{ marginTop: '1rem' }}>
-          Quay lại
+          {t('common.back')}
         </button>
       </div>
     );
@@ -147,7 +149,6 @@ export default function PetProfileByIdRoute() {
             birthDate: getApproxBirthDate(),
             color: petProfile.color,
             weight: petProfile.weight,
-            description: petProfile.summary,
           }}
           onClose={() => setIsEditModalOpen(false)}
           onSuccess={handleEditSuccess}
@@ -161,9 +162,9 @@ export default function PetProfileByIdRoute() {
       />
       <ConfirmModal
         isOpen={isDeleteModalOpen}
-        title="Xóa thú cưng"
-        message={`Bạn có chắc chắn muốn xóa ${petProfile?.name ?? 'thú cưng này'} không? Hành động này không thể hoàn tác.`}
-        confirmLabel="Xóa"
+        title={t('petProfile.deletePetTitle')}
+        message={t('petProfile.deletePetMessage', { name: petProfile?.name ?? '' })}
+        confirmLabel={t('common.delete')}
         variant="danger"
         loading={deleteLoading}
         onConfirm={handleDeleteConfirm}

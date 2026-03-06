@@ -1,8 +1,10 @@
 import React from 'react';
 import { DocumentVaultProps } from './DocumentVault.types';
+import { useTranslation } from '@/modules/shared/contexts';
 import styles from './DocumentVault.module.scss';
 
 export function DocumentVault({ documents, onUpload, onView }: DocumentVaultProps) {
+  const { t } = useTranslation();
   function getDocumentIcon(type: string) {
     switch (type) {
       case 'pdf':
@@ -19,12 +21,12 @@ export function DocumentVault({ documents, onUpload, onView }: DocumentVaultProp
       <div className={styles.header}>
         <h2 className={styles.title}>
           <span className={styles.icon}>📁</span>
-          Document Vault
+          {t('documentVault.title')}
         </h2>
         {onUpload && (
           <button className={styles.uploadButton} onClick={onUpload}>
             <span className={styles.uploadIcon}>+</span>
-            Upload New
+            {t('documentVault.uploadNew')}
           </button>
         )}
       </div>

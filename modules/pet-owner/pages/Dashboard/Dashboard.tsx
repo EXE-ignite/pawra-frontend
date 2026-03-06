@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Button } from '@/modules/shared';
+import { Button, useTranslation } from '@/modules/shared';
 import { StatCard, PetCard, AppointmentCard, AddPetModal } from '../../components';
 import { Pet, Appointment, DashboardStats } from '../../types';
 import styles from './Dashboard.module.scss';
@@ -15,6 +15,7 @@ interface DashboardPageProps {
 
 export function DashboardPage({ stats, pets, appointments, onRefresh }: DashboardPageProps) {
   const [showAddPet, setShowAddPet] = useState(false);
+  const { t } = useTranslation();
 
   function handleAddPet() {
     setShowAddPet(true);
@@ -31,9 +32,9 @@ export function DashboardPage({ stats, pets, appointments, onRefresh }: Dashboar
   return (
     <div className={styles.dashboard}>
       <div className={styles.header}>
-        <h1 className={styles.title}>Welcome back! 👋</h1>
+        <h1 className={styles.title}>{t('dashboard.welcomeBack')}</h1>
         <p className={styles.subtitle}>
-          Here's what's happening with your pets today.
+          {t('dashboard.subtitle')}
         </p>
       </div>
 
@@ -41,22 +42,22 @@ export function DashboardPage({ stats, pets, appointments, onRefresh }: Dashboar
       <div className={styles.statsGrid}>
         <StatCard
           icon="🐾"
-          label="Total Pets"
+          label={t('dashboard.totalPets')}
           value={stats.totalPets}
         />
         <StatCard
           icon="📅"
-          label="Upcoming Appointments"
+          label={t('dashboard.upcomingAppointments')}
           value={stats.upcomingAppointments}
         />
         <StatCard
           icon="✅"
-          label="Completed Visits"
+          label={t('dashboard.completedVisits')}
           value={stats.completedVisits}
         />
         <StatCard
           icon="💳"
-          label="Pending Payments"
+          label={t('dashboard.pendingPayments')}
           value={stats.pendingPayments}
         />
       </div>
@@ -64,9 +65,9 @@ export function DashboardPage({ stats, pets, appointments, onRefresh }: Dashboar
       {/* My Pets Section */}
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>My Pets</h2>
+          <h2 className={styles.sectionTitle}>{t('dashboard.myPets')}</h2>
           <Button variant="primary" onClick={handleAddPet}>
-            + Add Pet
+            {t('dashboard.addPet')}
           </Button>
         </div>
 
@@ -79,12 +80,12 @@ export function DashboardPage({ stats, pets, appointments, onRefresh }: Dashboar
         ) : (
           <div className={styles.emptyState}>
             <div className={styles.emptyStateIcon}>🐾</div>
-            <h3 className={styles.emptyStateTitle}>No pets yet</h3>
+            <h3 className={styles.emptyStateTitle}>{t('dashboard.noPets')}</h3>
             <p className={styles.emptyStateText}>
-              Start by adding your first pet to track their health and appointments.
+              {t('dashboard.noPetsDesc')}
             </p>
             <Button variant="primary" onClick={handleAddPet}>
-              Add Your First Pet
+              {t('dashboard.addFirstPet')}
             </Button>
           </div>
         )}
@@ -93,9 +94,9 @@ export function DashboardPage({ stats, pets, appointments, onRefresh }: Dashboar
       {/* Upcoming Appointments Section */}
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
-          <h2 className={styles.sectionTitle}>Upcoming Appointments</h2>
+          <h2 className={styles.sectionTitle}>{t('dashboard.upcomingAppointmentsTitle')}</h2>
           <Button variant="secondary" onClick={handleBookAppointment}>
-            + Book Appointment
+            {t('dashboard.bookAppointment')}
           </Button>
         </div>
 
@@ -108,12 +109,12 @@ export function DashboardPage({ stats, pets, appointments, onRefresh }: Dashboar
         ) : (
           <div className={styles.emptyState}>
             <div className={styles.emptyStateIcon}>📅</div>
-            <h3 className={styles.emptyStateTitle}>No upcoming appointments</h3>
+            <h3 className={styles.emptyStateTitle}>{t('dashboard.noAppointments')}</h3>
             <p className={styles.emptyStateText}>
-              Book an appointment with a veterinarian for your pet's health checkup.
+              {t('dashboard.noAppointmentsDesc')}
             </p>
             <Button variant="primary" onClick={handleBookAppointment}>
-              Book Appointment
+              {t('dashboard.bookAppointment')}
             </Button>
           </div>
         )}

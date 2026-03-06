@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useGoogleLogin } from '@react-oauth/google';
 import { SignInFormProps } from './SignInForm.types';
 import { authService } from '../../../services';
+import { useTranslation } from '../../../contexts';
 import { Toast } from '../../Toast';
 import styles from './SignInForm.module.scss';
 
@@ -13,13 +14,14 @@ export function SignInForm({ onSuccess }: SignInFormProps) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'info' | 'warning' | 'error' } | null>(null);
+  const { t } = useTranslation();
 
   const isGoogleConfigured = typeof window !== 'undefined' && 
     process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID && 
     process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID !== '';
 
   const handleFacebookLogin = () => {
-    setToast({ message: 'Tính năng đăng nhập Facebook hiện tại chưa có', type: 'info' });
+    setToast({ message: t('auth.facebookNotAvailable'), type: 'info' });
   };
 
   const handleGoogleLogin = useGoogleLogin({
@@ -61,7 +63,7 @@ export function SignInForm({ onSuccess }: SignInFormProps) {
 
   const handleGoogleClick = () => {
     if (!isGoogleConfigured) {
-      setToast({ message: 'Google login is not configured', type: 'warning' });
+      setToast({ message: t('auth.googleNotConfigured'), type: 'warning' });
       return;
     }
     handleGoogleLogin();
@@ -101,7 +103,7 @@ export function SignInForm({ onSuccess }: SignInFormProps) {
 
   return (
     <div className={styles.container}>
-      <h2 className={styles.title}>Sign in</h2>
+      <h2 className={styles.title}>{t('auth.signIn')}</h2>
 
       <div className={styles.socialButtons}>
         <button type="button" className={styles.socialButton} onClick={handleFacebookLogin}>
@@ -112,14 +114,14 @@ export function SignInForm({ onSuccess }: SignInFormProps) {
         </button>
       </div>
 
-      <p className={styles.divider}>or use your account</p>
+      <p className={styles.divider}>{t('auth.orUseAccount')}</p>
 
       {error && <div className={styles.error}>{error}</div>}
 
       <form className={styles.form} onSubmit={handleSignIn}>
         <input
           type="email"
-          placeholder="Email"
+          placeholder={t('auth.email')}
           className={styles.input}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -127,7 +129,7 @@ export function SignInForm({ onSuccess }: SignInFormProps) {
         />
         <input
           type="password"
-          placeholder="Password"
+          placeholder={t('auth.password')}
           className={styles.input}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -135,7 +137,7 @@ export function SignInForm({ onSuccess }: SignInFormProps) {
         />
 
         <div className={styles.forgotPassword}>
-          <a href="#">Forgot your password?</a>
+          <a href="#">{t('auth.forgotPassword')}</a>
         </div>
 
         <button 
@@ -143,7 +145,7 @@ export function SignInForm({ onSuccess }: SignInFormProps) {
           className={styles.submitButton}
           disabled={loading}
         >
-          {loading ? 'Signing In...' : 'Sign In'}
+          {loading ? t('auth.signingIn') : t('auth.signIn')}
         </button>
       </form>
 

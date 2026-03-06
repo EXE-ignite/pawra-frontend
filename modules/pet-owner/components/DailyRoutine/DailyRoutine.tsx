@@ -1,14 +1,16 @@
 import React from 'react';
 import { DailyRoutineProps } from './DailyRoutine.types';
+import { useTranslation } from '@/modules/shared/contexts';
 import styles from './DailyRoutine.module.scss';
 
 export function DailyRoutine({ activities, onToggle, onEdit }: DailyRoutineProps) {
+  const { t } = useTranslation();
   return (
     <div className={styles.container}>
       <div className={styles.header}>
         <h2 className={styles.title}>
           <span className={styles.icon}>⏰</span>
-          Daily Routine
+          {t('dailyRoutine.title')}
         </h2>
         {onEdit && (
           <button className={styles.editButton} onClick={onEdit}>

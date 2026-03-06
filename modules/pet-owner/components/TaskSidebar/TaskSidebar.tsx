@@ -1,5 +1,6 @@
 import React from 'react';
 import { TaskSidebarProps } from './TaskSidebar.types';
+import { useTranslation } from '@/modules/shared/contexts';
 import styles from './TaskSidebar.module.scss';
 
 export function TaskSidebar({
@@ -15,10 +16,11 @@ export function TaskSidebar({
   onEditTask,
   onClose,
 }: TaskSidebarProps) {
+  const { t, locale } = useTranslation();
   const dateLabel = (() => {
     if (!selectedDate) return null;
     const date = new Date(selectedDate + 'T00:00:00');
-    const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+    const dayName = date.toLocaleDateString(locale === 'vi' ? 'vi-VN' : 'en-US', { weekday: 'long' });
     const dd = String(date.getDate()).padStart(2, '0');
     const mm = String(date.getMonth() + 1).padStart(2, '0');
     const yyyy = date.getFullYear();
@@ -90,16 +92,16 @@ export function TaskSidebar({
           <button
             className={styles.editButton}
             onClick={() => onEditTask?.(task.id)}
-            title="Edit task"
-            aria-label="Edit task"
+            title={t('taskSidebar.editTask')}
+            aria-label={t('taskSidebar.editTask')}
           >
             ✏️
           </button>
           <button
             className={styles.deleteButton}
             onClick={() => onDeleteTask?.(task.id)}
-            title="Delete task"
-            aria-label="Delete task"
+            title={t('taskSidebar.deleteTask')}
+            aria-label={t('taskSidebar.deleteTask')}
           >
             🗑️
           </button>
@@ -113,10 +115,10 @@ export function TaskSidebar({
       <div className={styles.header}>
         <div>
           <h2 className={styles.title}>
-            {dateLabel ?? 'All Tasks'}
+            {dateLabel ?? t('taskSidebar.allTasks')}
           </h2>
           <p className={styles.subtitle}>
-            {tasks.length} Task{tasks.length !== 1 ? 's' : ''} scheduled
+            {tasks.length} {tasks.length !== 1 ? t('taskSidebar.tasks') : t('taskSidebar.task')} {t('taskSidebar.scheduled')}
           </p>
         </div>
         {onClose && (
@@ -128,7 +130,7 @@ export function TaskSidebar({
 
       <button className={styles.addButton} onClick={onAddTask}>
         <span className={styles.addIcon}>+</span>
-        Add Task
+        {t('taskSidebar.addTask')}
       </button>
 
       {pets.length > 0 && (
@@ -137,7 +139,7 @@ export function TaskSidebar({
             className={`${styles.filterTag} ${!selectedPetId ? styles.filterTagActive : ''}`}
             onClick={() => onPetFilterChange?.(null)}
           >
-            🐾 All
+            🐾 {t('taskSidebar.all')}
           </button>
           {pets.map(pet => (
             <button
@@ -154,7 +156,7 @@ export function TaskSidebar({
       <div className={styles.sections}>
         {morningTasks.length > 0 && (
           <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>Morning</h3>
+            <h3 className={styles.sectionTitle}>{t('taskSidebar.morning')}</h3>
             <div className={styles.taskList}>
               {morningTasks.map(task => (
                 <TaskItem key={task.id} task={task} />
@@ -165,7 +167,7 @@ export function TaskSidebar({
 
         {afternoonTasks.length > 0 && (
           <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>Afternoon</h3>
+            <h3 className={styles.sectionTitle}>{t('taskSidebar.afternoon')}</h3>
             <div className={styles.taskList}>
               {afternoonTasks.map(task => (
                 <TaskItem key={task.id} task={task} />
@@ -176,7 +178,7 @@ export function TaskSidebar({
 
         {eveningTasks.length > 0 && (
           <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>Evening</h3>
+            <h3 className={styles.sectionTitle}>{t('taskSidebar.evening')}</h3>
             <div className={styles.taskList}>
               {eveningTasks.map(task => (
                 <TaskItem key={task.id} task={task} />
@@ -187,7 +189,7 @@ export function TaskSidebar({
 
         {milestones.length > 0 && (
           <div className={styles.section}>
-            <h3 className={styles.sectionTitle}>Health Milestones</h3>
+            <h3 className={styles.sectionTitle}>{t('taskSidebar.healthMilestones')}</h3>
             <div className={styles.milestoneList}>
               {milestones.map(milestone => (
                 <div key={milestone.id} className={styles.milestone}>
@@ -195,7 +197,7 @@ export function TaskSidebar({
                   <div className={styles.milestoneInfo}>
                     <p className={styles.milestoneTitle}>{milestone.title}</p>
                     <p className={styles.milestoneDue}>
-                      In {milestone.daysUntil} days • {milestone.dueDate.split('-').reverse().join('/')}
+                      {t('taskSidebar.inDays', { count: milestone.daysUntil })} • {milestone.dueDate.split('-').reverse().join('/')}
                     </p>
                   </div>
                 </div>

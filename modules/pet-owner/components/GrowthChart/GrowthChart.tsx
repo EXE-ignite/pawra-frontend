@@ -1,8 +1,10 @@
 import React from 'react';
 import { GrowthChartProps } from './GrowthChart.types';
+import { useTranslation } from '@/modules/shared/contexts';
 import styles from './GrowthChart.module.scss';
 
 export function GrowthChart({ weightHistory, currentWeight, weightChange, onEdit }: GrowthChartProps) {
+  const { t, locale } = useTranslation();
   // Simple chart visualization
   const maxWeight = Math.max(...weightHistory.map(r => r.weight));
   const minWeight = Math.min(...weightHistory.map(r => r.weight));
@@ -13,7 +15,7 @@ export function GrowthChart({ weightHistory, currentWeight, weightChange, onEdit
       <div className={styles.header}>
         <h2 className={styles.title}>
           <span className={styles.icon}>📈</span>
-          Growth Chart
+          {t('growthChart.title')}
         </h2>
         {onEdit && (
           <button className={styles.editButton} onClick={onEdit}>
@@ -53,7 +55,7 @@ export function GrowthChart({ weightHistory, currentWeight, weightChange, onEdit
         <div className={styles.xAxis}>
           {weightHistory.map((record, index) => (
             <span key={index} className={styles.axisLabel}>
-              {new Date(record.date).toLocaleDateString('en-US', { month: 'short' }).toUpperCase()}
+              {new Date(record.date).toLocaleDateString(locale === 'vi' ? 'vi-VN' : 'en-US', { month: 'short' }).toUpperCase()}
             </span>
           ))}
         </div>
@@ -61,11 +63,11 @@ export function GrowthChart({ weightHistory, currentWeight, weightChange, onEdit
 
       <div className={styles.stats}>
         <div className={styles.stat}>
-          <p className={styles.statLabel}>Current Weight</p>
+          <p className={styles.statLabel}>{t('growthChart.currentWeight')}</p>
           <p className={styles.statValue}>{currentWeight} kg</p>
         </div>
         <div className={styles.stat}>
-          <p className={styles.statLabel}>Change (3mo)</p>
+          <p className={styles.statLabel}>{t('growthChart.change3mo')}</p>
           <p className={`${styles.statValue} ${weightChange > 0 ? styles.positive : ''}`}>
             {weightChange > 0 ? '+' : ''}{weightChange} kg
           </p>

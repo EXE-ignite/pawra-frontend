@@ -3,6 +3,7 @@
 import React from 'react';
 import styles from './ConfirmModal.module.scss';
 import type { ConfirmModalProps } from './ConfirmModal.types';
+import { useTranslation } from '@/modules/shared/contexts';
 
 export function ConfirmModal({
   isOpen,
@@ -15,6 +16,9 @@ export function ConfirmModal({
   onConfirm,
   onCancel,
 }: ConfirmModalProps) {
+  const { t } = useTranslation();
+  const resolvedConfirmLabel = confirmLabel === 'Xác nhận' ? t('common.confirm') : confirmLabel;
+  const resolvedCancelLabel = cancelLabel === 'Hủy' ? t('common.cancel') : cancelLabel;
   if (!isOpen) return null;
 
   return (
@@ -54,7 +58,7 @@ export function ConfirmModal({
             onClick={onCancel}
             disabled={loading}
           >
-            {cancelLabel}
+            {resolvedCancelLabel}
           </button>
           <button
             type="button"
@@ -62,7 +66,7 @@ export function ConfirmModal({
             onClick={onConfirm}
             disabled={loading}
           >
-            {loading ? 'Đang xử lý...' : confirmLabel}
+            {loading ? t('common.processing') : resolvedConfirmLabel}
           </button>
         </div>
       </div>

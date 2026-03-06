@@ -4,6 +4,7 @@ import React, { useState, useRef } from 'react';
 import { petService } from '../../services';
 import { storageService } from '@/modules/shared/services';
 import { ImageCropModal } from '@/modules/shared/components';
+import { useTranslation } from '@/modules/shared/contexts';
 import { tokenService } from '@/modules/shared/services/api/token.service';
 import styles from './AddPetModal.module.scss';
 import type { AddPetModalProps, AddPetFormData } from './AddPetModal.types';
@@ -31,6 +32,7 @@ const INITIAL_FORM: AddPetFormData = {
 };
 
 export function AddPetModal({ isOpen, onClose, onSuccess }: AddPetModalProps) {
+  const { t } = useTranslation();
   const [form, setForm] = useState<AddPetFormData>(INITIAL_FORM);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -61,11 +63,11 @@ export function AddPetModal({ isOpen, onClose, onSuccess }: AddPetModalProps) {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith('image/')) {
-      setError('Vui lòng chọn file ảnh hợp lệ.');
+      setError(t('addPetModal.errorInvalidImage'));
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      setError('Ảnh phải nhỏ hơn 5MB.');
+      setError(t('addPetModal.errorImageSize'));
       return;
     }
     setError(null);
@@ -97,19 +99,19 @@ export function AddPetModal({ isOpen, onClose, onSuccess }: AddPetModalProps) {
     setError(null);
 
     if (!form.name.trim() || !form.breed.trim() || !form.birthDate) {
-      setError('Vui lòng điền đầy đủ thông tin bắt buộc.');
+      setError(t('addPetModal.errorRequiredFields'));
       return;
     }
 
     const isoDate = parseDateInput(form.birthDate);
     if (!isoDate) {
-      setError('Ngày sinh không hợp lệ. Vui lòng nhập theo định dạng dd/mm/yyyy.');
+      setError(t('addPetModal.errorInvalidDate'));
       return;
     }
 
     const customerId = tokenService.getCustomerIdFromToken();
     if (!customerId) {
-      setError('Không lấy được thông tin tài khoản. Vui lòng đăng nhập lại.');
+      setError(t('addPetModal.errorNotLoggedIn'));
       return;
     }
 
@@ -136,7 +138,7 @@ export function AddPetModal({ isOpen, onClose, onSuccess }: AddPetModalProps) {
       onSuccess();
       onClose();
     } catch (err: any) {
-      setError(err?.message || 'Thêm thú cưng thất bại. Vui lòng thử lại.');
+      setError(err?.message || t('addPetModal.errorFailed'));
     } finally {
       setLoading(false);
     }
@@ -152,14 +154,14 @@ export function AddPetModal({ isOpen, onClose, onSuccess }: AddPetModalProps) {
       <div className={styles.overlay}>
       <div className={styles.modal}>
         <div className={styles.header}>
-          <h2 className={styles.title}>Thêm thú cưng mới 🐾</h2>
+          <h2 className={styles.title}>{t('addPetModal.title')}</h2>
           <button className={styles.closeBtn} onClick={onClose} type="button">✕</button>
         </div>
 
         <form className={styles.form} onSubmit={handleSubmit}>
           {/* Image Upload */}
           <div className={styles.imageUploadSection}>
-            <label className={styles.label}>Ảnh thú cưng</label>
+            <label className={styles.label}>{t('addPetModal.petPhoto')}</label>
             <div
               className={styles.imageUploadArea}
               onClick={() => fileInputRef.current?.click()}
@@ -178,8 +180,8 @@ export function AddPetModal({ isOpen, onClose, onSuccess }: AddPetModalProps) {
               ) : (
                 <div className={styles.imagePlaceholder}>
                   <span className={styles.imagePlaceholderIcon}>📷</span>
-                  <span className={styles.imagePlaceholderText}>Nhấn để chọn ảnh</span>
-                  <span className={styles.imagePlaceholderHint}>PNG, JPG – tối đa 5MB</span>
+                  <span className={styles.imagePlaceholderText}>{t('addPetModal.clickToSelect')}</span>
+                  <span className={styles.imagePlaceholderHint}>{t('addPetModal.photoHint')}</span>
                 </div>
               )}
             </div>
@@ -196,21 +198,21 @@ export function AddPetModal({ isOpen, onClose, onSuccess }: AddPetModalProps) {
           <div className={styles.row}>
             <div className={styles.field}>
               <label className={styles.label}>
-                Tên thú cưng <span className={styles.required}>*</span>
+                {t('addPetModal.petName')} <span className={styles.required}>*</span>
               </label>
               <input
                 className={styles.input}
                 name="name"
                 value={form.name}
                 onChange={handleChange}
-                placeholder="VD: Mochi"
+                placeholder={t('addPetModal.petNamePlaceholder')}
                 required
               />
             </div>
 
             <div className={styles.field}>
               <label className={styles.label}>
-                Loài <span className={styles.required}>*</span>
+                {t('addPetModal.species')} <span className={styles.required}>*</span>
               </label>
               <select
                 className={styles.select}
@@ -229,21 +231,21 @@ export function AddPetModal({ isOpen, onClose, onSuccess }: AddPetModalProps) {
           <div className={styles.row}>
             <div className={styles.field}>
               <label className={styles.label}>
-                Giống <span className={styles.required}>*</span>
+                {t('addPetModal.breed')} <span className={styles.required}>*</span>
               </label>
               <input
                 className={styles.input}
                 name="breed"
                 value={form.breed}
                 onChange={handleChange}
-                placeholder="VD: Poodle"
+                placeholder={t('addPetModal.breedPlaceholder')}
                 required
               />
             </div>
 
             <div className={styles.field}>
               <label className={styles.label}>
-                Ngày sinh <span className={styles.required}>*</span>
+                {t('addPetModal.dateOfBirth')} <span className={styles.required}>*</span>
               </label>
               <input
                 className={styles.input}
@@ -260,25 +262,25 @@ export function AddPetModal({ isOpen, onClose, onSuccess }: AddPetModalProps) {
           {/* Color + Weight */}
           <div className={styles.row}>
             <div className={styles.field}>
-              <label className={styles.label}>Màu lông</label>
+              <label className={styles.label}>{t('addPetModal.furColor')}</label>
               <input
                 className={styles.input}
                 name="color"
                 value={form.color}
                 onChange={handleChange}
-                placeholder="VD: Nâu trắng"
+                placeholder={t('addPetModal.furColorPlaceholder')}
               />
             </div>
 
             <div className={styles.field}>
-              <label className={styles.label}>Cân nặng (kg)</label>
+              <label className={styles.label}>{t('addPetModal.weight')}</label>
               <input
                 className={styles.input}
                 type="number"
                 name="weight"
                 value={form.weight}
                 onChange={handleChange}
-                placeholder="VD: 3.5"
+                placeholder={t('addPetModal.weightPlaceholder')}
                 min="0"
                 step="0.1"
               />
@@ -294,14 +296,14 @@ export function AddPetModal({ isOpen, onClose, onSuccess }: AddPetModalProps) {
               onClick={onClose}
               disabled={loading}
             >
-              Hủy
+              {t('common.cancel')}
             </button>
             <button
               type="submit"
               className={styles.submitBtn}
               disabled={loading}
             >
-              {loading ? 'Đang thêm...' : 'Thêm thú cưng'}
+              {loading ? t('addPetModal.adding') : t('addPetModal.addPet')}
             </button>
           </div>
         </form>

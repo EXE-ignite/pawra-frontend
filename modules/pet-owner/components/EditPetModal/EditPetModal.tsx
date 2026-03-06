@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { petService } from '../../services';
 import { storageService } from '@/modules/shared/services';
 import { ImageCropModal } from '@/modules/shared/components';
+import { useTranslation } from '@/modules/shared/contexts';
 import styles from './EditPetModal.module.scss';
 import type { EditPetModalProps, EditPetFormData } from './EditPetModal.types';
 
@@ -29,6 +30,7 @@ function formatDateForDisplay(isoDate?: string): string {
 }
 
 export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }: EditPetModalProps) {
+  const { t } = useTranslation();
   const [form, setForm] = useState<EditPetFormData>({
     name: '',
     species: 'Dog',
@@ -85,11 +87,11 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith('image/')) {
-      setError('Vui lòng chọn file ảnh hợp lệ.');
+      setError(t('addPetModal.errorInvalidImage'));
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      setError('Ảnh phải nhỏ hơn 5MB.');
+      setError(t('addPetModal.errorImageSize'));
       return;
     }
     setError(null);
@@ -119,7 +121,7 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
     setError(null);
 
     if (!form.name.trim() || !form.breed.trim()) {
-      setError('Vui lòng điền đầy đủ tên và giống thú cưng.');
+      setError(t('editPetModal.errorRequiredFields'));
       return;
     }
 
@@ -128,7 +130,7 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
     if (form.birthDate) {
       const parsed = parseDateInput(form.birthDate);
       if (!parsed) {
-        setError('Ngày sinh không hợp lệ. Vui lòng nhập theo định dạng dd/mm/yyyy.');
+        setError(t('addPetModal.errorInvalidDate'));
         return;
       }
       isoDate = parsed;
@@ -153,7 +155,7 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
       onSuccess();
       onClose();
     } catch (err: unknown) {
-      setError((err as any)?.message || 'Cập nhật thất bại. Vui lòng thử lại.');
+      setError((err as any)?.message || t('editPetModal.errorFailed'));
     } finally {
       setLoading(false);
     }
@@ -170,8 +172,8 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
       <div className={styles.modal}>
         {/* Header */}
         <div className={styles.header}>
-          <h2 className={styles.title}>Chỉnh sửa thú cưng ✏️</h2>
-          <button className={styles.closeBtn} onClick={onClose} type="button" aria-label="Đóng">
+          <h2 className={styles.title}>{t('editPetModal.title')}</h2>
+          <button className={styles.closeBtn} onClick={onClose} type="button" aria-label={t('common.close')}>
             ✕
           </button>
         </div>
@@ -179,7 +181,7 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
         <form className={styles.form} onSubmit={handleSubmit}>
           {/* Image Upload */}
           <div className={styles.imageUploadSection}>
-            <label className={styles.label}>Ảnh thú cưng</label>
+            <label className={styles.label}>{t('addPetModal.petPhoto')}</label>
             <div
               className={styles.imageUploadArea}
               onClick={() => fileInputRef.current?.click()}
@@ -198,8 +200,8 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
               ) : (
                 <div className={styles.imagePlaceholder}>
                   <span className={styles.imagePlaceholderIcon}>📷</span>
-                  <span className={styles.imagePlaceholderText}>Nhấn để chọn ảnh</span>
-                  <span className={styles.imagePlaceholderHint}>PNG, JPG – tối đa 5MB</span>
+                  <span className={styles.imagePlaceholderText}>{t('addPetModal.clickToSelect')}</span>
+                  <span className={styles.imagePlaceholderHint}>{t('addPetModal.photoHint')}</span>
                 </div>
               )}
             </div>
@@ -216,21 +218,21 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
           <div className={styles.row}>
             <div className={styles.field}>
               <label className={styles.label}>
-                Tên thú cưng <span className={styles.required}>*</span>
+                {t('addPetModal.petName')} <span className={styles.required}>*</span>
               </label>
               <input
                 className={styles.input}
                 name="name"
                 value={form.name}
                 onChange={handleChange}
-                placeholder="VD: Mochi"
+                placeholder={t('addPetModal.petNamePlaceholder')}
                 required
               />
             </div>
 
             <div className={styles.field}>
               <label className={styles.label}>
-                Loài <span className={styles.required}>*</span>
+                {t('addPetModal.species')} <span className={styles.required}>*</span>
               </label>
               <select
                 className={styles.select}
@@ -251,20 +253,20 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
           <div className={styles.row}>
             <div className={styles.field}>
               <label className={styles.label}>
-                Giống <span className={styles.required}>*</span>
+                {t('addPetModal.breed')} <span className={styles.required}>*</span>
               </label>
               <input
                 className={styles.input}
                 name="breed"
                 value={form.breed}
                 onChange={handleChange}
-                placeholder="VD: Poodle"
+                placeholder={t('addPetModal.breedPlaceholder')}
                 required
               />
             </div>
 
             <div className={styles.field}>
-              <label className={styles.label}>Ngày sinh</label>
+              <label className={styles.label}>{t('addPetModal.dateOfBirth')}</label>
               <input
                 className={styles.input}
                 type="text"
@@ -280,25 +282,25 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
           {/* Color + Weight */}
           <div className={styles.row}>
             <div className={styles.field}>
-              <label className={styles.label}>Màu lông</label>
+              <label className={styles.label}>{t('addPetModal.furColor')}</label>
               <input
                 className={styles.input}
                 name="color"
                 value={form.color}
                 onChange={handleChange}
-                placeholder="VD: Nâu trắng"
+                placeholder={t('addPetModal.furColorPlaceholder')}
               />
             </div>
 
             <div className={styles.field}>
-              <label className={styles.label}>Cân nặng (kg)</label>
+              <label className={styles.label}>{t('addPetModal.weight')}</label>
               <input
                 className={styles.input}
                 type="number"
                 name="weight"
                 value={form.weight}
                 onChange={handleChange}
-                placeholder="VD: 3.5"
+                placeholder={t('addPetModal.weightPlaceholder')}
                 min="0"
                 step="0.1"
               />
@@ -314,10 +316,10 @@ export function EditPetModal({ isOpen, petId, initialData, onClose, onSuccess }:
               onClick={onClose}
               disabled={loading}
             >
-              Hủy
+              {t('common.cancel')}
             </button>
             <button type="submit" className={styles.submitBtn} disabled={loading}>
-              {loading ? 'Đang lưu...' : 'Lưu thay đổi'}
+              {loading ? t('editPetModal.saving') : t('editPetModal.saveChanges')}
             </button>
           </div>
         </form>

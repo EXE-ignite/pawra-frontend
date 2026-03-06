@@ -1,6 +1,7 @@
 import React from 'react';
 import { Appointment } from '../../types';
 import { Button } from '@/modules/shared';
+import { useTranslation } from '@/modules/shared/contexts';
 import styles from './AppointmentCard.module.scss';
 
 interface AppointmentCardProps {
@@ -8,6 +9,7 @@ interface AppointmentCardProps {
 }
 
 export function AppointmentCard({ appointment }: AppointmentCardProps) {
+  const { t, locale } = useTranslation();
   function handleReschedule() {
     console.log('Reschedule appointment:', appointment.id);
   }
@@ -33,7 +35,7 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
           </p>
           <p className={styles.detail}>
             <span className={styles.detailIcon}>📅</span>
-            {new Date(appointment.date).toLocaleDateString('en-US', {
+            {new Date(appointment.date).toLocaleDateString(locale === 'vi' ? 'vi-VN' : 'en-US', {
               weekday: 'long',
               year: 'numeric',
               month: 'long',
@@ -49,10 +51,10 @@ export function AppointmentCard({ appointment }: AppointmentCardProps) {
 
       <div className={styles.appointmentActions}>
         <Button variant="secondary" size="sm" onClick={handleReschedule}>
-          Reschedule
+          {t('appointment.reschedule')}
         </Button>
         <Button variant="outline" size="sm" onClick={handleCancel}>
-          Cancel
+          {t('appointment.cancel')}
         </Button>
       </div>
     </div>

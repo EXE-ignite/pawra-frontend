@@ -1,28 +1,31 @@
 import React from 'react';
 import { WelcomePanelProps } from './WelcomePanel.types';
+import { useTranslation } from '../../../contexts';
 import styles from './WelcomePanel.module.scss';
 
 export function WelcomePanel({ mode, onToggle }: WelcomePanelProps) {
+  const { t } = useTranslation();
+
   return (
     <div className={styles.container}>
       {mode === 'signin' ? (
         <>
-          <h2 className={styles.title}>Hello, Friend!</h2>
+          <h2 className={styles.title}>{t('auth.helloFriend')}</h2>
           <p className={styles.text}>
-            Enter your personal details and start journey with us
+            {t('auth.helloFriendDesc')}
           </p>
           <button className={styles.button} onClick={onToggle}>
-            Sign Up
+            {t('auth.signUp')}
           </button>
         </>
       ) : (
         <>
-          <h2 className={styles.title}>Welcome Back!</h2>
+          <h2 className={styles.title}>{t('auth.welcomeBack')}</h2>
           <p className={styles.text}>
-            To keep connected with us please login with your personal info
+            {t('auth.welcomeBackDesc')}
           </p>
           <button className={styles.button} onClick={onToggle}>
-            Sign In
+            {t('auth.signIn')}
           </button>
         </>
       )}

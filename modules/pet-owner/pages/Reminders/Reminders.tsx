@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { RemindersPageProps } from './Reminders.types';
 import { CalendarView, TaskSidebar } from '../../components';
+import { useTranslation } from '@/modules/shared/contexts';
 import styles from './Reminders.module.scss';
 
 export function RemindersPage({
@@ -16,6 +17,7 @@ export function RemindersPage({
   onDeleteTask,
   onEditTask,
 }: RemindersPageProps) {
+  const { t } = useTranslation();
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
@@ -53,9 +55,9 @@ export function RemindersPage({
     <div className={styles.container}>
       <div className={styles.header}>
         <div>
-          <h1 className={styles.title}>Reminders</h1>
+          <h1 className={styles.title}>{t('reminders.title')}</h1>
           <p className={styles.subtitle}>
-            Manage your pet care schedule and upcoming tasks
+            {t('reminders.subtitle')}
           </p>
         </div>
       </div>

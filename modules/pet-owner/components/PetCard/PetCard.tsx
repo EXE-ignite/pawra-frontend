@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Pet } from '../../types';
+import { useTranslation } from '@/modules/shared/contexts';
 import styles from './PetCard.module.scss';
 
 interface PetCardProps {
@@ -17,6 +18,7 @@ const SPECIES_EMOJI: Record<string, string> = {
 };
 
 export function PetCard({ pet, onClick }: PetCardProps) {
+  const { t } = useTranslation();
   return (
     <Link href={`/pet-owner/profile/${pet.id}`} className={styles.card} onClick={onClick}>
       <div className={styles.petImage}>
@@ -35,7 +37,7 @@ export function PetCard({ pet, onClick }: PetCardProps) {
           </span>
           <span className={styles.petDetail}>
             <span className={styles.detailIcon}>🎂</span>
-            {pet.age} years old
+            {pet.age} {t('petCard.yearsOld')}
           </span>
         </div>
       </div>

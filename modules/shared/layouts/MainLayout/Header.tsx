@@ -4,8 +4,8 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { AuthModal, UserDropdown, ThemeToggle } from '../../components';
-import { useAuth, useTheme } from '../../contexts';
+import { AuthModal, UserDropdown, ThemeToggle, LanguageSwitcher } from '../../components';
+import { useAuth, useTheme, useTranslation } from '../../contexts';
 import { authService } from '../../services';
 import styles from './MainLayout.module.scss';
 
@@ -13,6 +13,7 @@ export function Header() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const { user, isAuthenticated, logout: contextLogout } = useAuth();
   const { theme } = useTheme();
+  const { t } = useTranslation();
   const pathname = usePathname();
 
   const openAuth = () => {
@@ -45,26 +46,27 @@ export function Header() {
               href="/pet-owner/profile" 
               className={`${styles.navLink} ${pathname === '/pet-owner/profile' ? styles.active : ''}`}
             >
-              Pet Profile
+              {t('nav.petProfile')}
             </Link>
             <Link 
               href="/blog" 
               className={`${styles.navLink} ${pathname === '/blog' ? styles.active : ''}`}
             >
-              Blog
+              {t('nav.blog')}
             </Link>
             <Link 
               href="/pet-owner/reminders" 
               className={`${styles.navLink} ${pathname === '/pet-owner/reminders' ? styles.active : ''}`}
             >
-              Calendar
+              {t('nav.calendar')}
             </Link>
 
+            <LanguageSwitcher />
             <ThemeToggle />
 
             {isAuthenticated && user ? (
               <>
-                <button className={styles.notificationBtn} aria-label="Notifications">
+                <button className={styles.notificationBtn} aria-label={t('nav.notifications')}>
                   🔔
                 </button>
                 <UserDropdown
@@ -75,7 +77,7 @@ export function Header() {
               </>
             ) : (
               <button onClick={openAuth} className={styles.authButton}>
-                Đăng nhập
+                {t('nav.login')}
               </button>
             )}
           </div>

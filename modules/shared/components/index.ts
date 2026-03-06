@@ -12,3 +12,4 @@ export { ImageCropModal } from './ImageCropModal';
 export type { ImageCropModalProps } from './ImageCropModal';
 export { ConfirmModal } from './ConfirmModal';
 export type { ConfirmModalProps } from './ConfirmModal';
+export { LanguageSwitcher } from './LanguageSwitcher';

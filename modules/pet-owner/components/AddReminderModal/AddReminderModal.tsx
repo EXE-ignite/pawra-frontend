@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { reminderService, petService } from '../../services';
 import { Pet } from '../../types';
+import { useTranslation } from '@/modules/shared/contexts';
 import styles from './AddReminderModal.module.scss';
 import type {
   AddReminderModalProps,
@@ -12,24 +13,24 @@ import type {
   RecurringType,
 } from './AddReminderModal.types';
 
-const TYPE_OPTIONS: { value: ReminderFormType; label: string; icon: string }[] = [
-  { value: 'feeding', label: 'Feeding', icon: '🍖' },
-  { value: 'medication', label: 'Medicine', icon: '💊' },
-  { value: 'grooming', label: 'Grooming', icon: '✂️' },
-  { value: 'other', label: 'Other', icon: '📋' },
-];
+const TYPE_VALUES = ['feeding', 'medication', 'grooming', 'other'] as const;
+const TYPE_ICONS: Record<string, string> = {
+  feeding: '🍖', medication: '💊', grooming: '✂️', other: '📋',
+};
+const TYPE_LABEL_KEYS: Record<string, string> = {
+  feeding: 'addReminderModal.feeding', medication: 'addReminderModal.medicine',
+  grooming: 'addReminderModal.grooming', other: 'addReminderModal.other',
+};
 
-const PRIORITY_OPTIONS: { value: ReminderPriority; label: string }[] = [
-  { value: 'low', label: 'Low' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'high', label: 'High' },
-];
+const PRIORITY_VALUES = ['low', 'medium', 'high'] as const;
+const PRIORITY_LABEL_KEYS: Record<string, string> = {
+  low: 'addReminderModal.low', medium: 'addReminderModal.medium', high: 'addReminderModal.high',
+};
 
-const RECURRING_OPTIONS: { value: RecurringType; label: string }[] = [
-  { value: 'none', label: 'None' },
-  { value: 'monthly', label: 'Monthly' },
-  { value: 'yearly', label: 'Yearly' },
-];
+const RECURRING_VALUES = ['none', 'monthly', 'yearly'] as const;
+const RECURRING_LABEL_KEYS: Record<string, string> = {
+  none: 'addReminderModal.none', monthly: 'addReminderModal.monthly', yearly: 'addReminderModal.yearly',
+};
 
 function getTodayString(): string {
   const d = new Date();
@@ -74,6 +75,7 @@ export function AddReminderModal({
   pets: propsPets,
   editTask,
 }: AddReminderModalProps) {
+  const { t } = useTranslation();
   const isEditMode = !!editTask;
   const [form, setForm] = useState<AddReminderFormData>(() => buildInitialForm(defaultDate));
   const [pets, setPets] = useState<Pet[]>(propsPets || []);
@@ -139,15 +141,15 @@ export function AddReminderModal({
     setError(null);
 
     if (!form.title.trim()) {
-      setError('Vui lòng nhập tiêu đề reminder.');
+      setError(t('addReminderModal.errorTitle'));
       return;
     }
     if (!form.petId) {
-      setError('Vui lòng chọn thú cưng.');
+      setError(t('addReminderModal.errorPet'));
       return;
     }
     if (!form.startDate) {
-      setError('Vui lòng chọn ngày.');
+      setError(t('addReminderModal.errorDate'));
       return;
     }
 
@@ -183,7 +185,7 @@ export function AddReminderModal({
     } catch (err: unknown) {
       // ApiError plain object returned by the response interceptor
       const apiErr = err as { message?: string };
-      setError(apiErr?.message || (isEditMode ? 'Không thể cập nhật reminder. Vui lòng thử lại.' : 'Không thể tạo reminder. Vui lòng thử lại.'));
+      setError(apiErr?.message || (isEditMode ? t('addReminderModal.errorUpdate') : t('addReminderModal.errorCreate')));
     } finally {
       setLoading(false);
     }
@@ -195,10 +197,10 @@ export function AddReminderModal({
         {/* Header */}
         <div className={styles.header}>
           <div className={styles.headerLeft}>
-            <h2 className={styles.title}>{isEditMode ? 'Edit Reminder' : 'Add Reminder'}</h2>
-            <p className={styles.subtitle}>{isEditMode ? 'Update your pet care task' : 'Schedule a new pet care task'}</p>
+            <h2 className={styles.title}>{isEditMode ? t('addReminderModal.editTitle') : t('addReminderModal.addTitle')}</h2>
+            <p className={styles.subtitle}>{isEditMode ? t('addReminderModal.editSubtitle') : t('addReminderModal.addSubtitle')}</p>
           </div>
-          <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
+          <button className={styles.closeBtn} onClick={onClose} aria-label={t('common.close')}>
             ×
           </button>
         </div>
@@ -207,12 +209,12 @@ export function AddReminderModal({
           {/* Title */}
           <div className={styles.field}>
             <label className={styles.label}>
-              Title <span className={styles.required}>*</span>
+              {t('addReminderModal.titleLabel')} <span className={styles.required}>*</span>
             </label>
             <input
               className={styles.input}
               type="text"
-              placeholder="e.g. Morning Feeding, Heartguard Medicine..."
+              placeholder={t('addReminderModal.titlePlaceholder')}
               value={form.title}
               onChange={e => handleField('title', e.target.value)}
               maxLength={100}
@@ -223,7 +225,7 @@ export function AddReminderModal({
           <div className={styles.row}>
             <div className={styles.field}>
               <label className={styles.label}>
-                Pet <span className={styles.required}>*</span>
+                {t('addReminderModal.pet')} <span className={styles.required}>*</span>
               </label>
               <select
                 className={styles.select}
@@ -232,7 +234,7 @@ export function AddReminderModal({
                 disabled={fetchingPets || isEditMode}
               >
                 <option value="">
-                  {fetchingPets ? 'Loading...' : 'Select pet'}
+                  {fetchingPets ? t('common.loading') : t('addReminderModal.selectPet')}
                 </option>
                 {pets.map(pet => (
                   <option key={pet.id} value={pet.id}>
@@ -247,16 +249,16 @@ export function AddReminderModal({
             </div>
 
             <div className={styles.field}>
-              <label className={styles.label}>Priority</label>
+              <label className={styles.label}>{t('addReminderModal.priority')}</label>
               <div className={styles.priorityRow}>
-                {PRIORITY_OPTIONS.map(opt => (
+                {PRIORITY_VALUES.map(val => (
                   <button
-                    key={opt.value}
+                    key={val}
                     type="button"
-                    className={`${styles.priorityChip} ${styles[opt.value]} ${form.priority === opt.value ? styles.active : ''}`}
-                    onClick={() => handleField('priority', opt.value)}
+                    className={`${styles.priorityChip} ${styles[val]} ${form.priority === val ? styles.active : ''}`}
+                    onClick={() => handleField('priority', val)}
                   >
-                    {opt.label}
+                    {t(PRIORITY_LABEL_KEYS[val])}
                   </button>
                 ))}
               </div>
@@ -265,17 +267,17 @@ export function AddReminderModal({
 
           {/* Type chips */}
           <div className={styles.field}>
-            <label className={styles.label}>Type</label>
+            <label className={styles.label}>{t('addReminderModal.type')}</label>
             <div className={styles.typeGrid}>
-              {TYPE_OPTIONS.map(opt => (
+              {TYPE_VALUES.map(val => (
                 <button
-                  key={opt.value}
+                  key={val}
                   type="button"
-                  className={`${styles.typeChip} ${form.type === opt.value ? styles.active : ''}`}
-                  onClick={() => handleField('type', opt.value)}
+                  className={`${styles.typeChip} ${form.type === val ? styles.active : ''}`}
+                  onClick={() => handleField('type', val)}
                 >
-                  <span className={styles.typeIcon}>{opt.icon}</span>
-                  {opt.label}
+                  <span className={styles.typeIcon}>{TYPE_ICONS[val]}</span>
+                  {t(TYPE_LABEL_KEYS[val])}
                 </button>
               ))}
             </div>
@@ -285,7 +287,7 @@ export function AddReminderModal({
           <div className={styles.row}>
             <div className={styles.field}>
               <label className={styles.label}>
-                Start Date <span className={styles.required}>*</span>
+                {t('addReminderModal.startDate')} <span className={styles.required}>*</span>
               </label>
               <input
                 className={styles.input}
@@ -296,7 +298,7 @@ export function AddReminderModal({
             </div>
 
             <div className={styles.field}>
-              <label className={styles.label}>Time</label>
+              <label className={styles.label}>{t('addReminderModal.time')}</label>
               <input
                 className={styles.input}
                 type="time"
@@ -310,8 +312,8 @@ export function AddReminderModal({
           <div className={styles.field}>
             <div className={styles.toggleRow}>
               <div className={styles.toggleLabel}>
-                <span className={styles.toggleTitle}>Recurring reminder</span>
-                <span className={styles.toggleHint}>Repeat this reminder automatically</span>
+                <span className={styles.toggleTitle}>{t('addReminderModal.recurringReminder')}</span>
+                <span className={styles.toggleHint}>{t('addReminderModal.recurringHint')}</span>
               </div>
               <label className={styles.toggle}>
                 <input
@@ -328,21 +330,21 @@ export function AddReminderModal({
           {form.isRecurring && (
             <>
               <div className={styles.field}>
-                <label className={styles.label}>Repeat every</label>
+                <label className={styles.label}>{t('addReminderModal.repeatEvery')}</label>
                 <select
                   className={styles.select}
                   value={form.recurringType}
                   onChange={e => handleField('recurringType', e.target.value as RecurringType)}
                 >
-                  {RECURRING_OPTIONS.map(opt => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
+                  {RECURRING_VALUES.map(val => (
+                    <option key={val} value={val}>
+                      {t(RECURRING_LABEL_KEYS[val])}
                     </option>
                   ))}
                 </select>
               </div>
               <div className={styles.field}>
-                <label className={styles.label}>End Date</label>
+                <label className={styles.label}>{t('addReminderModal.endDate')}</label>
                 <input
                   className={styles.input}
                   type="date"
@@ -356,10 +358,10 @@ export function AddReminderModal({
 
           {/* Description */}
           <div className={styles.field}>
-            <label className={styles.label}>Notes (optional)</label>
+            <label className={styles.label}>{t('addReminderModal.notes')}</label>
             <textarea
               className={styles.textarea}
-              placeholder="Any additional notes..."
+              placeholder={t('addReminderModal.notesPlaceholder')}
               value={form.description}
               onChange={e => handleField('description', e.target.value)}
               rows={3}
@@ -373,10 +375,10 @@ export function AddReminderModal({
           {/* Footer */}
           <div className={styles.footer}>
             <button type="button" className={styles.cancelBtn} onClick={onClose}>
-              Cancel
+              {t('common.cancel')}
             </button>
             <button type="submit" className={styles.submitBtn} disabled={loading}>
-              {loading ? 'Saving...' : isEditMode ? 'Save Changes' : 'Add Reminder'}
+              {loading ? t('addReminderModal.saving') : isEditMode ? t('addReminderModal.saveChanges') : t('addReminderModal.addReminder')}
             </button>
           </div>
         </form>

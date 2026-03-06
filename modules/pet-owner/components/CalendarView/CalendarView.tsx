@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { CalendarViewProps } from './CalendarView.types';
+import { useTranslation } from '@/modules/shared/contexts';
 import styles from './CalendarView.module.scss';
 
 type ViewMode = 'month' | 'week' | 'day';
@@ -10,12 +11,6 @@ function formatDateStr(date: Date): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 }
 
-const MONTH_NAMES = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
-];
-const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const DAY_ABBR = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 const HOURS = Array.from({ length: 16 }, (_, i) => i + 6); // 6am – 9pm
 
 export function CalendarView({
@@ -28,7 +23,23 @@ export function CalendarView({
   onMonthChange,
   onAddTask,
 }: CalendarViewProps) {
+  const { t } = useTranslation();
   const [view, setView] = useState<ViewMode>('month');
+
+  const MONTH_NAMES = [
+    t('calendar.january'), t('calendar.february'), t('calendar.march'),
+    t('calendar.april'), t('calendar.may'), t('calendar.june'),
+    t('calendar.july'), t('calendar.august'), t('calendar.september'),
+    t('calendar.october'), t('calendar.november'), t('calendar.december'),
+  ];
+  const DAY_NAMES = [
+    t('calendar.sunday'), t('calendar.monday'), t('calendar.tuesday'),
+    t('calendar.wednesday'), t('calendar.thursday'), t('calendar.friday'), t('calendar.saturday'),
+  ];
+  const DAY_ABBR = [
+    t('calendar.sunAbbr'), t('calendar.monAbbr'), t('calendar.tueAbbr'),
+    t('calendar.wedAbbr'), t('calendar.thuAbbr'), t('calendar.friAbbr'), t('calendar.satAbbr'),
+  ];
 
   const today = new Date();
   const todayStr = formatDateStr(today);
@@ -125,7 +136,7 @@ export function CalendarView({
       <div className={styles.header}>
         <h2 className={styles.monthYear}>{getHeaderTitle()}</h2>
         <div className={styles.controls}>
-          <button className={styles.todayButton} onClick={handleToday}>Today</button>
+          <button className={styles.todayButton} onClick={handleToday}>{t('calendar.today')}</button>
           <button className={styles.navButton} onClick={handlePrev}>←</button>
           <button className={styles.navButton} onClick={handleNext}>→</button>
         </div>
@@ -142,7 +153,7 @@ export function CalendarView({
             className={`${styles.toggleButton} ${view === v ? styles.active : ''}`}
             onClick={() => setView(v)}
           >
-            {v.charAt(0).toUpperCase() + v.slice(1)}
+            {v === 'month' ? t('calendar.month') : v === 'week' ? t('calendar.week') : t('calendar.day')}
           </button>
         ))}
       </div>
@@ -180,7 +191,7 @@ export function CalendarView({
                     </div>
                   ))}
                   {dayEvents.length > 2 && (
-                    <span className={styles.moreEvents}>+{dayEvents.length - 2} more</span>
+                    <span className={styles.moreEvents}>+{dayEvents.length - 2} {t('calendar.more')}</span>
                   )}
                 </div>
               </div>
@@ -214,7 +225,7 @@ export function CalendarView({
               </div>
               <div className={styles.weekDayEvents}>
                 {dayEvents.length === 0 ? (
-                  <span className={styles.noEvents}>No events</span>
+                  <span className={styles.noEvents}>{t('calendar.noEvents')}</span>
                 ) : (
                   dayEvents.map(event => (
                     <div key={event.id} className={styles.weekEvent} style={{ backgroundColor: event.color }}>
@@ -258,7 +269,7 @@ export function CalendarView({
       <div className={styles.dayView}>
         {dayEvents.length > 0 && (
           <div className={styles.allDayRow}>
-            <span className={styles.allDayLabel}>Events</span>
+            <span className={styles.allDayLabel}>{t('calendar.events')}</span>
             <div className={styles.allDayEvents}>
               {dayEvents.map(event => (
                 <div key={event.id} className={styles.allDayEvent} style={{ backgroundColor: event.color }}>
@@ -292,7 +303,7 @@ export function CalendarView({
           })}
         </div>
         {dayEvents.length === 0 && dayTasks.length === 0 && (
-          <p className={styles.noEventsDay}>No events or tasks scheduled for this day.</p>
+          <p className={styles.noEventsDay}>{t('calendar.noEventsDay')}</p>
         )}
       </div>
     );

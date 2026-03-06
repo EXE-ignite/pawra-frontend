@@ -2,11 +2,13 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { UserDropdownProps } from './UserDropdown.types';
+import { useTranslation } from '../../contexts';
 import styles from './UserDropdown.module.scss';
 
 export function UserDropdown({ userName, userEmail, onLogout }: UserDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const { t } = useTranslation();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -38,7 +40,7 @@ export function UserDropdown({ userName, userEmail, onLogout }: UserDropdownProp
       <button 
         className={styles.avatarButton}
         onClick={toggleDropdown}
-        aria-label="User menu"
+        aria-label={t('userMenu.menu')}
         aria-expanded={isOpen}
       >
         <div className={styles.avatar}>
@@ -63,11 +65,11 @@ export function UserDropdown({ userName, userEmail, onLogout }: UserDropdownProp
           <nav className={styles.menuList}>
             <button className={styles.menuItem}>
               <span className={styles.menuIcon}>👤</span>
-              <span>Hồ sơ của tôi</span>
+              <span>{t('userMenu.myProfile')}</span>
             </button>
             <button className={styles.menuItem}>
               <span className={styles.menuIcon}>⚙️</span>
-              <span>Cài đặt</span>
+              <span>{t('userMenu.settings')}</span>
             </button>
           </nav>
 
@@ -78,7 +80,7 @@ export function UserDropdown({ userName, userEmail, onLogout }: UserDropdownProp
             onClick={handleLogoutClick}
           >
             <span className={styles.menuIcon}>🚪</span>
-            <span>Đăng xuất</span>
+            <span>{t('userMenu.logout')}</span>
           </button>
         </div>
       )}

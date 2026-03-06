@@ -5,8 +5,10 @@ import { RemindersPage } from '@/modules/pet-owner';
 import { AddReminderModal } from '@/modules/pet-owner/components';
 import { CalendarEvent, Task, HealthMilestone, Pet } from '@/modules/pet-owner/types';
 import { petService, reminderService } from '@/modules/pet-owner/services';
+import { useTranslation } from '@/modules/shared/contexts';
 
 export default function RemindersPageRoute() {
+  const { t } = useTranslation();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [milestones, setMilestones] = useState<HealthMilestone[]>([]);
@@ -121,7 +123,7 @@ export default function RemindersPageRoute() {
   if (loading) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
-        <p>Đang tải...</p>
+        <p>{t('common.loading')}</p>
       </div>
     );
   }

@@ -5,9 +5,11 @@ import { useRouter } from 'next/navigation';
 import { petService } from '@/modules/pet-owner/services';
 import { AddPetModal } from '@/modules/pet-owner/components';
 import { Button } from '@/modules/shared';
+import { useTranslation } from '@/modules/shared/contexts';
 
 export default function PetProfilePageRoute() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [error, setError] = useState<string | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -25,7 +27,7 @@ export default function PetProfilePageRoute() {
         router.replace(`/pet-owner/profile/${pets[0].id}`);
       } catch (err: any) {
         console.error('Failed to load pets:', err);
-        setError(err?.message || 'Không thể tải danh sách thú cưng');
+        setError(err?.message || t('common.loadError'));
         setLoaded(true);
       }
     }
@@ -58,7 +60,7 @@ export default function PetProfilePageRoute() {
   if (!loaded) {
     return (
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
-        <p>Đang tải...</p>
+        <p>{t('common.loading')}</p>
       </div>
     );
   }
@@ -68,13 +70,13 @@ export default function PetProfilePageRoute() {
       <div style={{ padding: '2rem', textAlign: 'center' }}>
         <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🐾</div>
         <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem' }}>
-          Bạn chưa có thú cưng nào
+          {t('dashboard.noPetsTitle')}
         </h2>
         <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>
-          Hãy thêm thú cưng đầu tiên để theo dõi sức khỏe và lịch hẹn của bé.
+          {t('dashboard.noPetsDescription')}
         </p>
         <Button variant="primary" onClick={() => setShowAddModal(true)}>
-          + Thêm thú cưng
+          + {t('dashboard.addFirstPet')}
         </Button>
       </div>
 
