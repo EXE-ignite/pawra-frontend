@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { blogService } from '@/modules/blog/services';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from '@/modules/shared/contexts';
 import { StatCard } from '../../components/StatCard';
 import { BlogTable, BlogTablePost } from '../../components/BlogTable';
 import { BlogSearchBar } from '../../components/BlogSearchBar';
@@ -23,6 +24,7 @@ export function AdminBlogPage({
   totalPages 
 }: AdminBlogPageProps) {
   const router = useRouter();
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [posts, setPosts] = useState(initialPosts);
@@ -61,8 +63,8 @@ export function AdminBlogPage({
   };
 
   const handleDelete = async (postId: string) => {
-    if (confirm('Are you sure you want to delete this post?')) {
-      await blogService.deleteBlogPost(postId);
+    if (confirm(t('blog.confirmDelete'))) {
+      await blogService.deletePost(postId);
       // Sau khi xóa, reload danh sách
       const res = await blogService.getAdminPosts(currentPage, 10, searchQuery);
       setPosts(res.posts);
@@ -72,25 +74,25 @@ export function AdminBlogPage({
   return (
     <div className={styles.adminBlogPage}>
       <div className={styles.header}>
-        <h1 className={styles.title}>Blog Content Overview</h1>
+        <h1 className={styles.title}>{t('blog.adminTitle')}</h1>
       </div>
 
       <div className={styles.statsGrid}>
         <StatCard
           icon="views"
-          label="Total Page Views"
+          label={t('blog.totalViews')}
           value={initialStats.totalViews}
           badge={{ text: initialStats.viewsChange, variant: 'success' }}
         />
         <StatCard
           icon="posts"
-          label="Total Blog Posts"
+          label={t('blog.totalPosts')}
           value={initialStats.totalPosts}
-          badge={{ text: 'Active', variant: 'info' }}
+          badge={{ text: t('blog.active'), variant: 'info' }}
         />
         <StatCard
           icon="comments"
-          label="Total Comments"
+          label={t('blog.totalComments')}
           value={initialStats.totalComments}
           badge={{ text: initialStats.commentsTimeRange, variant: 'info' }}
         />

@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { BlogTableProps } from './BlogTable.types';
+import { useTranslation } from '@/modules/shared/contexts';
 import styles from './BlogTable.module.scss';
 
 export function BlogTable({
@@ -12,6 +13,7 @@ export function BlogTable({
   onEdit,
   onDelete,
 }: BlogTableProps) {
+  const { t } = useTranslation();
   const safePost = posts || [];
   const startResult = (currentPage - 1) * safePost.length + 1;
   const endResult = Math.min(currentPage * safePost.length, totalResults);
@@ -68,19 +70,19 @@ export function BlogTable({
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>TITLE & IMAGE</th>
-              <th>AUTHOR</th>
-              <th>CATEGORY</th>
-              <th>STATUS</th>
-              <th>DATE</th>
-              <th>ACTIONS</th>
+              <th>{t('blog.tableTitle')}</th>
+              <th>{t('blog.tableAuthor')}</th>
+              <th>{t('blog.tableCategory')}</th>
+              <th>{t('blog.tableStatus')}</th>
+              <th>{t('blog.tableDate')}</th>
+              <th>{t('blog.tableActions')}</th>
             </tr>
           </thead>
           <tbody>
             {safePost.length === 0 ? (
               <tr>
                 <td colSpan={6} style={{ textAlign: 'center', padding: '2rem' }}>
-                  No posts found
+                  {t('blog.noPosts')}
                 </td>
               </tr>
             ) : (
@@ -99,7 +101,7 @@ export function BlogTable({
                         </div>
                       ) : (
                         <div className={styles.thumbnail} style={{ background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          <span style={{ fontSize: '0.75rem', color: '#999' }}>No image</span>
+                          <span style={{ fontSize: '0.75rem', color: '#999' }}>{t('blog.noImage')}</span>
                         </div>
                       )}
                       <div className={styles.titleContent}>

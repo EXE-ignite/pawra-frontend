@@ -1,21 +1,24 @@
+'use client';
+
 import React from 'react';
-import { CategoryInfo } from '../../types';
+import { useTranslation } from '@/modules/shared/contexts';
 import styles from './CategoryList.module.scss';
 
-const categories: CategoryInfo[] = [
-  { id: 'health', label: 'Health', icon: '❤️', color: '#EF476F' },
-  { id: 'nutrition', label: 'Nutrition', icon: '🍴', color: '#AAC4FF' },
-  { id: 'training', label: 'Training', icon: '🎯', color: '#06D6A0' },
-  { id: 'behavior', label: 'Behavior', icon: '🐾', color: '#B1B2FF' },
-  { id: 'grooming', label: 'Grooming', icon: '✂️', color: '#D2DAFF' }
+const categoryKeys: Array<{ id: string; icon: string; color: string; labelKey: string }> = [
+  { id: 'health', icon: '❤️', color: '#EF476F', labelKey: 'blog.catHealth' },
+  { id: 'nutrition', icon: '🍴', color: '#AAC4FF', labelKey: 'blog.catNutrition' },
+  { id: 'training', icon: '🎯', color: '#06D6A0', labelKey: 'blog.catTraining' },
+  { id: 'behavior', icon: '🐾', color: '#B1B2FF', labelKey: 'blog.catBehavior' },
+  { id: 'grooming', icon: '✂️', color: '#D2DAFF', labelKey: 'blog.catGrooming' },
 ];
 
 export function CategoryList() {
+  const { t } = useTranslation();
   return (
     <div className={styles.categoryList}>
-      <h3 className={styles.title}>Popular Categories</h3>
+      <h3 className={styles.title}>{t('blog.popularCategories')}</h3>
       <div className={styles.categories}>
-        {categories.map((category) => (
+        {categoryKeys.map((category) => (
           <button 
             key={category.id}
             className={styles.categoryItem}
@@ -26,7 +29,7 @@ export function CategoryList() {
             >
               {category.icon}
             </span>
-            <span className={styles.label}>{category.label}</span>
+            <span className={styles.label}>{t(category.labelKey)}</span>
           </button>
         ))}
       </div>
