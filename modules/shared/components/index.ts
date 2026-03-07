@@ -2,6 +2,7 @@ export { Button } from './Button';
 export type { ButtonProps } from './Button/Button.types';
 export { AuthModal } from './AuthModal';
 export type { AuthModalProps } from './AuthModal/AuthModal.types';
+export { AuthGuard } from './AuthGuard';
 export { Toast } from './Toast';
 export type { ToastProps } from './Toast/Toast.types';
 export { UserDropdown } from './UserDropdown';

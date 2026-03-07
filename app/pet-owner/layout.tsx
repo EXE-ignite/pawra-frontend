@@ -1,6 +1,7 @@
 'use client';
 
 import { MainLayout } from '@/modules/shared';
+import { AuthGuard } from '@/modules/shared/components';
 import { AddPetFab } from '@/modules/pet-owner/components';
 
 export default function PetOwnerLayout({
@@ -10,8 +11,10 @@ export default function PetOwnerLayout({
 }) {
   return (
     <MainLayout>
-      {children}
-      <AddPetFab />
+      <AuthGuard>
+        {children}
+        <AddPetFab />
+      </AuthGuard>
     </MainLayout>
   );
 }

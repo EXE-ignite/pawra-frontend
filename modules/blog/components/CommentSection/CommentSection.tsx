@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { blogService } from '@/modules/blog/services';
 import { useAuth } from '@/modules/shared/contexts';
+import { AuthModal } from '@/modules/shared/components';
 import { CommentSectionProps, Comment } from './CommentSection.types';
 import styles from './CommentSection.module.scss';
 
@@ -33,6 +34,7 @@ export function CommentSection({ postId }: CommentSectionProps) {
   const { isAuthenticated, user } = useAuth();
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState<Comment[]>([]);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
@@ -83,7 +85,7 @@ export function CommentSection({ postId }: CommentSectionProps) {
     if (!newComment.trim() || submitting) return;
 
     if (!isAuthenticated) {
-      alert('🔒 Vui lòng đăng nhập để bình luận.');
+      setIsAuthModalOpen(true);
       return;
     }
 
@@ -128,7 +130,7 @@ export function CommentSection({ postId }: CommentSectionProps) {
     if (!content || submittingReply) return;
 
     if (!isAuthenticated) {
-      alert('🔒 Vui lòng đăng nhập để reply.');
+      setIsAuthModalOpen(true);
       return;
     }
 
@@ -172,6 +174,11 @@ export function CommentSection({ postId }: CommentSectionProps) {
 
   return (
     <div className={styles.commentSection}>
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        initialMode="signin"
+      />
       <h3 className={styles.title}>
         Comments ({loading ? '...' : comments.length})
       </h3>
