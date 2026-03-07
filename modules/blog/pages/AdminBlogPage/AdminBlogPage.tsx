@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { blogService } from '@/modules/blog/services';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from '@/modules/shared/contexts';
@@ -10,30 +10,70 @@ import { BlogSearchBar } from '../../components/BlogSearchBar';
 import { BlogStats } from './AdminBlogPage.types';
 import styles from './AdminBlogPage.module.scss';
 
+const DEFAULT_STATS: BlogStats = {
+  totalViews: 0,
+  viewsChange: '',
+  totalPosts: 0,
+  totalComments: 0,
+  commentsTimeRange: '',
+};
+
 interface AdminBlogPageProps {
-  initialStats: BlogStats;
-  initialPosts: BlogTablePost[];
-  totalPosts: number;
-  totalPages: number;
+  initialStats?: BlogStats;
+  initialPosts?: BlogTablePost[];
+  totalPosts?: number;
+  totalPages?: number;
 }
 
 export function AdminBlogPage({ 
-  initialStats, 
-  initialPosts, 
-  totalPosts,
-  totalPages 
+  initialStats = DEFAULT_STATS,
+  initialPosts = [],
+  totalPosts: initialTotalPosts = 0,
+  totalPages: initialTotalPages = 1,
 }: AdminBlogPageProps) {
   const router = useRouter();
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [posts, setPosts] = useState(initialPosts);
+  const [posts, setPosts] = useState<BlogTablePost[]>(initialPosts);
+  const [stats, setStats] = useState<BlogStats>(initialStats);
+  const [totalPosts, setTotalPosts] = useState(initialTotalPosts);
+  const [totalPages, setTotalPages] = useState(initialTotalPages);
+  const [loading, setLoading] = useState(initialPosts.length === 0);
+
+  // Fetch data client-side on mount so the auth token is always available
+  useEffect(() => {
+    async function loadInitialData() {
+      try {
+        setLoading(true);
+        const [fetchedStats, postsData] = await Promise.all([
+          blogService.getAdminStats(),
+          blogService.getAdminPosts(1, 10),
+        ]);
+        setStats(fetchedStats);
+        setPosts(postsData.posts);
+        setTotalPosts(postsData.total);
+        setTotalPages(postsData.totalPages);
+      } catch (err) {
+        console.error('[AdminBlogPage] Failed to load initial data:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // Only auto-fetch if not pre-populated from server
+    if (initialPosts.length === 0) {
+      loadInitialData();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
-    // Gọi API search
     const res = await blogService.getAdminPosts(1, 10, query);
     setPosts(res.posts);
+    setTotalPosts(res.total);
+    setTotalPages(res.totalPages);
   };
 
   const handleFilter = () => {
@@ -48,9 +88,10 @@ export function AdminBlogPage({
 
   const handlePageChange = async (page: number) => {
     setCurrentPage(page);
-    // Gọi API lấy posts cho page mới
     const res = await blogService.getAdminPosts(page, 10, searchQuery);
     setPosts(res.posts);
+    setTotalPosts(res.total);
+    setTotalPages(res.totalPages);
   };
 
   const handleView = (postId: string) => {
@@ -81,20 +122,20 @@ export function AdminBlogPage({
         <StatCard
           icon="views"
           label={t('blog.totalViews')}
-          value={initialStats.totalViews}
-          badge={{ text: initialStats.viewsChange, variant: 'success' }}
+          value={stats.totalViews}
+          badge={{ text: stats.viewsChange, variant: 'success' }}
         />
         <StatCard
           icon="posts"
           label={t('blog.totalPosts')}
-          value={initialStats.totalPosts}
+          value={stats.totalPosts}
           badge={{ text: t('blog.active'), variant: 'info' }}
         />
         <StatCard
           icon="comments"
           label={t('blog.totalComments')}
-          value={initialStats.totalComments}
-          badge={{ text: initialStats.commentsTimeRange, variant: 'info' }}
+          value={stats.totalComments}
+          badge={{ text: stats.commentsTimeRange, variant: 'info' }}
         />
       </div>
 
