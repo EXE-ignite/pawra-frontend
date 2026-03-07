@@ -1,20 +1,28 @@
 import { blogService } from '@/modules/blog/services';
 import { AdminBlogPage } from '@/modules/blog/pages/AdminBlogPage';
-import { getServerAuthToken } from '@/modules/shared/utils/server-auth';
+import { getServerAuthToken, getServerAuthRole } from '@/modules/shared/utils/server-auth';
+
+const ALLOWED_ROLES = ['Admin', 'Staff', 'Vet', 'Receptionist'];
 
 export default async function AdminBlogManagementPage() {
-  // Lấy token từ cookie phía server
+  // Lấy token và role từ cookie phía server
   const token = await getServerAuthToken();
-  
-  console.log('[ADMIN PAGE] Token from cookie:', token ? 'EXISTS' : 'NOT FOUND');
+  const role = await getServerAuthRole();
   
   if (!token) {
-    console.error('[ADMIN PAGE] No auth token found, user needs to login');
-    // Redirect to login or show error
     return (
       <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <h2>Authentication Required</h2>
-        <p>Please login to access the admin panel.</p>
+        <h2>Yêu cầu đăng nhập</h2>
+        <p>Vui lòng đăng nhập để truy cập trang quản trị.</p>
+      </div>
+    );
+  }
+
+  if (!role || !ALLOWED_ROLES.includes(role)) {
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        <h2>Không có quyền truy cập</h2>
+        <p>Tài khoản của bạn không có quyền truy cập trang này.</p>
       </div>
     );
   }
