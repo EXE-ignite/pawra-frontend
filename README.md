@@ -6,6 +6,23 @@ A pet care management platform built with Next.js — helping pet owners track h
 
 ## Changelog
 
+### v1.0.3 — 2026-03-07
+
+> Auth & access control improvements
+
+#### New Features
+- **AuthGuard component:** Thêm component `AuthGuard` dùng chung trong `modules/shared/components/AuthGuard/` — kiểm tra trạng thái đăng nhập trước khi render trang, hiện spinner khi đang load, hiện màn hình "Bạn chưa đăng nhập" với nút mở `AuthModal` nếu chưa xác thực
+- **Pet Owner route protection:** Bọc toàn bộ layout `/pet-owner` trong `AuthGuard` — các trang Dashboard, Profile, Reminders không còn gọi API rồi crash với "An error occurred" khi chưa đăng nhập
+- **StaffLayout role guard:** `StaffLayout` (dùng cho `/admin/*`) thêm client-side guard — chưa đăng nhập hiện AuthModal, đăng nhập sai role hiện thông báo "Không có quyền truy cập"
+- **Server-side role check cho admin pages:** Thêm `getServerAuthRole()` trong `server-auth.ts` — decode JWT trên server để extract role claim (hỗ trợ .NET standard claim format), dùng để guard `/admin/blog` trước khi gọi API — tránh 403 trên production
+
+#### Bug Fixes
+- **`/admin/blog` 403 on Vercel:** Trang admin blog gọi API mà không kiểm tra role — production backend trả về 403 với user không có quyền. Đã thêm role check server-side (`Admin`, `Staff`, `Vet`, `Receptionist`) trước khi fetch data
+- **`CommentSection` alert khi chưa đăng nhập:** Thay `alert('Vui lòng đăng nhập...')` bằng mở `AuthModal` — áp dụng cho cả bình luận mới lẫn reply
+- **`ReactionBar` inline hint khi chưa đăng nhập:** Thay text hint tạm thời bằng mở `AuthModal`
+
+---
+
 ### v1.0.2 — 2026-03-06 *(Hotfix)*
 
 > Hotfix on top of v1.0.1

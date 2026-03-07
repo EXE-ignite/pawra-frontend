@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { blogService } from '@/modules/blog/services';
 import { useAuth } from '@/modules/shared/contexts';
+import { AuthModal } from '@/modules/shared/components';
 import { ReactionBarProps, Reaction, ReactionType } from './ReactionBar.types';
 import styles from './ReactionBar.module.scss';
 
@@ -29,7 +30,7 @@ export function ReactionBar({ postId, initialReactions }: ReactionBarProps) {
   });
   const [userReaction, setUserReaction] = useState<ReactionType | null>(null);
   const [loading, setLoading] = useState(false);
-  const [loginHint, setLoginHint] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const syncFromApi = useCallback(async () => {
     try {
@@ -59,8 +60,7 @@ export function ReactionBar({ postId, initialReactions }: ReactionBarProps) {
 
     // Require login — don't block if auth is still being determined
     if (!authLoading && !isAuthenticated) {
-      setLoginHint(true);
-      setTimeout(() => setLoginHint(false), 3000);
+      setIsAuthModalOpen(true);
       return;
     }
 
@@ -95,6 +95,11 @@ export function ReactionBar({ postId, initialReactions }: ReactionBarProps) {
 
   return (
     <div className={styles.reactionBar}>
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        initialMode="signin"
+      />
       <div className={styles.header}>
         <h4 className={styles.title}>
           <span className={styles.icon}>👋</span>
@@ -104,10 +109,6 @@ export function ReactionBar({ postId, initialReactions }: ReactionBarProps) {
           <span className={styles.totalCount}>{totalReactions} reactions</span>
         )}
       </div>
-
-      {loginHint && (
-        <p className={styles.loginHint}>🔒 Vui lòng đăng nhập để react bài viết.</p>
-      )}
       
       <div className={styles.reactions}>
         {reactions.map((reaction) => (
