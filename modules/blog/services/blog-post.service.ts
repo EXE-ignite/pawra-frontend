@@ -125,7 +125,7 @@ class BlogPostService {
     }
   }
 
-  async getPublishedBlogPosts(params: { page?: number; pageSize?: number; categorySlug?: string }): Promise<{ posts: BlogPost[]; total: number; totalPages: number }> {
+  async getPublishedBlogPosts(params: { page?: number; pageSize?: number; categorySlug?: string }, authToken?: string): Promise<{ posts: BlogPost[]; total: number; totalPages: number }> {
     if (USE_MOCK) {
       return { posts: mockBlogData.latestPosts, total: 10, totalPages: 1 };
     }
@@ -137,7 +137,8 @@ class BlogPostService {
     });
     
     console.log('[BLOG SERVICE] Fetching published posts:', `${this.postEndpoint}/published?${query}`);
-    const res = await apiService.get<any>(`${this.postEndpoint}/published?${query}`);
+    const config = authToken ? { headers: { Authorization: `Bearer ${authToken}` } } : undefined;
+    const res = await apiService.get<any>(`${this.postEndpoint}/published?${query}`, config);
     console.log('[BLOG SERVICE] Raw API Response:', res);
     
     const transformedPosts = (res.data?.items || []).map((item: any) => ({
@@ -168,13 +169,13 @@ class BlogPostService {
     return mappedResponse;
   }
 
-  async getLatestPosts(page = 1, limit = 10): Promise<BlogPost[]> {
+  async getLatestPosts(page = 1, limit = 10, authToken?: string): Promise<BlogPost[]> {
     if (USE_MOCK) {
       return mockBlogData.latestPosts;
     }
 
     try {
-      const result = await this.getPublishedBlogPosts({ page, pageSize: limit });
+      const result = await this.getPublishedBlogPosts({ page, pageSize: limit }, authToken);
       return result.posts;
     } catch (error: any) {
       console.error('Error fetching latest posts:', {
@@ -187,7 +188,7 @@ class BlogPostService {
     }
   }
 
-  async getPostById(id: string): Promise<BlogPost> {
+  async getPostById(id: string, authToken?: string): Promise<BlogPost> {
     if (USE_MOCK) {
       const allPosts = [mockBlogData.featuredPost, ...mockBlogData.latestPosts];
       const post = allPosts.find(p => p.id === id);
@@ -226,7 +227,8 @@ class BlogPostService {
 
     try {
       console.log('[BLOG SERVICE] Fetching post by ID:', id);
-      const response = await apiService.get<any>(`${this.postEndpoint}/${id}`);
+      const config = authToken ? { headers: { Authorization: `Bearer ${authToken}` } } : undefined;
+      const response = await apiService.get<any>(`${this.postEndpoint}/${id}`, config);
       console.log('[BLOG SERVICE] Post response:', response);
       
       const postData = response.data;

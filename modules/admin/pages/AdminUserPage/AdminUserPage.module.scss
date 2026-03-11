@@ -1,0 +1,179 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.page {
+  padding: 32px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+// ---------- Header ----------
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  gap: 16px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0 0 6px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+// ---------- Stats ----------
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.statCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-primary);
+}
+
+.statIcon {
+  font-size: 32px;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.cardBlue .statIcon  { background: rgba(59, 130, 246, 0.12); }
+.cardGreen .statIcon { background: rgba(16, 185, 129, 0.12); }
+.cardRed .statIcon   { background: rgba(239, 68, 68, 0.12);  }
+.cardPurple .statIcon { background: rgba(177, 178, 255, 0.18); }
+
+.statContent {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.statLabel {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin: 0;
+  font-weight: 500;
+}
+
+.statValue {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+  line-height: 1.1;
+}
+
+// ---------- Table section ----------
+.tableSection {
+  display: flex;
+  flex-direction: column;
+}
+
+// ---------- Loading ----------
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 80px 24px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+// ---------- Error ----------
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 60px 24px;
+}
+
+.errorMessage {
+  font-size: 14px;
+  color: #dc2626;
+  text-align: center;
+}
+
+.retryButton {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: $primary-500;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.88;
+  }
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--color-border);
+  border-top-color: $primary-500;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// ---------- Responsive ----------
+@media (max-width: 768px) {
+  .page {
+    padding: 20px;
+  }
+
+  .title {
+    font-size: 24px;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .statCard {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .statValue {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+}
