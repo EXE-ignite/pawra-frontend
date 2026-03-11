@@ -26,6 +26,7 @@ export function AdminUserPage({ initialStats = DEFAULT_STATS }: AdminUserPagePro
   const [roleFilter, setRoleFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
 
   const loadData = async (
@@ -36,6 +37,7 @@ export function AdminUserPage({ initialStats = DEFAULT_STATS }: AdminUserPagePro
   ) => {
     try {
       setLoading(true);
+      setError(null);
       const [fetchedStats, listData] = await Promise.all([
         page === 1 ? userAdminService.getStats() : Promise.resolve(stats),
         userAdminService.getUsers(page, 10, q || undefined, role || undefined, status || undefined),
@@ -44,8 +46,11 @@ export function AdminUserPage({ initialStats = DEFAULT_STATS }: AdminUserPagePro
       setUsers(listData.users);
       setTotalUsers(listData.total);
       setTotalPages(listData.totalPages);
-    } catch (err) {
-      console.error('[AdminUserPage] Failed to fetch users:', err);
+    } catch (err: unknown) {
+      const apiErr = err as { message?: string; status?: number };
+      const msg = apiErr?.message ?? (err instanceof Error ? err.message : String(err));
+      console.error('[AdminUserPage] Failed to fetch users — status:', apiErr?.status, '| message:', msg, '| raw:', err);
+      setError(msg || 'Không thể tải danh sách người dùng. Vui lòng thử lại.');
     } finally {
       setLoading(false);
     }
@@ -146,6 +151,13 @@ export function AdminUserPage({ initialStats = DEFAULT_STATS }: AdminUserPagePro
         <div className={styles.loadingState}>
           <div className={styles.spinner} />
           <p>Đang tải dữ liệu...</p>
+        </div>
+      ) : error ? (
+        <div className={styles.errorState}>
+          <p className={styles.errorMessage}>⚠️ {error}</p>
+          <button className={styles.retryButton} onClick={() => loadData(1, '', '', '')}>
+            Thử lại
+          </button>
         </div>
       ) : (
         <div className={styles.tableSection}>

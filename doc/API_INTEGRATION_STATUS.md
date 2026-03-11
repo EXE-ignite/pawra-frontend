@@ -1,6 +1,6 @@
 # API Integration Status - Pawra Frontend
 
-**Last Updated:** March 3, 2026
+**Last Updated:** March 11, 2026
 
 ---
 
@@ -30,10 +30,11 @@ Tài liệu này theo dõi trạng thái tích hợp API giữa Frontend và Bac
 | `GET /api/Auth/profile` | ✅ | `auth.service.ts` | Hoạt động |
 | `POST /api/Auth/google/callback` | ✅ | `auth.service.ts` | Google OAuth |
 | `POST /api/Auth/facebook/callback` | ❌ | - | Cần thêm |
-| `GET /api/Account` | ❌ | - | Admin only |
+| `GET /api/Account` | ✅ | `user.service.ts` | Admin only - filter/paginate client-side; `roleName` trả đúng sau backend fix (11/03/2026) |
 | `POST /api/Account` | ❌ | - | Admin only |
-| `PUT /api/Account/{id}` | ❌ | - | Cần cho profile update |
-| `DELETE /api/Account/{id}` | ❌ | - | Admin only |
+| `PUT /api/Account/{id}` | ✅ | `user.service.ts` | Update role/status |
+| `DELETE /api/Account/{id}` | ✅ | `user.service.ts` | Admin only |
+| `GET /api/AccountRole` | ✅ | `user.service.ts` | Lấy danh sách roles để map `roleId → roleName`; dùng `?pageSize=100` |
 
 ---
 
