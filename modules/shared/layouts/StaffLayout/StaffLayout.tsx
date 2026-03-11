@@ -91,6 +91,9 @@ export function StaffLayout({ children }: StaffLayoutProps) {
           <a href="/admin/blog" className={styles.navItem}>
             📝 Blog Posts
           </a>
+          <a href="/admin/users" className={styles.navItem}>
+            👥 Người dùng
+          </a>
         </nav>
 
         <div className={styles.sidebarFooter}>
