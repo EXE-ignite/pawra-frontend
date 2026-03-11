@@ -4,6 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FeaturedPostProps } from './FeaturedPost.types';
+import { BlogShare } from '../BlogShare';
 import { useTranslation } from '@/modules/shared/contexts';
 import styles from './FeaturedPost.module.scss';
 
@@ -35,9 +36,19 @@ export function FeaturedPost({ post }: FeaturedPostProps) {
           <span className={styles.separator}>•</span>
           <span className={styles.date}>{post.publishedAt}</span>
         </div>
-        <Link href={`/blog/${post.id}`} className={styles.readMore}>
-          {t('blog.readMore')}
-        </Link>
+        <div className={styles.actions}>
+          <Link href={`/blog/${post.id}`} className={styles.readMore}>
+            {t('blog.readMore')}
+          </Link>
+          <BlogShare
+            post={{
+              id: post.id,
+              title: post.title,
+              excerpt: post.excerpt,
+            }}
+            variant="icon"
+          />
+        </div>
       </div>
     </div>
   );

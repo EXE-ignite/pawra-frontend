@@ -6,6 +6,19 @@ A pet care management platform built with Next.js — helping pet owners track h
 
 ## Changelog
 
+### v1.0.4 — 2026-03-11
+
+> Blog sharing enhancements
+
+#### New Features
+- **Reusable BlogShare component:** Thêm `BlogShare` dùng chung trong `modules/blog/components/BlogShare/` với 2 chế độ hiển thị: icon action và full share panel
+- **Native share + copy fallback:** Nút share ưu tiên Web Share API, fallback tự động sang copy link; hiển thị toast khi copy thành công hoặc khi không thể chia sẻ
+- **Social share options:** Share panel hỗ trợ **Facebook**, **X**, và **Messenger** (đã bỏ LinkedIn theo cập nhật mới)
+- **Blog UI integration:** Gắn share vào `BlogDetailPage`, `FeaturedPost`, và `ArticleCard`
+- **i18n keys for share:** Bổ sung text VN/EN cho các action share (`share`, `copyLink`, `linkCopied`, `shareUnavailable`, `shareOnFacebook`, `shareOnX`, `shareOnMessenger`)
+
+---
+
 ### v1.0.3 — 2026-03-07
 
 > Auth & access control improvements

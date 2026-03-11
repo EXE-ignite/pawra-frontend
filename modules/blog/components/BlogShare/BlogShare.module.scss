@@ -1,0 +1,74 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.iconButton {
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-md;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all $transition-fast;
+  font-size: $font-size-base;
+  color: var(--color-text-secondary);
+
+  &:hover {
+    background: var(--color-bg-tertiary);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+}
+
+.panel {
+  padding-top: $spacing-xl;
+  margin-top: $spacing-xl;
+  border-top: 1px solid var(--color-border);
+}
+
+.title {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.05em;
+  margin-bottom: $spacing-md;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-sm;
+}
+
+.shareButton {
+  min-width: 44px;
+  height: 40px;
+  padding: 0 $spacing-md;
+  border-radius: $radius-full;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-xs;
+  cursor: pointer;
+  transition: all $transition-fast;
+  color: var(--color-text-secondary);
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+
+  &:hover {
+    background: rgba($primary-500, 0.08);
+    border-color: rgba($primary-500, 0.35);
+    color: var(--color-primary);
+    transform: translateY(-1px);
+  }
+}
+
+.shareLabel {
+  @include mobile {
+    display: none;
+  }
+}

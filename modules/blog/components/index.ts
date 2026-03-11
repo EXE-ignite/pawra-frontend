@@ -6,6 +6,7 @@ export { NewsletterBox } from './NewsletterBox';
 export { RelatedPosts } from './RelatedPosts';
 export { CommentSection } from './CommentSection';
 export { ReactionBar } from './ReactionBar';
+export { BlogShare } from './BlogShare';
 export { StatCard } from './StatCard';
 export { BlogTable } from './BlogTable';
 export { BlogSearchBar } from './BlogSearchBar';

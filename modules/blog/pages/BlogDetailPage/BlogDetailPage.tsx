@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { BlogPost } from '../../types';
-import { RelatedPosts, CommentSection, SearchBox, NewsletterBox, ReactionBar } from '../../components';
+import { RelatedPosts, CommentSection, SearchBox, NewsletterBox, ReactionBar, BlogShare } from '../../components';
 import { ReactionType, Reaction } from '../../components/ReactionBar/ReactionBar.types';
 import { useTranslation } from '@/modules/shared/contexts';
 import { blogService } from '../../services/blog.service';
@@ -39,7 +39,7 @@ export function BlogDetailPage({ id }: BlogDetailPageProps) {
       })
       .catch(() => router.replace('/blog'))
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, router]);
 
   if (loading) {
     return (
@@ -144,9 +144,14 @@ export function BlogDetailPage({ id }: BlogDetailPageProps) {
                 <button className={styles.actionBtn} aria-label="Bookmark">
                   🔖
                 </button>
-                <button className={styles.actionBtn} aria-label="Share">
-                  🔗
-                </button>
+                <BlogShare
+                  post={{
+                    id: safePost.id,
+                    title: safePost.title,
+                    excerpt: safePost.excerpt,
+                  }}
+                  variant="icon"
+                />
               </div>
             </div>
 
@@ -169,21 +174,13 @@ export function BlogDetailPage({ id }: BlogDetailPageProps) {
             {/* Reaction Bar */}
             <ReactionBar postId={safePost.id} initialReactions={initialReactions} />
 
-            {/* Share Section */}
-            <div className={styles.shareSection}>
-              <h3 className={styles.shareTitle}>{t('blog.shareArticle')}</h3>
-              <div className={styles.socialButtons}>
-                <button className={styles.socialBtn} aria-label="Share on Facebook">
-                  f
-                </button>
-                <button className={styles.socialBtn} aria-label="Share on Twitter">
-                  𝕏
-                </button>
-                <button className={styles.socialBtn} aria-label="Share on Pinterest">
-                  P
-                </button>
-              </div>
-            </div>
+            <BlogShare
+              post={{
+                id: safePost.id,
+                title: safePost.title,
+                excerpt: safePost.excerpt,
+              }}
+            />
 
             {/* Comments */}
             <CommentSection postId={safePost.id} />
