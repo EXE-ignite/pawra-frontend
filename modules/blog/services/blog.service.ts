@@ -83,12 +83,12 @@ class BlogService {
     return blogPostService.getRelatedPosts(slug, limit);
   }
 
-  async getLatestPosts(page = 1, limit = 10): Promise<BlogPost[]> {
-    return blogPostService.getLatestPosts(page, limit);
+  async getLatestPosts(page = 1, limit = 10, authToken?: string): Promise<BlogPost[]> {
+    return blogPostService.getLatestPosts(page, limit, authToken);
   }
 
-  async getPostById(id: string): Promise<BlogPost> {
-    return blogPostService.getPostById(id);
+  async getPostById(id: string, authToken?: string): Promise<BlogPost> {
+    return blogPostService.getPostById(id, authToken);
   }
 
   async getPostsByCategory(category: string, page = 1, limit = 10): Promise<BlogPost[]> {
