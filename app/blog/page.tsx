@@ -3,9 +3,9 @@ import { blogService } from '@/modules/blog/services';
 import { getServerAuthToken } from '@/modules/shared/utils/server-auth';
 
 export default async function Blog() {
-  // Lấy published posts từ public API (không cần auth)
   try {
-    const response = await blogService.getPublishedBlogPosts({ page: 1, pageSize: 10 });
+    const authToken = await getServerAuthToken();
+    const response = await blogService.getPublishedBlogPosts({ page: 1, pageSize: 10 }, authToken ?? undefined);
     
     console.log('[BLOG PAGE] Response:', JSON.stringify(response, null, 2));
     console.log('[BLOG PAGE] Response type:', typeof response);
