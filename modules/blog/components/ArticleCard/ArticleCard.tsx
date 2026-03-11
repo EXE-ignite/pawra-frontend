@@ -4,6 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArticleCardProps } from './ArticleCard.types';
+import { BlogShare } from '../BlogShare';
 import { useTranslation } from '@/modules/shared/contexts';
 import styles from './ArticleCard.module.scss';
 
@@ -15,9 +16,12 @@ const categoryColors: Record<string, string> = {
   training: '#06D6A0'
 };
 
+type CategoryValue = string | { name?: string; slug?: string };
+
 export function ArticleCard({ post }: ArticleCardProps) {
   const { t } = useTranslation();
-  const categoryStr = typeof post.category === 'string' ? post.category : (post.category as any)?.name || (post.category as any)?.slug || 'health';
+  const categoryValue = post.category as CategoryValue;
+  const categoryStr = typeof categoryValue === 'string' ? categoryValue : categoryValue.name || categoryValue.slug || 'health';
   const categoryColor = categoryColors[categoryStr] || '#999';
 
   return (
@@ -48,9 +52,19 @@ export function ArticleCard({ post }: ArticleCardProps) {
         <p className={styles.excerpt}>{post.excerpt}</p>
         <div className={styles.footer}>
           <span className={styles.readTime}>{post.readTime} {t('blog.minRead')}</span>
-          <Link href={`/blog/${post.id}`} className={styles.readLink}>
-            {t('blog.readArrow')}
-          </Link>
+          <div className={styles.footerActions}>
+            <BlogShare
+              post={{
+                id: post.id,
+                title: post.title,
+                excerpt: post.excerpt,
+              }}
+              variant="icon"
+            />
+            <Link href={`/blog/${post.id}`} className={styles.readLink}>
+              {t('blog.readArrow')}
+            </Link>
+          </div>
         </div>
       </div>
     </article>
