@@ -47,8 +47,8 @@ class BlogService {
     return blogPostService.getBlogPostsByStatus(status);
   }
 
-  async getPublishedBlogPosts(params: { page?: number; pageSize?: number; categorySlug?: string }): Promise<{ posts: BlogPost[]; total: number; totalPages: number }> {
-    return blogPostService.getPublishedBlogPosts(params);
+  async getPublishedBlogPosts(params: { page?: number; pageSize?: number; categorySlug?: string }, authToken?: string): Promise<{ posts: BlogPost[]; total: number; totalPages: number }> {
+    return blogPostService.getPublishedBlogPosts(params, authToken);
   }
 
   async createBlogPost(data: Partial<BlogPost>): Promise<BlogPost> {
