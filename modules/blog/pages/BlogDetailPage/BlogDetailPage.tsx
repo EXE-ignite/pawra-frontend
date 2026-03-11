@@ -1,12 +1,14 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { BlogDetailPageProps } from './BlogDetailPage.types';
+import { BlogPost } from '../../types';
 import { RelatedPosts, CommentSection, SearchBox, NewsletterBox, ReactionBar } from '../../components';
 import { ReactionType, Reaction } from '../../components/ReactionBar/ReactionBar.types';
 import { useTranslation } from '@/modules/shared/contexts';
+import { blogService } from '../../services/blog.service';
+import { useRouter } from 'next/navigation';
 import styles from './BlogDetailPage.module.scss';
 
 const categoryColors: Record<string, string> = {
@@ -16,9 +18,41 @@ const categoryColors: Record<string, string> = {
   training: '#06D6A0'
 };
 
-export function BlogDetailPage({ post, relatedPosts }: BlogDetailPageProps) {
+interface BlogDetailPageProps {
+  id: string;
+}
+
+export function BlogDetailPage({ id }: BlogDetailPageProps) {
   const { t } = useTranslation();
-  // Ensure post has all required fields with defaults
+  const router = useRouter();
+  const [post, setPost] = useState<BlogPost | null>(null);
+  const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    blogService.getPostById(id)
+      .then((fetchedPost) => {
+        setPost(fetchedPost);
+        return blogService.getLatestPosts(1, 10)
+          .then((allPosts) => setRelatedPosts(allPosts.filter(p => p.id !== id).slice(0, 3)))
+          .catch(() => {});
+      })
+      .catch(() => router.replace('/blog'))
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className={styles.detailPage}>
+        <div className={styles.container} style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <span>{t('common.loading') || 'Loading...'}</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!post) return null;
+
   const safePost = {
     ...post,
     id: post.id || '',
@@ -41,11 +75,11 @@ export function BlogDetailPage({ post, relatedPosts }: BlogDetailPageProps) {
   const reactionTypes: ReactionType[] = ['like', 'love', 'haha', 'wow', 'sad', 'angry'];
   const initialReactions: Reaction[] = reactionTypes.map(type => ({
     type,
-    emoji: '', // ReactionBar will fill emoji
-    label: '', // ReactionBar will fill label
+    emoji: '',
+    label: '',
     count: safePost.reactionSummary?.[type] || 0,
   }));
-  
+
   const categoryColor = categoryColors[safePost.category] || '#B1B2FF';
 
   return (
