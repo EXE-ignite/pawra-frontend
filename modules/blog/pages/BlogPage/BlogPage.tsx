@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BlogPost } from '../../types';
 import { 
   FeaturedPost, 
@@ -10,16 +10,26 @@ import {
   NewsletterBox 
 } from '../../components';
 import { useTranslation } from '@/modules/shared/contexts';
+import { blogService } from '../../services/blog.service';
 import styles from './BlogPage.module.scss';
 
-interface BlogPageProps {
-  featuredPost: BlogPost | null;
-  latestPosts: BlogPost[];
-}
-
-export function BlogPage({ featuredPost, latestPosts }: BlogPageProps) {
+export function BlogPage() {
   const { t } = useTranslation();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [featuredPost, setFeaturedPost] = useState<BlogPost | null>(null);
+  const [latestPosts, setLatestPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    blogService.getPublishedBlogPosts({ page: 1, pageSize: 10 })
+      .then((response) => {
+        const posts = response?.posts || [];
+        setLatestPosts(posts);
+        setFeaturedPost(posts[0] || null);
+      })
+      .catch((err) => console.error('[BlogPage] Failed to load posts:', err))
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <div className={styles.blogPage}>
