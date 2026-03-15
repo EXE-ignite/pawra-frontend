@@ -94,6 +94,9 @@ export function StaffLayout({ children }: StaffLayoutProps) {
           <a href="/admin/users" className={styles.navItem}>
             👥 Người dùng
           </a>
+          <a href="/admin/subscriptions" className={styles.navItem}>
+            💳 Subscriptions
+          </a>
         </nav>
 
         <div className={styles.sidebarFooter}>
