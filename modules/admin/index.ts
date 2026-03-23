@@ -1,3 +1,4 @@
 export { AdminUserPage } from './pages/AdminUserPage';
-export { userAdminService } from './services';
+export { AdminSubscriptionPage } from './pages/AdminSubscriptionPage';
+export { userAdminService, subscriptionAdminService } from './services';
 export * from './types';

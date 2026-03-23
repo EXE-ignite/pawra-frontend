@@ -1,0 +1,344 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.tableContainer {
+  background: var(--color-bg-primary);
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  thead {
+    background: var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-border);
+
+    th {
+      padding: 14px 20px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      text-transform: uppercase;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid var(--color-border);
+      transition: background-color 0.2s;
+
+      &:hover {
+        background: var(--color-bg-secondary);
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    td {
+      padding: 14px 20px;
+      vertical-align: middle;
+      font-size: 14px;
+      color: var(--color-text-primary);
+    }
+  }
+}
+
+// ---------- User cell ----------
+.userCell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 220px;
+}
+
+.avatar {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.avatarInitials {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.userName {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userEmail {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ---------- Plan badge ----------
+.planBadge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.planVip {
+  background: var(--color-warning-light);
+  color: var(--color-warning);
+}
+
+.planPremium {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+}
+
+.planBasic {
+  background: var(--color-info-light);
+  color: var(--color-info);
+}
+
+.planDefault {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+}
+
+// ---------- Status ----------
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.statusActive {
+  background: var(--color-success-light);
+  color: var(--color-success);
+
+  .statusDot {
+    background: var(--color-success);
+  }
+}
+
+.statusExpired {
+  background: var(--color-error-light);
+  color: var(--color-error);
+
+  .statusDot {
+    background: var(--color-error);
+  }
+}
+
+.statusCancelled {
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+
+  .statusDot {
+    background: var(--color-text-secondary);
+  }
+}
+
+.statusTrial {
+  background: var(--color-info-light);
+  color: var(--color-info);
+
+  .statusDot {
+    background: var(--color-info);
+  }
+}
+
+// ---------- Price ----------
+.priceCell {
+  white-space: nowrap;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  font-size: 13px;
+}
+
+// ---------- Date ----------
+.dateCell {
+  white-space: nowrap;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+// ---------- Auto renew ----------
+.renewYes {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.renewNo {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+}
+
+// ---------- Actions ----------
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.editButton,
+.deleteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.editButton {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+
+  &:hover {
+    background: var(--color-primary-lighter);
+  }
+}
+
+.deleteButton {
+  background: var(--color-error-light);
+  color: var(--color-error);
+
+  &:hover {
+    background: var(--color-error-lighter);
+  }
+}
+
+// ---------- Empty state ----------
+.emptyState {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}
+
+// ---------- Pagination ----------
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-top: 1px solid var(--color-border);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.paginationInfo {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin: 0;
+
+  strong {
+    color: var(--color-text-primary);
+  }
+}
+
+.paginationButtons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pageButton {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: var(--color-primary-light);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  &.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.ellipsis {
+  padding: 0 4px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+}

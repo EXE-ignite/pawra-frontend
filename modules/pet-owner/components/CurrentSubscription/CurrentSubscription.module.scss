@@ -1,0 +1,175 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.card {
+  @include card;
+}
+
+.empty {
+  @include flex-column-center;
+  text-align: center;
+  padding: $spacing-xl 0;
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: $spacing-md;
+}
+
+.emptyTitle {
+  margin: 0 0 $spacing-sm;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: var(--color-text-primary);
+}
+
+.emptyText {
+  margin: 0 0 $spacing-lg;
+  font-size: $font-size-sm;
+  color: var(--color-text-secondary);
+  max-width: 300px;
+}
+
+.header {
+  @include flex-between;
+  margin-bottom: $spacing-lg;
+  padding-bottom: $spacing-lg;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.planInfo {
+  @include flex-start;
+  gap: $spacing-md;
+}
+
+.planName {
+  margin: 0;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: var(--color-text-primary);
+}
+
+.status {
+  padding: $spacing-xs $spacing-sm;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  border-radius: $radius-full;
+}
+
+.statusActive {
+  background: rgba($color-success, 0.15);
+  color: $color-success;
+}
+
+.statusCancelled {
+  background: rgba($color-warning, 0.15);
+  color: $color-warning;
+}
+
+.statusExpired {
+  background: rgba($color-error, 0.15);
+  color: $color-error;
+}
+
+.price {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: var(--color-text-primary);
+}
+
+.period {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-normal;
+  color: var(--color-text-secondary);
+}
+
+.details {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: $spacing-md;
+  margin-bottom: $spacing-lg;
+}
+
+.detailItem {
+  @include flex-column;
+  gap: $spacing-xs;
+}
+
+.detailLabel {
+  font-size: $font-size-xs;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detailValue {
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  color: var(--color-text-primary);
+
+  &.warning {
+    color: $color-warning;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: $spacing-md;
+}
+
+.upgradeButton {
+  @include button-base;
+  @include button-primary;
+  flex: 1;
+  padding: $spacing-md $spacing-lg;
+  font-size: $font-size-sm;
+  border-radius: $radius-lg;
+}
+
+.cancelButton {
+  @include button-base;
+  @include button-outline;
+  flex: 1;
+  padding: $spacing-md $spacing-lg;
+  font-size: $font-size-sm;
+  border-radius: $radius-lg;
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+
+  &:hover:not(:disabled) {
+    border-color: $color-error;
+    color: $color-error;
+    background: rgba($color-error, 0.05);
+  }
+}
+
+.notice {
+  @include flex-start;
+  gap: $spacing-sm;
+  padding: $spacing-md;
+  background: rgba($color-warning, 0.1);
+  color: var(--color-text-primary);
+  font-size: $font-size-sm;
+  border-radius: $radius-lg;
+}
+
+.noticeIcon {
+  flex-shrink: 0;
+}
+
+// Responsive
+@include mobile {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-md;
+  }
+
+  .details {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+}

@@ -60,6 +60,12 @@ export function Header() {
             >
               {t('nav.calendar')}
             </Link>
+            <Link 
+              href="/pet-owner/subscription" 
+              className={`${styles.navLink} ${pathname === '/pet-owner/subscription' ? styles.active : ''}`}
+            >
+              {t('nav.subscription')}
+            </Link>
 
             <LanguageSwitcher />
             <ThemeToggle />

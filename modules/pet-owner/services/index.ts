@@ -71,3 +71,6 @@ export type {
   WeightUnit,
   WeightSource,
 } from './weight-record.service';
+
+// Subscription
+export { userSubscriptionService, default as userSubscriptionServiceDefault } from './subscription.service';
