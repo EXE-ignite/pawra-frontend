@@ -14,3 +14,5 @@ export { CalendarView } from './CalendarView';
 export { TaskSidebar } from './TaskSidebar';
 export { AddReminderModal } from './AddReminderModal';
 export { AddVaccinationModal } from './AddVaccinationModal';
+export { PlanCard } from './PlanCard';
+export { CurrentSubscription } from './CurrentSubscription';

@@ -25,6 +25,7 @@ export const en = {
     petProfile: 'Pet Profile',
     blog: 'Blog',
     calendar: 'Calendar',
+    subscription: 'Subscription',
     login: 'Sign In',
     notifications: 'Notifications',
   },

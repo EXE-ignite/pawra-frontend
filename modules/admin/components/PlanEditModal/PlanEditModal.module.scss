@@ -22,9 +22,11 @@
   background: var(--color-bg-primary);
   border-radius: 16px;
   width: 100%;
-  max-width: 460px;
+  max-width: 520px;
   box-shadow: $shadow-xl;
   animation: slideUp 0.2s ease-out;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 @keyframes slideUp {
@@ -37,7 +39,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px 0;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .title {
@@ -65,66 +68,18 @@
   }
 }
 
-// ---------- User preview ----------
-.userPreview {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 20px 24px;
-  background: var(--color-bg-secondary);
-  margin: 16px 24px;
-  border-radius: 10px;
-}
-
-.avatar {
-  position: relative;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.avatarInitials {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: var(--color-primary-light);
-  color: var(--color-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.userName {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--color-text-primary);
-  margin: 0 0 3px;
-}
-
-.userEmail {
-  font-size: 13px;
-  color: var(--color-text-secondary);
-  margin: 0 0 3px;
-}
-
-.userPrice {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-primary);
-  margin: 0;
-}
-
 // ---------- Form ----------
 .form {
-  padding: 0 24px 24px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
 
 .field {
@@ -141,37 +96,72 @@
   letter-spacing: 0.4px;
 }
 
-.select {
+.input,
+.select,
+.textarea {
   width: 100%;
-  padding: 10px 32px 10px 12px;
+  padding: 10px 12px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
   background: var(--color-bg-secondary);
   color: var(--color-text-primary);
   font-size: 14px;
   outline: none;
-  cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
   transition: border-color 0.2s;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: var(--color-text-secondary);
+  }
 
   &:focus {
     border-color: var(--color-primary);
   }
 }
 
+.inputError {
+  border-color: var(--color-error) !important;
+}
+
+.errorText {
+  font-size: 12px;
+  color: var(--color-error);
+}
+
+.select {
+  padding-right: 32px;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+.pricePreview {
+  font-size: 12px;
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
 // ---------- Checkbox ----------
 .checkboxField {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  padding: 16px;
+  background: var(--color-bg-secondary);
+  border-radius: 10px;
 }
 
 .checkboxLabel {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: flex-start;
+  gap: 12px;
   font-size: 14px;
   color: var(--color-text-primary);
   cursor: pointer;
@@ -179,10 +169,25 @@
 }
 
 .checkbox {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   accent-color: var(--color-primary);
   cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.checkboxText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.checkboxHint {
+  display: block;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  font-weight: 400;
 }
 
 // ---------- Footer ----------
@@ -228,5 +233,12 @@
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+  }
+}
+
+// ---------- Responsive ----------
+@media (max-width: 480px) {
+  .row {
+    grid-template-columns: 1fr;
   }
 }

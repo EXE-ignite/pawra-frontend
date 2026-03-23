@@ -1,3 +1,4 @@
+import { apiService } from '@/modules/shared/services';
 import type {
   Subscription,
   SubscriptionListResponse,
@@ -5,10 +6,68 @@ import type {
   UpdateSubscriptionPayload,
   SubscriptionStatus,
   SubscriptionPlan,
+  PaymentMethod,
 } from '../types';
 
+const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === 'true';
+
+// TODO: Tạm bật mock để test UI - set về false khi có API thực
+const FORCE_MOCK = true;
+const ENABLE_MOCK = USE_MOCK || FORCE_MOCK;
+
 // ---------------------------------------------------------------------------
-// Mock data
+// Backend response interfaces
+// ---------------------------------------------------------------------------
+
+// Subscription Status từ backend (enum number)
+// 0 - Active, 1 - Cancelled, 2 - Expired
+const BACKEND_STATUS_MAP: Record<number, SubscriptionStatus> = {
+  0: 'Active',
+  1: 'Cancelled',
+  2: 'Expired',
+};
+
+const STATUS_TO_BACKEND: Record<SubscriptionStatus, number> = {
+  Active: 0,
+  Cancelled: 1,
+  Expired: 2,
+  Trial: 0, // Trial không có trong backend, map về Active
+};
+
+interface BackendSubscriptionAccount {
+  id: string;
+  accountId: string;
+  subscriptionPlanId: string;
+  startDate: string;
+  endDate: string;
+  status: number; // 0: Active, 1: Cancelled, 2: Expired
+  createdDate?: string;
+  updatedDate?: string;
+  // Nếu backend trả về nested objects
+  account?: BackendAccount;
+  subscriptionPlan?: BackendSubscriptionPlan;
+}
+
+interface BackendAccount {
+  id: string;
+  email: string;
+  fullName?: string;
+  name?: string;
+  avatarUrl?: string;
+  avatar?: string;
+}
+
+interface BackendSubscriptionPlan {
+  id: string;
+  name: string;
+  price: number;
+  durationInDays: number;
+  description?: string;
+  isActive?: boolean;
+}
+
+// ---------------------------------------------------------------------------
+// Mock data (giữ lại để dev offline)
 // ---------------------------------------------------------------------------
 const MOCK_SUBSCRIPTIONS: Subscription[] = [
   {
@@ -215,14 +274,147 @@ function sortByPlan(subs: Subscription[]): Subscription[] {
 }
 
 // ---------------------------------------------------------------------------
+// Mapping functions
+// ---------------------------------------------------------------------------
+function mapPlanName(planName: string): SubscriptionPlan {
+  const normalized = planName.toLowerCase();
+  if (normalized.includes('vip')) return 'VIP';
+  if (normalized.includes('premium')) return 'Premium';
+  return 'Basic';
+}
+
+function mapSubscription(
+  sub: BackendSubscriptionAccount,
+  accountMap: Record<string, BackendAccount>,
+  planMap: Record<string, BackendSubscriptionPlan>,
+): Subscription {
+  const account = sub.account || accountMap[sub.accountId];
+  const plan = sub.subscriptionPlan || planMap[sub.subscriptionPlanId];
+
+  return {
+    id: sub.id,
+    userId: sub.accountId,
+    userName: account?.fullName || account?.name || 'Unknown User',
+    userEmail: account?.email || '',
+    userAvatarUrl: account?.avatarUrl || account?.avatar || undefined,
+    plan: plan ? mapPlanName(plan.name) : 'Basic',
+    status: BACKEND_STATUS_MAP[sub.status] ?? 'Active',
+    price: plan?.price ?? 0,
+    currency: 'VND',
+    startDate: sub.startDate?.split('T')[0] || '',
+    endDate: sub.endDate?.split('T')[0] || '',
+    autoRenew: false, // Backend không có field này, mặc định false
+    paymentMethod: 'BankTransfer', // Backend không có field này
+    createdAt: sub.createdDate?.split('T')[0] || sub.startDate?.split('T')[0] || '',
+  };
+}
+
+// ---------------------------------------------------------------------------
 // Service
 // ---------------------------------------------------------------------------
 class SubscriptionAdminService {
-  async getStats(): Promise<SubscriptionStats> {
-    // Simulate API delay
-    await new Promise((r) => setTimeout(r, 300));
+  private readonly subscriptionEndpoint = '/SubscriptionAccount';
+  private readonly accountEndpoint = '/Account';
+  private readonly planEndpoint = '/SubscriptionPlan';
 
-    const all = MOCK_SUBSCRIPTIONS;
+  // Cache
+  private _subscriptionCache: Promise<Subscription[]> | null = null;
+  private _planCache: Promise<Record<string, BackendSubscriptionPlan>> | null = null;
+  private _accountCache: Promise<Record<string, BackendAccount>> | null = null;
+
+  private invalidate(): void {
+    this._subscriptionCache = null;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Fetch helpers
+  // ---------------------------------------------------------------------------
+  private fetchPlans(): Promise<Record<string, BackendSubscriptionPlan>> {
+    if (!this._planCache) {
+      this._planCache = apiService
+        .get<BackendSubscriptionPlan[]>(`${this.planEndpoint}?pageSize=100&pageNumber=1`)
+        .then((response) => {
+          const wrapper = response as unknown as { success?: boolean; data?: BackendSubscriptionPlan[] };
+          const list: BackendSubscriptionPlan[] = Array.isArray(wrapper.data)
+            ? wrapper.data
+            : Array.isArray(response) ? response : [];
+          return Object.fromEntries(list.map((p) => [p.id, p]));
+        })
+        .catch((err: unknown) => {
+          this._planCache = null;
+          console.warn('[SubscriptionAdminService] fetchPlans failed:', err);
+          return {} as Record<string, BackendSubscriptionPlan>;
+        });
+      // Auto-expire cache after 60s
+      this._planCache.then(() => setTimeout(() => { this._planCache = null; }, 60_000));
+    }
+    return this._planCache;
+  }
+
+  private fetchAccounts(): Promise<Record<string, BackendAccount>> {
+    if (!this._accountCache) {
+      this._accountCache = apiService
+        .get<BackendAccount[]>(`${this.accountEndpoint}?pageSize=1000&pageNumber=1`)
+        .then((response) => {
+          const wrapper = response as unknown as { success?: boolean; data?: BackendAccount[] };
+          const list: BackendAccount[] = Array.isArray(wrapper.data)
+            ? wrapper.data
+            : Array.isArray(response) ? response : [];
+          return Object.fromEntries(list.map((a) => [a.id, a]));
+        })
+        .catch((err: unknown) => {
+          this._accountCache = null;
+          console.warn('[SubscriptionAdminService] fetchAccounts failed:', err);
+          return {} as Record<string, BackendAccount>;
+        });
+      // Auto-expire cache after 30s
+      this._accountCache.then(() => setTimeout(() => { this._accountCache = null; }, 30_000));
+    }
+    return this._accountCache;
+  }
+
+  private fetchAll(): Promise<Subscription[]> {
+    if (!this._subscriptionCache) {
+      this._subscriptionCache = Promise.all([
+        apiService.get<BackendSubscriptionAccount[]>(`${this.subscriptionEndpoint}?pageSize=1000&pageNumber=1`),
+        this.fetchPlans(),
+        this.fetchAccounts(),
+      ])
+        .then(([response, planMap, accountMap]) => {
+          const wrapper = response as unknown as { success?: boolean; data?: BackendSubscriptionAccount[] };
+          const list: BackendSubscriptionAccount[] = Array.isArray(wrapper.data)
+            ? wrapper.data
+            : Array.isArray(response) ? response : [];
+          return list.map((sub) => mapSubscription(sub, accountMap, planMap));
+        })
+        .catch((err) => {
+          this._subscriptionCache = null;
+          throw err;
+        });
+      // Auto-expire cache after 30s
+      this._subscriptionCache.then(() => setTimeout(() => { this._subscriptionCache = null; }, 30_000));
+    }
+    return this._subscriptionCache;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Public API methods
+  // ---------------------------------------------------------------------------
+  async getStats(): Promise<SubscriptionStats> {
+    if (ENABLE_MOCK) {
+      await new Promise((r) => setTimeout(r, 300));
+      const all = MOCK_SUBSCRIPTIONS;
+      const active = all.filter((s) => s.status === 'Active');
+      return {
+        totalSubscriptions: all.length,
+        activeSubscriptions: active.length,
+        expiredSubscriptions: all.filter((s) => s.status === 'Expired').length,
+        trialSubscriptions: all.filter((s) => s.status === 'Trial').length,
+        monthlyRevenue: active.reduce((sum, s) => sum + s.price, 0),
+      };
+    }
+
+    const all = await this.fetchAll();
     const active = all.filter((s) => s.status === 'Active');
     return {
       totalSubscriptions: all.length,
@@ -240,23 +432,48 @@ class SubscriptionAdminService {
     plan?: string,
     status?: string,
   ): Promise<SubscriptionListResponse> {
-    // Simulate API delay
-    await new Promise((r) => setTimeout(r, 300));
+    if (ENABLE_MOCK) {
+      await new Promise((r) => setTimeout(r, 300));
 
-    let filtered = [...MOCK_SUBSCRIPTIONS];
+      let filtered = [...MOCK_SUBSCRIPTIONS];
+
+      if (search) {
+        const q = search.toLowerCase();
+        filtered = filtered.filter(
+          (s) =>
+            s.userName.toLowerCase().includes(q) ||
+            s.userEmail.toLowerCase().includes(q),
+        );
+      }
+      if (plan) filtered = filtered.filter((s) => s.plan === plan);
+      if (status) filtered = filtered.filter((s) => s.status === status);
+
+      const sorted = sortByPlan(filtered);
+      const total = sorted.length;
+      const totalPages = Math.max(1, Math.ceil(total / limit));
+      const start = (page - 1) * limit;
+
+      return {
+        subscriptions: sorted.slice(start, start + limit),
+        total,
+        totalPages,
+      };
+    }
+
+    let all = await this.fetchAll();
 
     if (search) {
       const q = search.toLowerCase();
-      filtered = filtered.filter(
+      all = all.filter(
         (s) =>
           s.userName.toLowerCase().includes(q) ||
           s.userEmail.toLowerCase().includes(q),
       );
     }
-    if (plan) filtered = filtered.filter((s) => s.plan === plan);
-    if (status) filtered = filtered.filter((s) => s.status === status);
+    if (plan) all = all.filter((s) => s.plan === plan);
+    if (status) all = all.filter((s) => s.status === status);
 
-    const sorted = sortByPlan(filtered);
+    const sorted = sortByPlan(all);
     const total = sorted.length;
     const totalPages = Math.max(1, Math.ceil(total / limit));
     const start = (page - 1) * limit;
@@ -272,21 +489,54 @@ class SubscriptionAdminService {
     subscriptionId: string,
     payload: UpdateSubscriptionPayload,
   ): Promise<Subscription> {
-    // Simulate API delay
-    await new Promise((r) => setTimeout(r, 300));
+    if (ENABLE_MOCK) {
+      await new Promise((r) => setTimeout(r, 300));
 
-    const sub = MOCK_SUBSCRIPTIONS.find((s) => s.id === subscriptionId);
-    if (!sub) throw new Error('Subscription not found');
-    Object.assign(sub, payload);
-    return { ...sub };
+      const sub = MOCK_SUBSCRIPTIONS.find((s) => s.id === subscriptionId);
+      if (!sub) throw new Error('Subscription not found');
+      Object.assign(sub, payload);
+      return { ...sub };
+    }
+
+    // Build backend payload
+    const backendPayload: Record<string, unknown> = {};
+    if (payload.status) {
+      backendPayload.status = STATUS_TO_BACKEND[payload.status];
+    }
+    if (payload.endDate) {
+      backendPayload.endDate = payload.endDate;
+    }
+    // Note: plan và autoRenew không có trong UpdateSubscriptionAccountDto của backend
+    // Nếu cần thay đổi plan, cần tạo subscription mới
+
+    const response = await apiService.put<BackendSubscriptionAccount>(
+      `${this.subscriptionEndpoint}/update/${subscriptionId}`,
+      backendPayload,
+    );
+
+    this.invalidate();
+
+    // Fetch updated data
+    const [planMap, accountMap] = await Promise.all([
+      this.fetchPlans(),
+      this.fetchAccounts(),
+    ]);
+
+    const data = (response.data ?? response) as BackendSubscriptionAccount;
+    return mapSubscription(data, accountMap, planMap);
   }
 
   async deleteSubscription(subscriptionId: string): Promise<void> {
-    // Simulate API delay
-    await new Promise((r) => setTimeout(r, 300));
+    if (ENABLE_MOCK) {
+      await new Promise((r) => setTimeout(r, 300));
 
-    const idx = MOCK_SUBSCRIPTIONS.findIndex((s) => s.id === subscriptionId);
-    if (idx !== -1) MOCK_SUBSCRIPTIONS.splice(idx, 1);
+      const idx = MOCK_SUBSCRIPTIONS.findIndex((s) => s.id === subscriptionId);
+      if (idx !== -1) MOCK_SUBSCRIPTIONS.splice(idx, 1);
+      return;
+    }
+
+    await apiService.delete(`${this.subscriptionEndpoint}/${subscriptionId}`);
+    this.invalidate();
   }
 }
 

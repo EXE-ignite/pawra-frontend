@@ -4,3 +4,6 @@ export { UserEditModal } from './UserEditModal';
 export { SubscriptionTable } from './SubscriptionTable';
 export { SubscriptionSearchBar } from './SubscriptionSearchBar';
 export { SubscriptionEditModal } from './SubscriptionEditModal';
+export { PlanTable } from './PlanTable';
+export { PlanSearchBar } from './PlanSearchBar';
+export { PlanEditModal } from './PlanEditModal';

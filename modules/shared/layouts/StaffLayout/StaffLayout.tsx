@@ -92,10 +92,16 @@ export function StaffLayout({ children }: StaffLayoutProps) {
             📝 Blog Posts
           </a>
           <a href="/admin/users" className={styles.navItem}>
-            👥 Người dùng
+            👥 Nguoi dung
           </a>
           <a href="/admin/subscriptions" className={styles.navItem}>
             💳 Subscriptions
+          </a>
+          <a href="/admin/subscription-plans" className={styles.navItem}>
+            📦 Goi dang ky
+          </a>
+          <a href="/admin/settings" className={styles.navItem}>
+            ⚙️ Cai dat
           </a>
         </nav>
 
