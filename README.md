@@ -6,6 +6,23 @@ A pet care management platform built with Next.js — helping pet owners track h
 
 ## Changelog
 
+### v1.0.5 — 2026-03-23
+
+> Frontend subscription package update
+
+#### New Features
+- **Admin subscriptions page:** Thêm trang `/admin/subscriptions` với stats, search/filter, table, pagination và edit modal cho quản lý subscription account
+- **Subscription plans management:** Thêm trang `/admin/subscription-plans` và bộ component `PlanTable`, `PlanSearchBar`, `PlanEditModal` để tạo/sửa/xem danh sách gói
+- **Admin settings page:** Bổ sung trang `/admin/settings` và service/settings types tương ứng cho phần cấu hình admin
+- **Pet-owner subscription page:** Thêm trang `/pet-owner/subscription` cùng các component `PlanCard`, `CurrentSubscription` để hiển thị gói hiện tại và lựa chọn gói
+- **Services, types, i18n wiring:** Bổ sung service + types cho subscription ở cả `modules/admin` và `modules/pet-owner`, cập nhật text i18n (EN/VI), và cập nhật điều hướng liên quan trong layout
+
+#### Notes
+- **Backend API version:** Vẫn đang sử dụng `v1` (không nâng lên `v2`)
+- **Data source:** Một phần luồng admin subscriptions hiện vẫn dùng mock service trong FE để hoàn thiện UI/flow
+
+---
+
 ### v1.0.4 — 2026-03-11
 
 > Blog sharing enhancements

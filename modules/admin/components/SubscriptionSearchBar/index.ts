@@ -1,0 +1,1 @@
+export { SubscriptionSearchBar } from './SubscriptionSearchBar';

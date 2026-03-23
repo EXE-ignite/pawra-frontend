@@ -116,3 +116,34 @@ export interface HealthMilestone {
   dueDate: string;
   daysUntil: number;
 }
+
+// Subscription Types for Pet Owner
+export type SubscriptionStatus = 'active' | 'cancelled' | 'expired';
+
+export interface SubscriptionPlan {
+  id: string;
+  name: string;
+  price: number;
+  currency: string;
+  durationInDays: number;
+  description: string;
+  features: string[];
+  isActive: boolean;
+  isPopular?: boolean;
+}
+
+export interface UserSubscription {
+  id: string;
+  planId: string;
+  planName: string;
+  status: SubscriptionStatus;
+  startDate: string;
+  endDate: string;
+  daysRemaining: number;
+  price: number;
+  currency: string;
+}
+
+export interface SubscribePayload {
+  subscriptionPlanId: string;
+}

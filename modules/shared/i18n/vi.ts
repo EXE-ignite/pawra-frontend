@@ -25,6 +25,7 @@ export const vi = {
     petProfile: 'Hồ sơ thú cưng',
     blog: 'Blog',
     calendar: 'Lịch',
+    subscription: 'Gói đăng ký',
     login: 'Đăng nhập',
     notifications: 'Thông báo',
   },
