@@ -6,6 +6,28 @@ A pet care management platform built with Next.js — helping pet owners track h
 
 ## Changelog
 
+### v1.0.6 — 2026-04-08
+
+> Account profile integration & UI fixes
+
+#### New Features
+- **Pet-owner account profile page:** Hoàn thiện trang `/pet-owner/account` với 3 tab: **Thông tin cá nhân**, **Đổi mật khẩu**, **Thông báo**
+- **User menu profile navigation:** Cập nhật dropdown user để điều hướng trực tiếp tới trang hồ sơ tại `/pet-owner/account`
+- **TanStack Query integration:** Tích hợp `@tanstack/react-query` toàn app thông qua `QueryClientProvider` và áp dụng query/mutation cho luồng profile
+
+#### Improvements
+- **Backend API integration (profile):** Kết nối API thật cho account profile:
+	- `GET /api/Auth/profile` lấy thông tin tài khoản
+	- `PUT /api/Account/{id}` cập nhật tên hiển thị
+	- `PUT /api/Customer/update/{id}` cập nhật số điện thoại
+- **Notification preferences persistence:** Lưu cài đặt thông báo bằng localStorage để giữ trạng thái người dùng
+- **Change password UX:** Chuyển tab đổi mật khẩu sang trạng thái "đang phát triển" để tránh flow giả khi backend chưa sẵn sàng
+
+#### Bug Fixes
+- **Pet profile empty-state i18n:** Sửa key dịch bị sai ở trang profile owner (`dashboard.noPetsTitle` / `dashboard.noPetsDescription` -> `dashboard.noPets` / `dashboard.noPetsDesc`)
+- **Dark mode sidebar tab text:** Sửa biến màu để text không bị chìm màu trong trạng thái active của tab ở dark mode
+- **User dropdown cleanup:** Bỏ action **Cài đặt** khỏi dropdown theo cập nhật UX hiện tại
+
 ### v1.0.5 — 2026-03-23
 
 > Frontend subscription package update

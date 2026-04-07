@@ -16,3 +16,6 @@ export { AddReminderModal } from './AddReminderModal';
 export { AddVaccinationModal } from './AddVaccinationModal';
 export { PlanCard } from './PlanCard';
 export { CurrentSubscription } from './CurrentSubscription';
+export { BasicInfoForm } from './BasicInfoForm';
+export { ChangePasswordForm } from './ChangePasswordForm';
+export { NotificationSettings } from './NotificationSettings';

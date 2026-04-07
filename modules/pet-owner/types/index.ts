@@ -147,3 +147,12 @@ export interface UserSubscription {
 export interface SubscribePayload {
   subscriptionPlanId: string;
 }
+
+// Account Profile Types
+export type {
+  AccountProfile,
+  UpdateProfileRequest,
+  ChangePasswordRequest,
+  NotificationPreferences,
+  ProfileTab,
+} from './account-profile.types';

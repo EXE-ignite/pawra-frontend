@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
 import { UserDropdownProps } from './UserDropdown.types';
 import { useTranslation } from '../../contexts';
 import styles from './UserDropdown.module.scss';
@@ -63,14 +64,14 @@ export function UserDropdown({ userName, userEmail, onLogout }: UserDropdownProp
           <div className={styles.divider} />
 
           <nav className={styles.menuList}>
-            <button className={styles.menuItem}>
+            <Link
+              href="/pet-owner/account"
+              className={styles.menuItem}
+              onClick={() => setIsOpen(false)}
+            >
               <span className={styles.menuIcon}>👤</span>
               <span>{t('userMenu.myProfile')}</span>
-            </button>
-            <button className={styles.menuItem}>
-              <span className={styles.menuIcon}>⚙️</span>
-              <span>{t('userMenu.settings')}</span>
-            </button>
+            </Link>
           </nav>
 
           <div className={styles.divider} />
