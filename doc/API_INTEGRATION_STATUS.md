@@ -1,6 +1,6 @@
 # API Integration Status - Pawra Frontend
 
-**Last Updated:** March 11, 2026
+**Last Updated:** April 8, 2026
 
 ---
 
@@ -32,7 +32,7 @@ Tài liệu này theo dõi trạng thái tích hợp API giữa Frontend và Bac
 | `POST /api/Auth/facebook/callback` | ❌ | - | Cần thêm |
 | `GET /api/Account` | ✅ | `user.service.ts` | Admin only - filter/paginate client-side; `roleName` trả đúng sau backend fix (11/03/2026) |
 | `POST /api/Account` | ❌ | - | Admin only |
-| `PUT /api/Account/{id}` | ✅ | `user.service.ts` | Update role/status |
+| `PUT /api/Account/{id}` | ✅ | `user.service.ts`, `account-profile.service.ts` | Admin update role/status + Pet-owner update fullName |
 | `DELETE /api/Account/{id}` | ✅ | `user.service.ts` | Admin only |
 | `GET /api/AccountRole` | ✅ | `user.service.ts` | Lấy danh sách roles để map `roleId → roleName`; dùng `?pageSize=100` |
 
@@ -190,13 +190,13 @@ Tài liệu này theo dõi trạng thái tích hợp API giữa Frontend và Bac
 
 ---
 
-## 9. Customers (Module: customer) - CHƯA CÓ
+## 9. Customers (Module: customer) - MỘT PHẦN ĐÃ CÓ
 
 | API Endpoint | Status | File Service | Ghi chú |
 |-------------|--------|--------------|---------|
 | `POST /api/Customer/create` | ❌ | - | **CẦN TẠO** |
 | `GET /api/Customer/{id}` | ❌ | - | **CẦN TẠO** |
-| `PUT /api/Customer/update/{id}` | ❌ | - | **CẦN TẠO** |
+| `PUT /api/Customer/update/{id}` | ✅ | `account-profile.service.ts` | Đang dùng để update phone ở trang `/pet-owner/account` |
 
 ---
 
@@ -211,13 +211,14 @@ Tài liệu này theo dõi trạng thái tích hợp API giữa Frontend và Bac
 
 ---
 
-## 11. Subscriptions - CHƯA CÓ
+## 11. Subscriptions - ĐANG KẾT NỐI (HIỆN CÒN MOCK)
 
 | API Endpoint | Status | File Service | Ghi chú |
 |-------------|--------|--------------|---------|
-| `GET /api/SubscriptionPlan` | ❌ | - | Danh sách gói |
-| `POST /api/SubscriptionAccount/create` | ❌ | - | Đăng ký gói |
-| `GET /api/SubscriptionAccount/{id}` | ❌ | - | Gói hiện tại |
+| `GET /api/SubscriptionPlan` | 🔄 | `modules/pet-owner/services/subscription.service.ts`, `modules/admin/services/subscription.service.ts` | Service đã viết, nhưng đang `FORCE_MOCK=true` |
+| `POST /api/SubscriptionAccount/create` | 🔄 | `modules/pet-owner/services/subscription.service.ts` | FE đã có luồng subscribe, cần tắt mock để chạy real |
+| `GET /api/SubscriptionAccount` | 🔄 | `modules/pet-owner/services/subscription.service.ts`, `modules/admin/services/subscription.service.ts` | FE đang query theo `accountId` (list/filter), chưa có endpoint current-subscription rõ ràng |
+| `PUT /api/SubscriptionAccount/update/{id}` | 🔄 | `modules/pet-owner/services/subscription.service.ts`, `modules/admin/services/subscription.service.ts` | FE có luồng cancel/update status, đang mock |
 
 ---
 
@@ -252,6 +253,38 @@ Tài liệu này theo dõi trạng thái tích hợp API giữa Frontend và Bac
 2. ~~Lấy Appointments theo Customer~~ → BE đã filter `GET /api/Appointment` theo JWT
 3. ~~Lấy Vaccinations theo Pet~~ → BE đã thêm `GET /api/VaccinationRecord/pet/{petId}`
 4. ~~PetDto thiếu fields~~ → BE đã thêm `weight`, `imageUrl`, `color`, `microchipId`, `insurance`, `description`
+
+### Cần BE hỗ trợ cho FE (ưu tiên cao - cập nhật 08/04/2026):
+
+#### 🔴 Thiếu endpoint / spec rõ ràng (cần bổ sung)
+
+1. **`GET /api/Auth/profile` — Làm rõ response shape**
+   - Docs hiện chỉ ghi "User profile details" nên FE chưa thể map type ổn định.
+   - Cần confirm response có đủ các field:
+   - `id` (accountId)
+   - `customerId` (hoặc nested `customer.id`)
+   - `phone` (hoặc nested `customer.phone`)
+   - `fullName`, `email`, `avatarUrl`
+
+2. **`POST /api/Auth/change-password` hoặc `PUT /api/Account/{id}/change-password`**
+   - Hiện chưa có endpoint đổi mật khẩu trong API.
+   - FE đã tạm disable flow đổi mật khẩu ở tab account profile.
+
+3. **Notification Preferences API (bất kỳ endpoint phù hợp)**
+   - Đề xuất:
+   - `GET /api/Account/{id}/notifications`
+   - `PUT /api/Account/{id}/notifications`
+   - Hiện FE đang dùng localStorage làm fallback tạm thời.
+
+#### 🟡 Endpoint đã có, cần confirm contract/flow
+
+1. **`PUT /api/Account/{id}`**
+   - Cần xác nhận `UpdateAccountDto` có hỗ trợ `fullName` (docs chưa liệt kê field cụ thể).
+
+2. **`PUT /api/Customer/update/{id}`**
+   - Cần xác nhận flow tạo Customer khi user đăng ký:
+   - Backend có tự tạo Customer record và gắn với Account không?
+   - Nếu không tự tạo, cần có `POST /api/Customer/create` (hoặc trigger tự động sau register).
 
 ### Còn cần (ưu tiên thấp):
 
