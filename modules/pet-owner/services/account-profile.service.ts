@@ -82,3 +82,28 @@ export function saveNotificationPreferences(prefs: NotificationPreferences): voi
   if (typeof window === 'undefined') return;
   localStorage.setItem(NOTIF_STORAGE_KEY, JSON.stringify(prefs));
 }
+
+// ── Customer endpoints ───────────────────────────────────────────────────────
+
+export interface CustomerDto {
+  id: string;
+  accountId: string;
+  phone?: string;
+  createdDate?: string;
+  updatedDate?: string;
+}
+
+export interface CreateCustomerDto {
+  accountId: string;
+  phone?: string;
+}
+
+export async function createCustomer(data: CreateCustomerDto): Promise<CustomerDto> {
+  const response = await apiService.post<CustomerDto>('/Customer/create', data);
+  return (response as any).data ?? response;
+}
+
+export async function getCustomerById(customerId: string): Promise<CustomerDto> {
+  const response = await apiService.get<CustomerDto>(`/Customer/${customerId}`);
+  return (response as any).data ?? response;
+}

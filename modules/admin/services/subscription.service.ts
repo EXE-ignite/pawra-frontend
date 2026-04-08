@@ -12,7 +12,7 @@ import type {
 const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === 'true';
 
 // TODO: Tạm bật mock để test UI - set về false khi có API thực
-const FORCE_MOCK = true;
+const FORCE_MOCK = false;
 const ENABLE_MOCK = USE_MOCK || FORCE_MOCK;
 
 // ---------------------------------------------------------------------------
