@@ -1,7 +1,8 @@
 # Pawra Backend API Documentation
 
 **API Version:** v1  
-**Base URL:** `/api`
+**Base URL:** `/api`  
+**Last Updated:** April 9, 2026
 
 ## Overview
 
@@ -47,6 +48,17 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 - **DELETE** `/api/Account/{id}`
 - **Auth:** Required (Admin)
 - **Response:** `200` - Deleted successfully
+
+#### Get Notification Settings
+- **GET** `/api/Account/{id}/notifications`
+- **Auth:** Required
+- **Response:** `NotificationSettingsDto { emailNotifications, pushNotifications, smsNotifications, appointmentReminders, marketingEmails, systemUpdates }`
+
+#### Update Notification Settings
+- **PUT** `/api/Account/{id}/notifications`
+- **Auth:** Required
+- **Request:** `NotificationSettingsDto { emailNotifications, pushNotifications, smsNotifications, appointmentReminders, marketingEmails, systemUpdates }` (all boolean)
+- **Response:** `200` - Updated
 
 #### Bulk Create Accounts
 - **POST** `/api/Account/bulk`
@@ -102,7 +114,24 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 #### Get Profile
 - **GET** `/api/Auth/profile`
 - **Auth:** Required
-- **Response:** User profile details
+- **Response:**
+  ```json
+  {
+    "id": "uuid",
+    "customerId": "uuid (only for Customer role)",
+    "phone": "string (only for Customer role)",
+    "fullName": "string",
+    "email": "string",
+    "avatarUrl": "string | null",
+    "roleName": "string"
+  }
+  ```
+
+#### Change Password
+- **PUT** `/api/Auth/change-password`
+- **Auth:** Required
+- **Request:** `ChangePasswordDto { currentPassword, newPassword, confirmPassword }`
+- **Response:** `200` - Password changed successfully
 
 #### Google OAuth Callback
 - **POST** `/api/Auth/google/callback`
@@ -385,6 +414,11 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 - **Auth:** Required
 - **Response:** `200` - Deleted
 
+#### Get Services by Clinic
+- **GET** `/api/ClinicService/by-clinic/{clinicId}`
+- **Path Parameter:** `clinicId` (uuid)
+- **Response:** `ClinicServiceDto[]` — danh sách dịch vụ của phòng khám đó
+
 ---
 
 ### 10. Clinic Vaccines
@@ -629,6 +663,11 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 - **Auth:** Required
 - **Response:** `ReminderDto[]`
 
+#### Get Current User's Reminders
+- **GET** `/api/reminder/customer`
+- **Auth:** Required
+- **Response:** `ReminderDto[]` — reminders của user đang đăng nhập (across all pets)
+
 #### Create Reminder
 - **POST** `/api/reminder/create`
 - **Auth:** Required
@@ -704,6 +743,25 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
 - **Auth:** Required
 - **Request:** `CreateSubscriptionAccountDto { accountId, subscriptionPlanId, startDate, endDate, status }`
 - **Response:** `201` - Created
+
+##### Get Subscriptions by Account
+- **GET** `/api/SubscriptionAccount/account/{accountId}`
+- **Auth:** Required
+- **Response:** List of subscriptions for the account
+  ```json
+  [
+    {
+      "id": "uuid",
+      "accountId": "uuid",
+      "subscriptionPlanId": "uuid",
+      "startDate": "datetime",
+      "endDate": "datetime",
+      "status": "Active | Expired | ...",
+      "createdDate": "datetime",
+      "updatedDate": "datetime | null"
+    }
+  ]
+  ```
 
 ##### Get Subscription by ID
 - **GET** `/api/SubscriptionAccount/{id}`
@@ -861,6 +919,26 @@ Pawra Backend is a RESTful API for a Pet Healthcare Management System. It provid
   - `from` (date, optional): `YYYY-MM-DD`
   - `to` (date, optional): `YYYY-MM-DD`
 - **Response:** `WeightGrowthChartDto`
+  ```json
+  {
+    "petId": "uuid",
+    "petName": "string",
+    "species": "string",
+    "unit": "kg | lbs",
+    "currentWeight": 25.5,
+    "minWeight": 20.0,
+    "maxWeight": 28.0,
+    "dataPoints": [
+      {
+        "id": "uuid",
+        "recordedDate": "YYYY-MM-DD",
+        "weight": 22.5,
+        "source": "Owner | Vet | Clinic",
+        "notes": "string | null"
+      }
+    ]
+  }
+  ```
 
 #### Create Weight Record
 - **POST** `/api/weight-record/create`

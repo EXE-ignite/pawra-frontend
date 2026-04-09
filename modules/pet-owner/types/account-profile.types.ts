@@ -19,10 +19,12 @@ export interface ChangePasswordRequest {
 }
 
 export interface NotificationPreferences {
+  emailNotifications: boolean;
+  pushNotifications: boolean;
+  smsNotifications: boolean;
   appointmentReminders: boolean;
-  vaccinationAlerts: boolean;
-  medicationReminders: boolean;
-  promotionalEmails: boolean;
+  marketingEmails: boolean;
+  systemUpdates: boolean;
 }
 
 export type ProfileTab = 'basic-info' | 'change-password' | 'notifications';

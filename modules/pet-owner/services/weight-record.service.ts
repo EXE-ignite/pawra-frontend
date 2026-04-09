@@ -119,6 +119,15 @@ class WeightRecordService {
   }
 
   /**
+   * Get growth chart data mapped to WeightRecord[] shape ({ date, weight })
+   * for use with the GrowthChart component.
+   */
+  async getWeightHistory(petId: string, from?: string, to?: string): Promise<{ date: string; weight: number }[]> {
+    const chart = await this.getGrowthChart(petId, from, to);
+    return (chart.dataPoints ?? []).map((p) => ({ date: p.recordedDate, weight: p.weight }));
+  }
+
+  /**
    * Soft-delete a weight record
    * Backend: DELETE /api/weight-record/{id}  →  204 No Content
    */

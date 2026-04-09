@@ -11,17 +11,21 @@ interface NotificationSettingsProps {
 }
 
 const LABELS: Record<keyof NotificationPreferences, string> = {
+  emailNotifications: 'Thông báo qua email',
+  pushNotifications: 'Thông báo đẩy',
+  smsNotifications: 'Thông báo SMS',
   appointmentReminders: 'Nhắc nhở lịch hẹn',
-  vaccinationAlerts: 'Cảnh báo tiêm chủng',
-  medicationReminders: 'Nhắc uống thuốc',
-  promotionalEmails: 'Email khuyến mãi',
+  marketingEmails: 'Email khuyến mãi',
+  systemUpdates: 'Cập nhật hệ thống',
 };
 
 const DESCRIPTIONS: Record<keyof NotificationPreferences, string> = {
+  emailNotifications: 'Nhận thông báo qua địa chỉ email của bạn',
+  pushNotifications: 'Nhận thông báo đẩy trên trình duyệt hoặc thiết bị di động',
+  smsNotifications: 'Nhận thông báo qua tin nhắn SMS',
   appointmentReminders: 'Nhận thông báo trước khi có lịch hẹn với bác sĩ thú y',
-  vaccinationAlerts: 'Nhận cảnh báo khi vaccine sắp hết hạn hoặc đến kỳ tiêm',
-  medicationReminders: 'Nhắc nhở uống thuốc định kỳ cho thú cưng',
-  promotionalEmails: 'Nhận email giới thiệu ưu đãi và tính năng mới',
+  marketingEmails: 'Nhận email giới thiệu ưu đãi và tính năng mới',
+  systemUpdates: 'Nhận thông báo về cập nhật và bảo trì hệ thống',
 };
 
 export function NotificationSettings({ preferences, onSave }: NotificationSettingsProps) {

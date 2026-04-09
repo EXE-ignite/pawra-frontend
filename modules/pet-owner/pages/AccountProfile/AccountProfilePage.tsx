@@ -25,9 +25,6 @@ export function AccountProfilePage() {
   const { user, updateUser } = useAuth();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<ProfileTab>('basic-info');
-  const [notifPrefs, setNotifPrefs] = useState<NotificationPreferences>(
-    profileService.getNotificationPreferences()
-  );
 
   const { data: profile, isLoading, error } = useQuery<AccountProfile>({
     queryKey: ['pet-owner', 'profile'],
@@ -35,6 +32,12 @@ export function AccountProfilePage() {
     placeholderData: user
       ? { accountId: '', fullName: user.fullName, email: user.email }
       : undefined,
+  });
+
+  const { data: notifPrefs } = useQuery<NotificationPreferences>({
+    queryKey: ['pet-owner', 'notifications', profile?.accountId],
+    queryFn: () => profileService.getNotificationPreferences(profile!.accountId),
+    enabled: !!profile?.accountId,
   });
 
   const updateProfileMutation = useMutation({
@@ -46,9 +49,16 @@ export function AccountProfilePage() {
     },
   });
 
+  const saveNotifMutation = useMutation({
+    mutationFn: (data: NotificationPreferences) =>
+      profileService.saveNotificationPreferences(profile!.accountId, data),
+    onSuccess: (_, data) => {
+      queryClient.setQueryData(['pet-owner', 'notifications', profile?.accountId], data);
+    },
+  });
+
   function handleSaveNotifications(data: NotificationPreferences) {
-    profileService.saveNotificationPreferences(data);
-    setNotifPrefs(data);
+    saveNotifMutation.mutate(data);
   }
 
   if (isLoading) {
@@ -113,10 +123,12 @@ export function AccountProfilePage() {
             <div className={styles.section}>
               <h2 className={styles.sectionTitle}>Cài đặt thông báo</h2>
               <p className={styles.sectionDesc}>Chọn loại thông báo bạn muốn nhận</p>
-              <NotificationSettings
-                preferences={notifPrefs}
-                onSave={handleSaveNotifications}
-              />
+              {notifPrefs && (
+                <NotificationSettings
+                  preferences={notifPrefs}
+                  onSave={handleSaveNotifications}
+                />
+              )}
             </div>
           )}
         </section>

@@ -255,23 +255,19 @@ class UserSubscriptionService {
     }
 
     try {
-      // Try to get user's subscription - API might need adjustment based on actual backend
-      const response = await apiService.get<BackendSubscriptionAccount[] | BackendSubscriptionAccount>(
-        `${this.accountEndpoint}?accountId=${accountId}&pageSize=1&pageNumber=1`,
+      const response = await apiService.get<BackendSubscriptionAccount[]>(
+        `${this.accountEndpoint}/account/${accountId}`,
       );
 
       const wrapper = response as unknown as { success?: boolean; data?: BackendSubscriptionAccount[] };
-      let sub: BackendSubscriptionAccount | undefined;
+      const list: BackendSubscriptionAccount[] = Array.isArray(wrapper.data)
+        ? wrapper.data
+        : Array.isArray(response) ? response as BackendSubscriptionAccount[] : [];
 
-      if (Array.isArray(wrapper.data) && wrapper.data.length > 0) {
-        sub = wrapper.data[0];
-      } else if (Array.isArray(response) && response.length > 0) {
-        sub = response[0] as BackendSubscriptionAccount;
-      } else if (!Array.isArray(response) && (response as unknown as BackendSubscriptionAccount).id) {
-        sub = response as unknown as BackendSubscriptionAccount;
-      }
+      if (list.length === 0) return null;
 
-      if (!sub) return null;
+      // Take the most recent active subscription, or just the first
+      const sub = list.find((s) => s.status === 0) ?? list[0];
 
       // Get plan details if not included
       let plan: BackendSubscriptionPlan | undefined = sub.subscriptionPlan;

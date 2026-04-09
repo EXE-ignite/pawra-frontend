@@ -3,9 +3,8 @@ import type {
   AccountProfile,
   UpdateProfileRequest,
   NotificationPreferences,
+  ChangePasswordRequest,
 } from '../types/account-profile.types';
-
-const NOTIF_STORAGE_KEY = 'pawra_notification_prefs';
 
 // Shape returned by GET /api/Auth/profile
 interface BackendProfile {
@@ -59,28 +58,32 @@ export async function updateProfile(
   return { ...current, ...updates };
 }
 
-// ── Notification preferences (localStorage only — no backend endpoint) ──────
-
-const DEFAULT_PREFS: NotificationPreferences = {
-  appointmentReminders: true,
-  vaccinationAlerts: true,
-  medicationReminders: true,
-  promotionalEmails: false,
-};
-
-export function getNotificationPreferences(): NotificationPreferences {
-  if (typeof window === 'undefined') return DEFAULT_PREFS;
-  try {
-    const raw = localStorage.getItem(NOTIF_STORAGE_KEY);
-    return raw ? { ...DEFAULT_PREFS, ...JSON.parse(raw) } : DEFAULT_PREFS;
-  } catch {
-    return DEFAULT_PREFS;
-  }
+export async function changePassword(data: ChangePasswordRequest): Promise<void> {
+  await apiService.put('/Auth/change-password', data);
 }
 
-export function saveNotificationPreferences(prefs: NotificationPreferences): void {
-  if (typeof window === 'undefined') return;
-  localStorage.setItem(NOTIF_STORAGE_KEY, JSON.stringify(prefs));
+// ── Notification preferences (real API) ─────────────────────────────────────
+
+const DEFAULT_PREFS: NotificationPreferences = {
+  emailNotifications: true,
+  pushNotifications: true,
+  smsNotifications: false,
+  appointmentReminders: true,
+  marketingEmails: false,
+  systemUpdates: true,
+};
+
+export async function getNotificationPreferences(accountId: string): Promise<NotificationPreferences> {
+  const response = await apiService.get<NotificationPreferences>(`/Account/${accountId}/notifications`);
+  const data = (response as any).data ?? response;
+  return { ...DEFAULT_PREFS, ...data };
+}
+
+export async function saveNotificationPreferences(
+  accountId: string,
+  prefs: NotificationPreferences
+): Promise<void> {
+  await apiService.put(`/Account/${accountId}/notifications`, prefs);
 }
 
 // ── Customer endpoints ───────────────────────────────────────────────────────
