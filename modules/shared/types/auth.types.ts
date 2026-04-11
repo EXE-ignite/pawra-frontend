@@ -15,6 +15,7 @@ export interface LoginResponse {
     email: string;
     fullName: string;
     role: string;
+    avatarUrl?: string;
     expiresAt: string;
   };
 }
