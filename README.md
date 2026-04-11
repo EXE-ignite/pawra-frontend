@@ -6,6 +6,26 @@ A pet care management platform built with Next.js — helping pet owners track h
 
 ## Changelog
 
+### v1.0.7 — 2026-04-12
+
+> Blog reactions, pet profile UX & UI polish
+
+#### Bug Fixes
+- **Blog reaction UUID stale cache:** `toggleBlogReaction` trước đó skip gọi `/reaction-types` nếu UUID đã có trong localStorage — gây lỗi 400 khi cache cũ từ session trước. Sửa thành luôn gọi `loadReactionTypes()` (idempotent) trước mỗi toggle để đảm bảo UUID luôn mới nhất
+- **Reaction response parse format:** BE trả về `{ value: [...], Count: N }` nhưng code chỉ check `res.data` — thêm fallback `res.value` để parse đúng
+- **Loaded flag set khi BE trả về rỗng:** `reactionTypesLoaded = true` bị set ngay cả khi `/reaction-types` trả về empty array — sửa để chỉ set khi `loaded > 0` nhằm retry lần sau
+- **Pet profile i18n missing keys:** `petProfile.years` và `petProfile.months` bị thiếu trong cả `en.ts` và `vi.ts` — thêm vào, text hiển thị `petProfile.years 6 petProfile.months` đã được fix
+- **Pet age hiển thị "0 tuổi":** Khi thú cưng dưới 1 tuổi, text hiển thị `0 tuổi 6 tháng` — sửa để ẩn phần `X tuổi` nếu `age = 0`, ẩn `X tháng` nếu `ageMonths = 0`
+- **EditPetModal thiếu `imageUrl`:** Khi mở modal chỉnh sửa thú cưng, avatar hiện tại không hiển thị vì `imageUrl` bị bỏ sót khi truyền `initialData` — đã thêm lại
+
+#### Improvements
+- **Blog reaction error logging:** Cải thiện log lỗi toggle reaction — hiển thị rõ HTTP status và message thay vì `Object Object`
+- **Pet profile color icon:** Thay icon `○` (nửa vòng tròn — khó hiểu) bằng SVG icon giọt sơn trực quan hơn cho trường màu lông
+- **BlogShare icon button:** Thay ký tự `↗` nhỏ bằng SVG share icon chuẩn, tăng kích thước button từ `40×40` lên `48×48px`, border-radius tròn hoàn toàn
+- **ArticleCard footer layout:** Nút Share và Đọc nằm 2 đầu đối nhau (`space-between`), footer được đẩy xuống đáy card (`margin-top: auto`) để các card trong grid luôn thẳng hàng
+
+---
+
 ### v1.0.6 — 2026-04-08
 
 > Account profile integration & UI fixes
