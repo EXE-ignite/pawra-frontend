@@ -69,10 +69,11 @@ class BlogReactionService {
       try {
         const res = await apiService.get<any>('/reaction-types');
         // BE returns { value: [...], Count: N } or direct array or ApiResponse { data: [...] }
+        const raw = res as any;
         const types: Array<{ id: string; name: string }> =
-          Array.isArray(res) ? res
-          : Array.isArray(res?.data) ? res.data
-          : Array.isArray(res?.value) ? res.value
+          Array.isArray(raw) ? raw
+          : Array.isArray(raw?.data) ? raw.data
+          : Array.isArray(raw?.value) ? raw.value
           : [];
         const validTypes: BlogReactionType[] = ['like', 'love', 'haha', 'wow', 'sad', 'angry'];
         let loaded = 0;
