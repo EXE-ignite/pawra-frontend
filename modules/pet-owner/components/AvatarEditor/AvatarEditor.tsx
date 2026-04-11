@@ -74,6 +74,8 @@ export function AvatarEditor({ currentAvatarUrl, userInitials, onAvatarChange, i
     setError(null);
 
     if (activeTab === 'presets' && selectedPreset) {
+      // Delete old avatar from Firebase if it was uploaded there
+      storageService.deleteImageByUrl(currentAvatarUrl ?? '');
       onAvatarChange(selectedPreset);
       setIsOpen(false);
       return;
@@ -87,6 +89,8 @@ export function AvatarEditor({ currentAvatarUrl, userInitials, onAvatarChange, i
           'avatars',
           ({ progress }) => setUploadProgress(Math.round(progress))
         );
+        // Delete old avatar from Firebase after new upload succeeds
+        storageService.deleteImageByUrl(currentAvatarUrl ?? '');
         onAvatarChange(result.url);
         setIsOpen(false);
       } catch {

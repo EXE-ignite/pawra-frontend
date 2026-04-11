@@ -25,6 +25,7 @@ export function AuthModal({ isOpen, onClose, initialMode = 'signin' }: AuthModal
     email: string;
     fullName: string;
     role: string;
+    avatarUrl?: string;
     expiresAt: string;
   }) => {
     console.log('✅ [MODAL] Auth successful, updating context...');

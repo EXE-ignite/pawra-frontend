@@ -19,6 +19,8 @@ class BlogReactionService {
   // Dynamically populated from real BE stats — overrides hardcoded UUIDs when available
   private dynamicTypeToUUID: Partial<Record<BlogReactionType, string>> = {};
   private seedAttempted = false;
+  private reactionTypesLoaded = false;
+  private reactionTypesLoading: Promise<void> | null = null;
 
   constructor() {
     this.loadCachedUUIDs();
@@ -54,6 +56,47 @@ class BlogReactionService {
     this.dynamicTypeToUUID[type] = uuid;
     UUID_TO_TYPE[uuid.toLowerCase()] = type;
     if (changed) this.saveCachedUUIDs();
+  }
+
+  /**
+   * Fetches reaction type UUIDs from GET /api/v1/reaction-types
+   */
+  private async loadReactionTypes(): Promise<void> {
+    if (this.reactionTypesLoaded) return;
+    if (this.reactionTypesLoading) return this.reactionTypesLoading;
+
+    this.reactionTypesLoading = (async () => {
+      try {
+        const res = await apiService.get<any>('/reaction-types');
+        // BE returns { value: [...], Count: N } or direct array or ApiResponse { data: [...] }
+        const types: Array<{ id: string; name: string }> =
+          Array.isArray(res) ? res
+          : Array.isArray(res?.data) ? res.data
+          : Array.isArray(res?.value) ? res.value
+          : [];
+        const validTypes: BlogReactionType[] = ['like', 'love', 'haha', 'wow', 'sad', 'angry'];
+        let loaded = 0;
+        for (const t of types) {
+          const name = t.name?.toLowerCase() as BlogReactionType;
+          if (t.id && validTypes.includes(name)) {
+            this.learnUUID(name, t.id);
+            loaded++;
+          }
+        }
+        // Only mark as loaded if we actually got data — so we retry if BE was empty
+        if (loaded > 0) this.reactionTypesLoaded = true;
+        if (process.env.NODE_ENV === 'development') {
+          console.log('✅ [ReactionService] Loaded reaction types:', this.dynamicTypeToUUID);
+        }
+      } catch (err) {
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('[ReactionService] loadReactionTypes failed:', err);
+        }
+      } finally {
+        this.reactionTypesLoading = null;
+      }
+    })();
+    return this.reactionTypesLoading;
   }
 
   /** Discovers real reaction-type UUIDs by fetching stats from recently published posts */
@@ -207,25 +250,15 @@ class BlogReactionService {
   async toggleBlogReaction(postId: string, reaction: BlogReactionType): Promise<BlogReaction> {
     if (USE_MOCK) return { postId, reaction, count: 1, reacted: true };
 
-    // Step 1: try stats for the current post (covers posts that already have reactions)
-    if (!this.dynamicTypeToUUID[reaction]) {
-      await this.fetchStats(postId);
-    }
-    // Step 2: if still unknown, scan recently published posts to discover all UUIDs
-    if (!this.dynamicTypeToUUID[reaction]) {
-      await this.seedFromPublishedPosts();
-    }
+    // Always load fresh UUIDs from BE (cached UUIDs may be stale from old sessions).
+    // loadReactionTypes() is idempotent — returns immediately after the first success.
+    await this.loadReactionTypes();
 
     const reactionTypeId = this.dynamicTypeToUUID[reaction];
     if (!reactionTypeId) {
-      // The stats endpoint returns { typeName: count } — UUIDs are never included.
-      // Without a GET /api/v1/reaction-types endpoint, the frontend cannot resolve
-      // the reactionTypeId UUID required by PUT /api/v1/blog-reactions.
-      // Ask the backend team to expose reaction type UUIDs (e.g. GET /api/v1/reaction-types).
       const err = new Error(
         `Cannot toggle reaction "${reaction}": reactionTypeId UUID is unknown. ` +
-        `The backend stats endpoint does not return UUIDs. ` +
-        `Backend needs to expose GET /api/v1/reaction-types.`
+        `GET /api/v1/reaction-types did not return a matching entry.`
       );
       console.error('❌ [ReactionService]', err.message);
       throw err;
@@ -243,7 +276,9 @@ class BlogReactionService {
       });
       return res.data ?? { postId, reaction, count: 0, reacted: true };
     } catch (error: any) {
-      console.error('❌ [ERROR] Failed to toggle reaction:', { postId, reaction }, error);
+      const status = (error as any)?.status ?? (error as any)?.response?.status;
+      const msg = (error as any)?.message ?? (error as any)?.response?.data?.message ?? 'Unknown error';
+      console.error(`❌ [ReactionService] Toggle failed (HTTP ${status}): ${msg}`, { postId, reaction });
       throw error;
     }
   }

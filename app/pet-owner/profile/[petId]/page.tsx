@@ -149,6 +149,7 @@ export default function PetProfileByIdRoute() {
             birthDate: getApproxBirthDate(),
             color: petProfile.color,
             weight: petProfile.weight,
+            imageUrl: petProfile.imageUrl,
           }}
           onClose={() => setIsEditModalOpen(false)}
           onSuccess={handleEditSuccess}

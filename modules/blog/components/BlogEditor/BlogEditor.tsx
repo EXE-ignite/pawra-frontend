@@ -103,6 +103,8 @@ export function BlogEditor({ mode, initialData, onSave, onCancel }: BlogEditorPr
       const result = await storageService.uploadImage(file, 'blog-thumbnails', ({ progress }) => {
         setUploadProgress(Math.round(progress));
       });
+      // Delete old thumbnail from Firebase after new upload succeeds
+      storageService.deleteImageByUrl(formData.thumbnailUrl);
       handleChange('thumbnailUrl', result.url);
     } catch (error: any) {
       alert(`Upload failed: ${error?.message || 'Unknown error'}`);

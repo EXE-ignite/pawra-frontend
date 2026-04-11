@@ -6,7 +6,7 @@ import { UserDropdownProps } from './UserDropdown.types';
 import { useTranslation } from '../../contexts';
 import styles from './UserDropdown.module.scss';
 
-export function UserDropdown({ userName, userEmail, onLogout }: UserDropdownProps) {
+export function UserDropdown({ userName, userEmail, avatarUrl, onLogout }: UserDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { t } = useTranslation();
@@ -45,7 +45,11 @@ export function UserDropdown({ userName, userEmail, onLogout }: UserDropdownProp
         aria-expanded={isOpen}
       >
         <div className={styles.avatar}>
-          {userName.charAt(0).toUpperCase()}
+          {avatarUrl ? (
+            <img src={avatarUrl} alt={userName} className={styles.avatarImage} />
+          ) : (
+            userName.charAt(0).toUpperCase()
+          )}
         </div>
       </button>
 
@@ -53,7 +57,11 @@ export function UserDropdown({ userName, userEmail, onLogout }: UserDropdownProp
         <div className={styles.dropdownMenu}>
           <div className={styles.userInfo}>
             <div className={styles.userAvatar}>
-              {userName.charAt(0).toUpperCase()}
+              {avatarUrl ? (
+                <img src={avatarUrl} alt={userName} className={styles.avatarImage} />
+              ) : (
+                userName.charAt(0).toUpperCase()
+              )}
             </div>
             <div className={styles.userDetails}>
               <p className={styles.userName}>{userName}</p>

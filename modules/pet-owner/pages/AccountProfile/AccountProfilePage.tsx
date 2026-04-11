@@ -55,6 +55,7 @@ export function AccountProfilePage() {
       profileService.updateAvatar(profile!, avatarUrl),
     onSuccess: (updated) => {
       queryClient.setQueryData(['pet-owner', 'profile'], updated);
+      if (user) updateUser({ ...user, avatarUrl: updated.avatarUrl });
     },
   });
 

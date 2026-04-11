@@ -78,6 +78,7 @@ export function Header() {
                 <UserDropdown
                   userName={user.fullName}
                   userEmail={user.email}
+                  avatarUrl={user.avatarUrl}
                   onLogout={handleLogout}
                 />
               </>
