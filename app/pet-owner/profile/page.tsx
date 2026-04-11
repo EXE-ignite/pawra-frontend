@@ -70,10 +70,10 @@ export default function PetProfilePageRoute() {
       <div style={{ padding: '2rem', textAlign: 'center' }}>
         <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🐾</div>
         <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem' }}>
-          {t('dashboard.noPetsTitle')}
+          {t('dashboard.noPets')}
         </h2>
         <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>
-          {t('dashboard.noPetsDescription')}
+          {t('dashboard.noPetsDesc')}
         </p>
         <Button variant="primary" onClick={() => setShowAddModal(true)}>
           + {t('dashboard.addFirstPet')}

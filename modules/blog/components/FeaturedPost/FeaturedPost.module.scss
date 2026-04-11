@@ -102,5 +102,5 @@
 .actions {
   display: flex;
   align-items: center;
-  gap: $spacing-sm;
+  justify-content: space-between;
 }

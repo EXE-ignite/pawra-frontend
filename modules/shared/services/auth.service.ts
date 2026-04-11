@@ -27,6 +27,7 @@ export async function login(credentials: LoginRequest): Promise<LoginResponse> {
         email: responseData.email,
         fullName: responseData.fullName,
         role: responseData.role,
+        avatarUrl: responseData.avatarUrl,
         expiresAt: responseData.expiresAt,
       };
       console.log('👤 [AUTH] Saving user:', user);
@@ -81,6 +82,7 @@ export async function loginWithGoogle(request: GoogleLoginRequest): Promise<Logi
         email: responseData.email,
         fullName: responseData.fullName,
         role: responseData.role,
+        avatarUrl: responseData.avatarUrl,
         expiresAt: responseData.expiresAt,
       };
       console.log('👤 [GOOGLE] Saving user:', user);
@@ -155,6 +157,7 @@ export async function register(data: RegisterRequest): Promise<LoginResponse> {
         email: responseData.email,
         fullName: responseData.fullName,
         role: responseData.role,
+        avatarUrl: responseData.avatarUrl,
         expiresAt: responseData.expiresAt,
       };
       console.log('👤 [AUTH] Saving user:', user);

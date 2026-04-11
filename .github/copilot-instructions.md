@@ -64,3 +64,24 @@ ComponentName/
 - Primary: $primary-500, $primary-400, $primary-300, $primary-100
 - Text: $text-primary, $text-secondary
 - Background: $bg-default
+
+## Project URLs (Always Available via MCP Fetch)
+
+### Backend API
+- **Swagger UI:** https://api-pawra.purintech.id.vn/swagger/index.html
+- **OpenAPI Spec (JSON):** https://api-pawra.purintech.id.vn/swagger/v1/swagger.json
+- **API Base URL:** https://api-pawra.purintech.id.vn/api
+- **Auth:** JWT Bearer Token — header `Authorization: Bearer {token}`
+- **Database:** SQL Server (managed by backend team, frontend does NOT access DB directly)
+- **Storage:** Firebase Storage (image upload via `modules/shared/services/firebase/`)
+
+### Deployed Frontend
+- **Production:** https://pawra.io.vn
+- **Dev/Staging:** https://pawra.netlify.app
+
+### How to Use Context
+When asked about API endpoints, DB schema, or live behavior:
+1. Use the `fetch` MCP tool to GET `https://api-pawra.purintech.id.vn/swagger/v1/swagger.json` to see all current endpoints
+2. Check `doc/BACKEND_API.md` for detailed endpoint docs
+3. Check `doc/API_INTEGRATION_STATUS.md` for which endpoints are already integrated
+4. Use `fetch` MCP to check the deployed frontend at https://pawra.io.vn if needed

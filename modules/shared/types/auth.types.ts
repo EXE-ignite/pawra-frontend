@@ -15,6 +15,7 @@ export interface LoginResponse {
     email: string;
     fullName: string;
     role: string;
+    avatarUrl?: string;
     expiresAt: string;
   };
 }
@@ -29,5 +30,6 @@ export interface User {
   email: string;
   fullName: string;
   role: string;
+  avatarUrl?: string;
   expiresAt?: string;
 }

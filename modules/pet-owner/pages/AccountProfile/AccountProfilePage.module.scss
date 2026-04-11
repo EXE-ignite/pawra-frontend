@@ -1,0 +1,171 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.page {
+  @include container;
+}
+
+.header {
+  margin-bottom: $spacing-2xl;
+}
+
+.title {
+  @include heading-1;
+  margin-bottom: $spacing-xs;
+}
+
+.subtitle {
+  color: var(--color-text-secondary);
+  font-size: $font-size-lg;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: $spacing-2xl;
+  align-items: start;
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Sidebar
+.sidebar {
+  @include flex-column;
+  gap: $spacing-xs;
+  position: sticky;
+  top: $spacing-xl;
+
+  @include mobile {
+    flex-direction: row;
+    position: static;
+    overflow-x: auto;
+  }
+}
+
+.sidebarProfile {
+  @include flex-column-center;
+  gap: $spacing-sm;
+  padding-bottom: $spacing-md;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: $spacing-sm;
+
+  @include mobile {
+    display: none;
+  }
+}
+
+.sidebarName {
+  @include flex-column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.sidebarFullName {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: var(--color-text-primary);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+  margin: 0;
+}
+
+.sidebarEmail {
+  font-size: $font-size-xs;
+  color: var(--color-text-secondary);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+  margin: 0;
+}
+
+.tabBtn {
+  padding: $spacing-sm $spacing-md;
+  border: none;
+  border-radius: $radius-lg;
+  background: transparent;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s, color 0.15s;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: var(--color-primary-lighter);
+    color: var(--color-text-primary);
+  }
+
+  &.tabBtnActive {
+    background-color: var(--color-primary-light);
+    color: var(--color-text-primary);
+    font-weight: $font-weight-semibold;
+  }
+}
+
+// Content panel
+.content {
+  min-width: 0;
+}
+
+.section {
+  @include card;
+  @include flex-column;
+  gap: $spacing-lg;
+}
+
+.sectionTitle {
+  @include heading-2;
+  margin: 0;
+}
+
+.sectionDesc {
+  color: var(--color-text-secondary);
+  font-size: $font-size-sm;
+  margin-top: -$spacing-sm;
+}
+
+// Loading / error states
+.loadingWrapper {
+  @include flex-column-center;
+  padding: $spacing-3xl;
+  gap: $spacing-md;
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-primary-light);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingText {
+  color: var(--color-text-secondary);
+  font-size: $font-size-base;
+}
+
+.errorWrapper {
+  @include flex-column-center;
+  padding: $spacing-2xl;
+}
+
+.errorText {
+  color: $color-error;
+  font-size: $font-size-base;
+}

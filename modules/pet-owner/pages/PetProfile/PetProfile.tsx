@@ -69,13 +69,13 @@ export function PetProfilePage({
               </span>
               {petProfile.color && (
                 <span className={styles.attribute}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 0 20"/></svg>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
                   {petProfile.color}
                 </span>
               )}
               <span className={styles.attribute}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-                {petProfile.age} {t('petProfile.years')} {petProfile.ageMonths} {t('petProfile.months')}
+                {petProfile.age > 0 && <>{petProfile.age} {t('petProfile.years')} </>}{petProfile.ageMonths > 0 && <>{petProfile.ageMonths} {t('petProfile.months')}</>}
               </span>
             </div>
           </div>

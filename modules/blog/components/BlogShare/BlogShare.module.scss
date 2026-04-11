@@ -2,23 +2,23 @@
 @import '../../../../styles/mixins';
 
 .iconButton {
-  width: 40px;
-  height: 40px;
-  border-radius: $radius-md;
-  border: 1px solid var(--color-border);
+  width: 48px;
+  height: 48px;
+  border-radius: $radius-full;
+  border: 1.5px solid var(--color-border);
   background: var(--color-bg-primary);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all $transition-fast;
-  font-size: $font-size-base;
   color: var(--color-text-secondary);
 
   &:hover {
-    background: var(--color-bg-tertiary);
-    border-color: var(--color-primary);
+    background: rgba($primary-500, 0.08);
+    border-color: rgba($primary-500, 0.5);
     color: var(--color-primary);
+    transform: translateY(-1px);
   }
 }
 

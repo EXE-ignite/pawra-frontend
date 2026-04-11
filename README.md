@@ -6,6 +6,48 @@ A pet care management platform built with Next.js — helping pet owners track h
 
 ## Changelog
 
+### v1.0.7 — 2026-04-12
+
+> Blog reactions, pet profile UX & UI polish
+
+#### Bug Fixes
+- **Blog reaction UUID stale cache:** `toggleBlogReaction` trước đó skip gọi `/reaction-types` nếu UUID đã có trong localStorage — gây lỗi 400 khi cache cũ từ session trước. Sửa thành luôn gọi `loadReactionTypes()` (idempotent) trước mỗi toggle để đảm bảo UUID luôn mới nhất
+- **Reaction response parse format:** BE trả về `{ value: [...], Count: N }` nhưng code chỉ check `res.data` — thêm fallback `res.value` để parse đúng
+- **Loaded flag set khi BE trả về rỗng:** `reactionTypesLoaded = true` bị set ngay cả khi `/reaction-types` trả về empty array — sửa để chỉ set khi `loaded > 0` nhằm retry lần sau
+- **Pet profile i18n missing keys:** `petProfile.years` và `petProfile.months` bị thiếu trong cả `en.ts` và `vi.ts` — thêm vào, text hiển thị `petProfile.years 6 petProfile.months` đã được fix
+- **Pet age hiển thị "0 tuổi":** Khi thú cưng dưới 1 tuổi, text hiển thị `0 tuổi 6 tháng` — sửa để ẩn phần `X tuổi` nếu `age = 0`, ẩn `X tháng` nếu `ageMonths = 0`
+- **EditPetModal thiếu `imageUrl`:** Khi mở modal chỉnh sửa thú cưng, avatar hiện tại không hiển thị vì `imageUrl` bị bỏ sót khi truyền `initialData` — đã thêm lại
+
+#### Improvements
+- **Blog reaction error logging:** Cải thiện log lỗi toggle reaction — hiển thị rõ HTTP status và message thay vì `Object Object`
+- **Pet profile color icon:** Thay icon `○` (nửa vòng tròn — khó hiểu) bằng SVG icon giọt sơn trực quan hơn cho trường màu lông
+- **BlogShare icon button:** Thay ký tự `↗` nhỏ bằng SVG share icon chuẩn, tăng kích thước button từ `40×40` lên `48×48px`, border-radius tròn hoàn toàn
+- **ArticleCard footer layout:** Nút Share và Đọc nằm 2 đầu đối nhau (`space-between`), footer được đẩy xuống đáy card (`margin-top: auto`) để các card trong grid luôn thẳng hàng
+
+---
+
+### v1.0.6 — 2026-04-08
+
+> Account profile integration & UI fixes
+
+#### New Features
+- **Pet-owner account profile page:** Hoàn thiện trang `/pet-owner/account` với 3 tab: **Thông tin cá nhân**, **Đổi mật khẩu**, **Thông báo**
+- **User menu profile navigation:** Cập nhật dropdown user để điều hướng trực tiếp tới trang hồ sơ tại `/pet-owner/account`
+- **TanStack Query integration:** Tích hợp `@tanstack/react-query` toàn app thông qua `QueryClientProvider` và áp dụng query/mutation cho luồng profile
+
+#### Improvements
+- **Backend API integration (profile):** Kết nối API thật cho account profile:
+	- `GET /api/Auth/profile` lấy thông tin tài khoản
+	- `PUT /api/Account/{id}` cập nhật tên hiển thị
+	- `PUT /api/Customer/update/{id}` cập nhật số điện thoại
+- **Notification preferences persistence:** Lưu cài đặt thông báo bằng localStorage để giữ trạng thái người dùng
+- **Change password UX:** Chuyển tab đổi mật khẩu sang trạng thái "đang phát triển" để tránh flow giả khi backend chưa sẵn sàng
+
+#### Bug Fixes
+- **Pet profile empty-state i18n:** Sửa key dịch bị sai ở trang profile owner (`dashboard.noPetsTitle` / `dashboard.noPetsDescription` -> `dashboard.noPets` / `dashboard.noPetsDesc`)
+- **Dark mode sidebar tab text:** Sửa biến màu để text không bị chìm màu trong trạng thái active của tab ở dark mode
+- **User dropdown cleanup:** Bỏ action **Cài đặt** khỏi dropdown theo cập nhật UX hiện tại
+
 ### v1.0.5 — 2026-03-23
 
 > Frontend subscription package update

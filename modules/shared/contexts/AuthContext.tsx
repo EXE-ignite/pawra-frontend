@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { getUser, clearUser } from '../services/auth.service';
+import { getUser, clearUser, saveUser } from '../services/auth.service';
 import { tokenService } from '../services/api/token.service';
 import type { User } from '../types/auth.types';
 
@@ -27,6 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const updateUser = (newUser: User | null) => {
     setUser(newUser);
+    if (newUser) saveUser(newUser);
   };
 
   const logout = () => {

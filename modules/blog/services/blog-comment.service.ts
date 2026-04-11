@@ -64,9 +64,10 @@ class BlogCommentService {
       };
     }
 
-    // Body: only content + optional parentId (postId is a PATH param, NOT in body)
+    // Body: only content + optional parentCommentId (postId is a PATH param, NOT in body)
+    // BE uses `parentCommentId` per CreateBlogCommentDto swagger schema
     const body: Record<string, string> = { content: data.content };
-    if (data.parentId) body.parentId = data.parentId;
+    if (data.parentId) body.parentCommentId = data.parentId;
 
     try {
       // Confirmed endpoint from swagger: POST /api/BlogPosts/{postId}/comments

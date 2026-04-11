@@ -122,6 +122,25 @@ class StorageService {
       throw error;
     }
   }
+
+  /**
+   * Delete image by its public download URL (extracts path automatically)
+   * Safe to call with non-Firebase URLs — they are silently ignored
+   * @param url - Firebase Storage download URL
+   */
+  async deleteImageByUrl(url: string): Promise<void> {
+    if (!url || !url.includes('firebasestorage.googleapis.com')) return;
+    try {
+      const urlObj = new URL(url);
+      const pathMatch = urlObj.pathname.match(/\/o\/(.+)$/);
+      if (!pathMatch) return;
+      const storagePath = decodeURIComponent(pathMatch[1]);
+      await this.deleteImage(storagePath);
+    } catch (error) {
+      // Non-critical: old image deletion failure should not block the user
+      console.warn('[Firebase Storage] Could not delete old image:', url, error);
+    }
+  }
 }
 
 export const storageService = new StorageService();

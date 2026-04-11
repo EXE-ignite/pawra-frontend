@@ -110,6 +110,8 @@ export const en = {
     notFound: 'Pet not found',
     deletePetTitle: 'Delete Pet',
     deletePetMessage: 'Are you sure you want to delete {name}? This action cannot be undone.',
+    years: 'years',
+    months: 'months',
   },
   healthRecords: {
     title: 'Health Records',

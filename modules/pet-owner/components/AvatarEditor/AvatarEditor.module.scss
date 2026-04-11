@@ -1,0 +1,348 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+// ── Avatar display ────────────────────────────────────────────────────────────
+.avatarWrapper {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--color-primary-light);
+  background-color: var(--color-primary-lighter);
+}
+
+.avatarFallback {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background-color: var(--color-primary-light);
+  border: 3px solid var(--color-primary-dark);
+  @include flex-center;
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.editBtn {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--color-bg-primary);
+  background-color: var(--color-primary);
+  color: var(--color-bg-primary);
+  cursor: pointer;
+  @include flex-center;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: var(--color-primary-dark);
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+// ── Modal overlay ─────────────────────────────────────────────────────────────
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  @include flex-center;
+  padding: $spacing-md;
+}
+
+.modal {
+  background: var(--color-bg-primary);
+  border-radius: $radius-lg;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow: hidden;
+  @include flex-column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--color-border);
+}
+
+.modalHeader {
+  @include flex-between;
+  padding: $spacing-md $spacing-lg;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.modalTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.closeBtn {
+  width: 32px;
+  height: 32px;
+  border-radius: $radius-md;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  @include flex-center;
+  color: var(--color-text-secondary);
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: var(--color-bg-tertiary);
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-bg-secondary);
+  flex-shrink: 0;
+}
+
+.tab {
+  flex: 1;
+  padding: $spacing-sm $spacing-md;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: var(--color-text-secondary);
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+
+  &:hover {
+    color: var(--color-text-primary);
+  }
+
+  &.tabActive {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+  }
+}
+
+// ── Modal body ────────────────────────────────────────────────────────────────
+.modalBody {
+  padding: $spacing-lg;
+  overflow-y: auto;
+  flex: 1;
+  background-color: var(--color-bg-primary);
+}
+
+// ── Preset grid ───────────────────────────────────────────────────────────────
+.presetGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: $spacing-md;
+}
+
+.presetItem {
+  @include flex-column-center;
+  gap: $spacing-xs;
+  cursor: pointer;
+  border-radius: $radius-lg;
+  padding: $spacing-sm;
+  border: 2px solid transparent;
+  background: none;
+  transition: border-color 0.15s, background-color 0.15s;
+
+  &:hover {
+    background-color: var(--color-primary-lighter);
+    border-color: var(--color-primary-light);
+  }
+
+  &.presetItemSelected {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary-lighter);
+  }
+}
+
+.presetImg {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.presetLabel {
+  font-size: $font-size-xs;
+  color: var(--color-text-secondary);
+  text-align: center;
+  line-height: $line-height-tight;
+}
+
+// ── Upload area ───────────────────────────────────────────────────────────────
+.uploadArea {
+  @include flex-column-center;
+  gap: $spacing-md;
+  border: 2px dashed var(--color-border);
+  border-radius: $radius-lg;
+  padding: $spacing-2xl $spacing-lg;
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+
+  &:hover {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary-lighter);
+  }
+
+  input {
+    display: none;
+  }
+}
+
+.uploadIcon {
+  color: var(--color-text-tertiary);
+
+  svg {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.uploadText {
+  text-align: center;
+  @include flex-column-center;
+  gap: $spacing-xs;
+}
+
+.uploadPrimary {
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  color: var(--color-text-primary);
+}
+
+.uploadSecondary {
+  font-size: $font-size-sm;
+  color: var(--color-text-secondary);
+}
+
+.previewWrapper {
+  @include flex-column-center;
+  gap: $spacing-md;
+}
+
+.previewImg {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--color-primary-light);
+}
+
+.changeFileBtn {
+  font-size: $font-size-sm;
+  color: var(--color-primary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--color-primary-dark);
+  }
+}
+
+// ── Progress ──────────────────────────────────────────────────────────────────
+.progressWrapper {
+  @include flex-column;
+  gap: $spacing-xs;
+  margin-top: $spacing-md;
+}
+
+.progressBar {
+  height: 6px;
+  background-color: var(--color-border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: var(--color-primary);
+  border-radius: 3px;
+  transition: width 0.2s;
+}
+
+.progressText {
+  font-size: $font-size-xs;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+// ── Modal footer ──────────────────────────────────────────────────────────────
+.modalFooter {
+  @include flex-between;
+  padding: $spacing-md $spacing-lg;
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-bg-secondary);
+  flex-shrink: 0;
+  gap: $spacing-sm;
+}
+
+.cancelBtn {
+  padding: $spacing-sm $spacing-lg;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-lg;
+  background: transparent;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: var(--color-bg-tertiary);
+  }
+}
+
+.saveBtn {
+  padding: $spacing-sm $spacing-lg;
+  border: none;
+  border-radius: $radius-lg;
+  background-color: var(--color-primary);
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: var(--color-bg-primary);
+  cursor: pointer;
+  transition: background-color 0.15s, opacity 0.15s;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &:not(:disabled):hover {
+    background-color: var(--color-primary-dark);
+  }
+}
+
+.errorMessage {
+  font-size: $font-size-sm;
+  color: var(--color-error);
+  margin-top: $spacing-sm;
+  text-align: center;
+}

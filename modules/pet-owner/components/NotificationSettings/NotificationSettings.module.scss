@@ -1,0 +1,98 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.form {
+  @include flex-column;
+  gap: $spacing-lg;
+  max-width: 560px;
+}
+
+.list {
+  @include flex-column;
+  gap: 0;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-lg;
+  overflow: hidden;
+}
+
+.item {
+  @include flex-between;
+  padding: $spacing-md $spacing-lg;
+  background-color: var(--color-bg-primary);
+  gap: $spacing-md;
+
+  & + .item {
+    border-top: 1px solid var(--color-border-light);
+  }
+
+  &:hover {
+    background-color: var(--color-bg-secondary);
+  }
+}
+
+.info {
+  @include flex-column;
+  gap: 2px;
+  flex: 1;
+}
+
+.itemLabel {
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  color: var(--color-text-primary);
+}
+
+.itemDesc {
+  font-size: $font-size-sm;
+  color: var(--color-text-secondary);
+}
+
+// Toggle switch
+.toggle {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  background-color: var(--color-border);
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  flex-shrink: 0;
+
+  &.toggleOn {
+    background-color: var(--color-primary);
+  }
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: var(--color-bg-primary);
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+
+  .toggleOn & {
+    transform: translateX(20px);
+  }
+}
+
+.success {
+  font-size: $font-size-sm;
+  color: $color-success;
+  font-weight: $font-weight-medium;
+}
+
+.error {
+  font-size: $font-size-sm;
+  color: $color-error;
+  font-weight: $font-weight-medium;
+}
+
+.actions {
+  @include flex-start;
+  padding-top: $spacing-sm;
+}

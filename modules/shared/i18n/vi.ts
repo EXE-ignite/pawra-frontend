@@ -110,6 +110,8 @@ export const vi = {
     notFound: 'Không tìm thấy thú cưng',
     deletePetTitle: 'Xóa thú cưng',
     deletePetMessage: 'Bạn có chắc chắn muốn xóa {name} không? Hành động này không thể hoàn tác.',
+    years: 'tuổi',
+    months: 'tháng',
   },
   healthRecords: {
     title: 'Hồ sơ sức khỏe',

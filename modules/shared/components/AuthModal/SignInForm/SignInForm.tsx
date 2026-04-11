@@ -42,6 +42,7 @@ export function SignInForm({ onSuccess }: SignInFormProps) {
             email: result.data.email,
             fullName: result.data.fullName,
             role: result.data.role,
+            avatarUrl: result.data.avatarUrl,
             expiresAt: result.data.expiresAt,
           };
           onSuccess(userData);
@@ -86,11 +87,12 @@ export function SignInForm({ onSuccess }: SignInFormProps) {
           email: result.data.email,
           fullName: result.data.fullName,
           role: result.data.role,
+          avatarUrl: result.data.avatarUrl,
           expiresAt: result.data.expiresAt,
         };
         onSuccess(userData);
       } else {
-        console.warn('⚠️ [SIGNIN] Login failed:', result.message);
+        console.warn('⚠️ [SIGNIN] Login failed:',   result.message);
         setError(result.message);
       }
     } catch (err: any) {

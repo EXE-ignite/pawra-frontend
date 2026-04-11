@@ -34,7 +34,7 @@ export function PetProfileHeader({
             </span>
             <span className={styles.attribute}>
               <span className={styles.attributeIcon}>🎂</span>
-              {age} {t('petProfile.years')} {ageMonths} {t('petProfile.months')}
+              {age > 0 && <>{age} {t('petProfile.years')} </>}{ageMonths > 0 && <>{ageMonths} {t('petProfile.months')}</>}
             </span>
             <span className={styles.attribute}>
               <span className={styles.attributeIcon}>⚖️</span>
