@@ -6,6 +6,7 @@ import { useAuth } from '@/modules/shared';
 import { BasicInfoForm } from '../../components/BasicInfoForm';
 import { ChangePasswordForm } from '../../components/ChangePasswordForm';
 import { NotificationSettings } from '../../components/NotificationSettings';
+import { AvatarEditor } from '../../components/AvatarEditor';
 import * as profileService from '../../services/account-profile.service';
 import type {
   AccountProfile,
@@ -49,6 +50,14 @@ export function AccountProfilePage() {
     },
   });
 
+  const updateAvatarMutation = useMutation({
+    mutationFn: (avatarUrl: string) =>
+      profileService.updateAvatar(profile!, avatarUrl),
+    onSuccess: (updated) => {
+      queryClient.setQueryData(['pet-owner', 'profile'], updated);
+    },
+  });
+
   const saveNotifMutation = useMutation({
     mutationFn: (data: NotificationPreferences) =>
       profileService.saveNotificationPreferences(profile!.accountId, data),
@@ -87,6 +96,18 @@ export function AccountProfilePage() {
 
       <div className={styles.layout}>
         <aside className={styles.sidebar}>
+          <div className={styles.sidebarProfile}>
+            <AvatarEditor
+              currentAvatarUrl={profile?.avatarUrl}
+              userInitials={profile?.fullName?.slice(0, 2) ?? user?.fullName?.slice(0, 2)}
+              onAvatarChange={(url) => updateAvatarMutation.mutate(url)}
+              isSaving={updateAvatarMutation.isPending}
+            />
+            <div className={styles.sidebarName}>
+              <p className={styles.sidebarFullName}>{profile?.fullName ?? user?.fullName}</p>
+              <p className={styles.sidebarEmail}>{profile?.email ?? user?.email}</p>
+            </div>
+          </div>
           {TABS.map(tab => (
             <button
               key={tab.key}

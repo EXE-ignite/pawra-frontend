@@ -40,18 +40,6 @@ export function BasicInfoForm({ profile, onSave }: BasicInfoFormProps) {
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
-      <div className={styles.avatarSection}>
-        <div className={styles.avatar}>
-          {profile.avatarUrl ? (
-            <img src={profile.avatarUrl} alt={profile.fullName} className={styles.avatarImg} />
-          ) : (
-            <span className={styles.avatarInitial}>
-              {profile.fullName.charAt(0).toUpperCase()}
-            </span>
-          )}
-        </div>
-      </div>
-
       <div className={styles.field}>
         <label className={styles.label} htmlFor="fullName">
           Họ và tên

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { blogService } from '@/modules/blog/services';
 import { useAuth } from '@/modules/shared/contexts';
 import { AuthModal } from '@/modules/shared/components';
@@ -32,14 +32,16 @@ export function ReactionBar({ postId, initialReactions }: ReactionBarProps) {
   const [loading, setLoading] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
+  // Stable ref — updated once on mount so syncFromApi never re-creates due to prop changes
+  const initialReactionsRef = useRef(initialReactions);
+
   const syncFromApi = useCallback(async () => {
     try {
       const apiReactions = await blogService.getPostReactions(postId);
       const mappedReactions = reactionConfig.map(config => {
         const apiReaction = apiReactions.find(r => r.reaction === config.type);
-        // BE only returns reaction types with count > 0 — fall back to initialReactions
-        // (sourced from post's reactionSummary) for types not in the response
-        const fallbackCount = initialReactions?.find(r => r.type === config.type)?.count ?? 0;
+        // BE only returns reaction types with count > 0 — fall back to 0 for missing types
+        const fallbackCount = initialReactionsRef.current?.find(r => r.type === config.type)?.count ?? 0;
         return { ...config, count: apiReaction?.count ?? fallbackCount };
       });
       setReactions(mappedReactions);
@@ -48,12 +50,20 @@ export function ReactionBar({ postId, initialReactions }: ReactionBarProps) {
     } catch (error) {
       console.error('Failed to load reactions:', error);
     }
-  }, [postId, initialReactions]);
+  }, [postId]); // ✅ No initialReactions dep — uses stable ref to prevent infinite re-fetch loop
 
   // Load reactions on mount
   useEffect(() => {
     syncFromApi();
   }, [syncFromApi]);
+
+  // Re-fetch when auth state resolves so user's existing reaction is highlighted
+  useEffect(() => {
+    if (!authLoading) {
+      syncFromApi();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, authLoading]);
 
   const handleReaction = async (type: ReactionType) => {
     if (loading) return;
@@ -66,6 +76,7 @@ export function ReactionBar({ postId, initialReactions }: ReactionBarProps) {
 
     // Optimistic update
     const prevReaction = userReaction;
+    const prevReactions = reactions;
     const isRemoving = userReaction === type;
     setUserReaction(isRemoving ? null : type);
     setReactions(prev =>
@@ -79,12 +90,12 @@ export function ReactionBar({ postId, initialReactions }: ReactionBarProps) {
     setLoading(true);
     try {
       await blogService.toggleBlogReaction(postId, type);
-      // Always re-fetch real counts from server after toggle
-      await syncFromApi();
+      // ✅ Keep optimistic update — don't call syncFromApi() here as it may return
+      // stale cached counts and overwrite the change the user just made
     } catch (error) {
       // Rollback optimistic update on failure
       setUserReaction(prevReaction);
-      await syncFromApi();
+      setReactions(prevReactions);
       console.error('Failed to toggle reaction:', error);
     } finally {
       setLoading(false);

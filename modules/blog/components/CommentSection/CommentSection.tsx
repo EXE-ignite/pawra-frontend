@@ -95,20 +95,24 @@ export function CommentSection({ postId }: CommentSectionProps) {
         content: newComment.trim(),
       });
 
+      // Use the logged-in user's info for the optimistic comment (fallback to 'You')
+      const authorName = user?.fullName || user?.email || 'You';
+      const authorAvatar = authorName.charAt(0).toUpperCase();
+
       // BE may return null on success (e.g. 201 with no body) — build fallback from known data
       const newCommentUI: Comment = addedComment
         ? {
             id: addedComment.id,
             author: {
-              name: addedComment.author?.name || 'You',
-              avatar: addedComment.author?.avatarUrl || (addedComment.author?.name?.charAt(0).toUpperCase() ?? 'Y'),
+              name: addedComment.author?.name || authorName,
+              avatar: addedComment.author?.name?.charAt(0).toUpperCase() || authorAvatar,
             },
             content: addedComment.content,
             createdAt: formatRelativeTime(addedComment.createdAt),
           }
         : {
             id: `temp-${Date.now()}`,
-            author: { name: 'You', avatar: 'Y' },
+            author: { name: authorName, avatar: authorAvatar },
             content: newComment.trim(),
             createdAt: 'Just now',
           };
@@ -138,19 +142,22 @@ export function CommentSection({ postId }: CommentSectionProps) {
     try {
       const added = await blogService.addBlogComment(postId, { content, parentId });
 
+      const authorName = user?.fullName || user?.email || 'You';
+      const authorAvatar = authorName.charAt(0).toUpperCase();
+
       const newReply: Comment = added
         ? {
             id: added.id,
             author: {
-              name: added.author?.name || 'You',
-              avatar: added.author?.avatarUrl || (added.author?.name?.charAt(0).toUpperCase() ?? 'Y'),
+              name: added.author?.name || authorName,
+              avatar: added.author?.name?.charAt(0).toUpperCase() || authorAvatar,
             },
             content: added.content,
             createdAt: formatRelativeTime(added.createdAt),
           }
         : {
             id: `temp-reply-${Date.now()}`,
-            author: { name: 'You', avatar: 'Y' },
+            author: { name: authorName, avatar: authorAvatar },
             content,
             createdAt: 'Just now',
           };

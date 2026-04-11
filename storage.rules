@@ -21,5 +21,12 @@ service firebase.storage {
       allow write: if request.resource.size < 5 * 1024 * 1024
                    && request.resource.contentType.matches('image/.*');
     }
+
+    // User avatar uploads
+    match /avatars/{fileName} {
+      allow read: if true;
+      allow write: if request.resource.size < 5 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
   }
 }

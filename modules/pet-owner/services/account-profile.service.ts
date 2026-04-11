@@ -58,6 +58,20 @@ export async function updateProfile(
   return { ...current, ...updates };
 }
 
+export async function updateAvatar(
+  current: AccountProfile,
+  avatarUrl: string
+): Promise<AccountProfile> {
+  if (!current.accountId) throw new Error('Account ID không xác định');
+
+  await apiService.put(`/Account/${current.accountId}`, {
+    fullName: current.fullName,
+    avatarUrl,
+  });
+
+  return { ...current, avatarUrl };
+}
+
 export async function changePassword(data: ChangePasswordRequest): Promise<void> {
   await apiService.put('/Auth/change-password', data);
 }

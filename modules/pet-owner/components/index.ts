@@ -19,3 +19,4 @@ export { CurrentSubscription } from './CurrentSubscription';
 export { BasicInfoForm } from './BasicInfoForm';
 export { ChangePasswordForm } from './ChangePasswordForm';
 export { NotificationSettings } from './NotificationSettings';
+export { AvatarEditor } from './AvatarEditor';

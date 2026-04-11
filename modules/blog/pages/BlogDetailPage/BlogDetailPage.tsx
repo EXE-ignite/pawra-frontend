@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { BlogPost } from '../../types';
@@ -28,6 +28,19 @@ export function BlogDetailPage({ id }: BlogDetailPageProps) {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Must be before any early returns — Rules of Hooks
+  const reactionTypes: ReactionType[] = ['like', 'love', 'haha', 'wow', 'sad', 'angry'];
+  const initialReactions: Reaction[] = useMemo(
+    () => reactionTypes.map(type => ({
+      type,
+      emoji: '',
+      label: '',
+      count: post?.reactionSummary?.[type] || 0,
+    })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [post?.id],
+  );
 
   useEffect(() => {
     blogService.getPostById(id)
@@ -70,15 +83,6 @@ export function BlogDetailPage({ id }: BlogDetailPageProps) {
     },
     reactionSummary: post.reactionSummary || {},
   };
-
-  // Convert reactionSummary to Reaction[]
-  const reactionTypes: ReactionType[] = ['like', 'love', 'haha', 'wow', 'sad', 'angry'];
-  const initialReactions: Reaction[] = reactionTypes.map(type => ({
-    type,
-    emoji: '',
-    label: '',
-    count: safePost.reactionSummary?.[type] || 0,
-  }));
 
   const categoryColor = categoryColors[safePost.category] || '#B1B2FF';
 
