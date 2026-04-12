@@ -104,14 +104,18 @@ class ClinicService {
    * Backend: GET /api/Service?pageSize=100&pageNumber=1
    */
   async getAllServices(): Promise<ServiceDto[]> {
-    const response = await apiService.get<ServiceDto[] | PaginatedResponse<ServiceDto> | { data?: ServiceDto[] }>(
-      `/Service?pageSize=100&pageNumber=1`
-    );
-    if (Array.isArray(response.data)) return response.data;
-    const paged = (response.data as PaginatedResponse<ServiceDto>)?.items;
-    if (Array.isArray(paged)) return paged;
-    const inner = (response.data as { data?: ServiceDto[] })?.data;
-    return Array.isArray(inner) ? inner : [];
+    try {
+      const response = await apiService.get<ServiceDto[] | PaginatedResponse<ServiceDto> | { data?: ServiceDto[] }>(
+        `/Service?pageSize=100&pageNumber=1`
+      );
+      if (Array.isArray(response.data)) return response.data;
+      const paged = (response.data as PaginatedResponse<ServiceDto>)?.items;
+      if (Array.isArray(paged)) return paged;
+      const inner = (response.data as { data?: ServiceDto[] })?.data;
+      return Array.isArray(inner) ? inner : [];
+    } catch {
+      return [];
+    }
   }
 
   /**

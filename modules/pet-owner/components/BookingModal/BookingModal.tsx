@@ -379,7 +379,7 @@ export function BookingModal({ isOpen, onClose, onSuccess, defaultDate }: Bookin
                   {loading ? (
                     <div className={styles.loadingState}>Đang tải...</div>
                   ) : vets.length === 0 ? (
-                    <div className={styles.emptyState}><p>🤖 Bác sĩ sẽ được phân công tự động bởi phòng khám.</p></div>
+                    <div className={styles.emptyState}><p>Hiện không có bác sĩ khả dụng tại phòng khám này.</p></div>
                   ) : (
                     <div className={styles.vetList}>
                       {vets.map(vet => {
