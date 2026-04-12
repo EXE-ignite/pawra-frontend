@@ -1,4 +1,4 @@
-export type UserRole = 'Admin' | 'Staff' | 'Vet' | 'Receptionist' | 'PetOwner' | 'Customer';
+export type UserRole = 'Admin' | 'Veterinarian' | 'ClinicManager' | 'Customer';
 
 export type UserStatus = 'Active' | 'Inactive' | 'Banned';
 

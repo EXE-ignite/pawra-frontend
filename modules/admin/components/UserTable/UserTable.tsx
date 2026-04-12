@@ -6,10 +6,8 @@ import styles from './UserTable.module.scss';
 
 const ROLE_LABELS: Record<string, string> = {
   Admin: 'Admin',
-  Staff: 'Nhân viên',
-  Vet: 'Bác sĩ thú y',
-  Receptionist: 'Lễ tân',
-  PetOwner: 'Chủ thú cưng',
+  Veterinarian: 'Bác sĩ thú y',
+  ClinicManager: 'Quản lý phòng khám',
   Customer: 'Khách hàng',
 };
 
@@ -54,12 +52,10 @@ export function UserTable({
     switch (role) {
       case 'Admin':
         return styles.roleAdmin;
-      case 'Staff':
-        return styles.roleStaff;
-      case 'Vet':
+      case 'Veterinarian':
         return styles.roleVet;
-      case 'Receptionist':
-        return styles.roleReceptionist;
+      case 'ClinicManager':
+        return styles.roleClinicManager;
       default:
         return styles.roleDefault;
     }

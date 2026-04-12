@@ -8,7 +8,7 @@ import { authService } from '../../services';
 import { ThemeToggle, AuthModal } from '../../components';
 import styles from './StaffLayout.module.scss';
 
-const STAFF_ROLES = ['Admin', 'Staff', 'Vet', 'Receptionist'];
+const STAFF_ROLES = ['Admin', 'Veterinarian', 'ClinicManager'];
 
 interface StaffLayoutProps {
   children: React.ReactNode;
@@ -92,16 +92,16 @@ export function StaffLayout({ children }: StaffLayoutProps) {
             📝 Blog Posts
           </a>
           <a href="/admin/users" className={styles.navItem}>
-            👥 Nguoi dung
+            👥 Người dùng
           </a>
           <a href="/admin/subscriptions" className={styles.navItem}>
             💳 Subscriptions
           </a>
           <a href="/admin/subscription-plans" className={styles.navItem}>
-            📦 Goi dang ky
+            📦 Gói đăng ký
           </a>
           <a href="/admin/settings" className={styles.navItem}>
-            ⚙️ Cai dat
+            ⚙️ Cài đặt
           </a>
         </nav>
 
