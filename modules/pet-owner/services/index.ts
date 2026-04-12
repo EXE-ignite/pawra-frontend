@@ -44,7 +44,7 @@ export * from './pet-profile.service';
 
 // Clinic
 export { clinicService, default as clinicServiceDefault } from './clinic.service';
-export type { ClinicDto } from './clinic.service';
+export type { ClinicDto, ClinicServiceDto, VeterinarianDto } from './clinic.service';
 
 // Medication
 export { medicationService, default as medicationServiceDefault } from './medication.service';

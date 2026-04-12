@@ -10,6 +10,7 @@ export const ROUTES = {
   // Pet Owner routes
   PET_OWNER_DASHBOARD: '/pet-owner/page',
   PET_OWNER_PROFILE: '/pet-owner/profile',
+  PET_OWNER_BOOKING: '/pet-owner/booking',
   PET_OWNER_REMINDERS: '/pet-owner/reminders',
   
   // Admin routes

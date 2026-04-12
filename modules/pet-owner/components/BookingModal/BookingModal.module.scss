@@ -1,0 +1,585 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+// --- Overlay -------------------------------------------------------------------
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: $z-modal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-md;
+}
+
+.modal {
+  background-color: var(--color-bg-primary);
+  border-radius: $radius-xl;
+  box-shadow: $shadow-xl;
+  width: 100%;
+  max-width: 800px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-lg $spacing-xl $spacing-md;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+  gap: $spacing-md;
+}
+
+.modalTitle {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: var(--color-text-primary);
+  margin: 0 0 $spacing-xs 0;
+}
+
+.modalSubtitle {
+  font-size: $font-size-sm;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  font-size: $font-size-lg;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $radius-md;
+  transition: background-color 0.2s;
+  flex-shrink: 0;
+  line-height: 1;
+
+  &:hover {
+    background-color: var(--color-bg-hover);
+    color: var(--color-text-primary);
+  }
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  padding: $spacing-md $spacing-xl;
+  border-bottom: 1px solid var(--color-border);
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+.stepItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-xs;
+  flex-shrink: 0;
+  color: var(--color-text-tertiary);
+  transition: color 0.2s;
+
+  &.active {
+    color: var(--color-primary);
+    .stepCircle {
+      background-color: var(--color-primary);
+      color: var(--color-bg-primary);
+      border-color: var(--color-primary);
+    }
+  }
+
+  &.completed {
+    color: var(--color-success);
+    .stepCircle {
+      background-color: var(--color-success);
+      color: #fff;
+      border-color: var(--color-success);
+    }
+  }
+}
+
+.stepCircle {
+  width: 30px;
+  height: 30px;
+  border-radius: $radius-full;
+  border: 2px solid currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-sm;
+  background-color: var(--color-bg-primary);
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.stepLabel {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  white-space: nowrap;
+  text-align: center;
+  max-width: 90px;
+}
+
+.stepConnector {
+  flex: 1;
+  height: 2px;
+  background-color: var(--color-bg-tertiary);
+  margin-bottom: $spacing-xl;
+  min-width: 20px;
+  transition: background-color 0.2s;
+
+  &.connectorCompleted {
+    background-color: var(--color-success);
+  }
+}
+
+.errorBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--color-error-light);
+  border: 1px solid var(--color-error-lighter);
+  border-radius: $radius-md;
+  padding: $spacing-sm $spacing-md;
+  margin: $spacing-sm $spacing-xl 0;
+  color: var(--color-error);
+  font-size: $font-size-sm;
+  flex-shrink: 0;
+}
+
+.errorClose {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-error);
+  padding: 0 $spacing-xs;
+
+  &:hover { opacity: 0.7; }
+}
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+  padding: $spacing-xl;
+}
+
+.stepContent {
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.stepNav {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  margin-bottom: $spacing-lg;
+}
+
+.stepTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: var(--color-text-primary);
+  margin: 0 0 $spacing-lg 0;
+}
+
+.backBtn {
+  background: none;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  border-radius: $radius-md;
+  padding: $spacing-xs $spacing-md;
+  cursor: pointer;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  flex-shrink: 0;
+  transition: background-color 0.2s;
+
+  &:hover { background-color: var(--color-primary-lighter); }
+}
+
+.searchBar { position: relative; margin-bottom: $spacing-lg; }
+
+.searchIcon {
+  position: absolute;
+  left: $spacing-md;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: $spacing-sm $spacing-md $spacing-sm $spacing-3xl;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  font-size: $font-size-base;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &:focus { border-color: var(--color-primary); }
+}
+
+.clinicGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: $spacing-md;
+}
+
+.clinicCard {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  text-align: left;
+  cursor: pointer;
+  border: 2px solid var(--color-border);
+  border-radius: $radius-lg;
+  padding: $spacing-md;
+  background: var(--color-bg-primary);
+  width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:hover { border-color: var(--color-primary-light); box-shadow: $shadow-sm; }
+  &.selected { border-color: var(--color-primary); background-color: var(--color-primary-lighter); }
+}
+
+.clinicImage {
+  width: 48px;
+  height: 48px;
+  border-radius: $radius-md;
+  overflow: hidden;
+  flex-shrink: 0;
+  background-color: var(--color-bg-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img { width: 100%; height: 100%; object-fit: cover; }
+}
+
+.clinicPlaceholder { font-size: 22px; }
+.clinicInfo { flex: 1; min-width: 0; }
+
+.clinicName {
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: var(--color-text-primary);
+  margin: 0 0 $spacing-xs 0;
+}
+
+.clinicAddress,
+.clinicPhone {
+  font-size: $font-size-xs;
+  color: var(--color-text-secondary);
+  margin: 2px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.selectBadge {
+  font-size: $font-size-xs;
+  color: var(--color-primary);
+  font-weight: $font-weight-medium;
+  flex-shrink: 0;
+}
+
+.serviceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: $spacing-md;
+}
+
+.serviceCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  cursor: pointer;
+  border: 2px solid var(--color-border);
+  border-radius: $radius-lg;
+  padding: $spacing-md;
+  background: var(--color-bg-primary);
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:hover { border-color: var(--color-primary-light); box-shadow: $shadow-sm; }
+  &.selected { border-color: var(--color-primary); background-color: var(--color-primary-lighter); }
+}
+
+.serviceImageSlot {
+  width: 100%;
+  height: 72px;
+  border-radius: $radius-md;
+  overflow: hidden;
+  background-color: var(--color-bg-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: $spacing-sm;
+
+  img { width: 100%; height: 100%; object-fit: cover; }
+}
+
+.servicePlaceholder { font-size: 28px; }
+.serviceInfo { width: 100%; }
+
+.serviceName {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: var(--color-text-primary);
+  margin: 0 0 $spacing-xs 0;
+}
+
+.serviceDesc {
+  font-size: $font-size-xs;
+  color: var(--color-text-secondary);
+  margin: 0 0 $spacing-xs 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.servicePrice {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: var(--color-primary);
+}
+
+.step3Layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-xl;
+
+  @media (max-width: 640px) { grid-template-columns: 1fr; }
+  @media (min-width: 641px) and (max-width: 767px) { grid-template-columns: 1fr; }
+}
+
+.subSectionTitle {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: var(--color-text-primary);
+  margin: 0 0 $spacing-sm 0;
+}
+
+.mt { margin-top: $spacing-lg; }
+
+.vetList { display: flex; flex-direction: column; gap: $spacing-sm; }
+
+.vetCard {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-sm $spacing-md;
+  border: 2px solid var(--color-border);
+  border-radius: $radius-lg;
+  cursor: pointer;
+  background: var(--color-bg-primary);
+  text-align: left;
+  transition: border-color 0.2s;
+
+  &:hover { border-color: var(--color-primary-light); }
+  &.selected { border-color: var(--color-primary); background-color: var(--color-primary-lighter); }
+}
+
+.vetAvatar {
+  width: 38px;
+  height: 38px;
+  border-radius: $radius-full;
+  overflow: hidden;
+  background-color: var(--color-bg-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 18px;
+
+  img { width: 100%; height: 100%; object-fit: cover; }
+}
+
+.vetInfo {
+  flex: 1;
+  min-width: 0;
+
+  strong { display: block; font-size: $font-size-sm; color: var(--color-text-primary); }
+}
+
+.vetLicense { font-size: $font-size-xs; color: var(--color-text-secondary); }
+
+.checkmark { color: var(--color-success); font-weight: $font-weight-bold; flex-shrink: 0; }
+
+.dateInput {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  font-size: $font-size-base;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &:focus { border-color: var(--color-primary); }
+}
+
+.timeSlotGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+  gap: $spacing-xs;
+  margin-bottom: $spacing-md;
+}
+
+.timeSlot {
+  padding: $spacing-xs $spacing-sm;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  cursor: pointer;
+  font-size: $font-size-xs;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  text-align: center;
+  transition: border-color 0.2s, background-color 0.2s, color 0.2s;
+
+  &:hover { border-color: var(--color-primary-light); }
+  &.selected {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary);
+    color: var(--color-bg-primary);
+    font-weight: $font-weight-medium;
+  }
+}
+
+.notesInput {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  font-size: $font-size-sm;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+  box-sizing: border-box;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  transition: border-color 0.2s;
+
+  &:focus { border-color: var(--color-primary); }
+}
+
+.summaryCard {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+}
+
+.summaryTitle {
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: var(--color-text-primary);
+  margin: 0 0 $spacing-md 0;
+}
+
+.summaryGrid { display: flex; flex-direction: column; gap: $spacing-sm; }
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: $spacing-md;
+  font-size: $font-size-sm;
+}
+
+.summaryLabel { color: var(--color-text-secondary); flex-shrink: 0; }
+
+.summaryValue {
+  color: var(--color-text-primary);
+  font-weight: $font-weight-medium;
+  text-align: right;
+}
+
+.price { color: var(--color-success); }
+
+.petSection { margin-top: $spacing-md; }
+
+.petList { display: flex; flex-direction: column; gap: $spacing-sm; margin-top: $spacing-sm; }
+
+.petCard {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-sm $spacing-md;
+  border: 2px solid var(--color-border);
+  border-radius: $radius-lg;
+  cursor: pointer;
+  background: var(--color-bg-primary);
+  text-align: left;
+  transition: border-color 0.2s;
+
+  &:hover { border-color: var(--color-primary-light); }
+  &.selected { border-color: var(--color-primary); background-color: var(--color-primary-lighter); }
+}
+
+.petAvatar {
+  width: 38px;
+  height: 38px;
+  border-radius: $radius-full;
+  overflow: hidden;
+  background-color: var(--color-bg-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 18px;
+
+  img { width: 100%; height: 100%; object-fit: cover; }
+}
+
+.petInfo {
+  flex: 1;
+  min-width: 0;
+
+  strong { display: block; font-size: $font-size-sm; color: var(--color-text-primary); }
+  span { font-size: $font-size-xs; color: var(--color-text-secondary); }
+}
+
+.stepActions { display: flex; justify-content: flex-end; margin-top: $spacing-xl; }
+
+.btnPrimary {
+  background-color: var(--color-primary);
+  color: var(--color-bg-primary);
+  border: none;
+  border-radius: $radius-md;
+  padding: $spacing-sm $spacing-xl;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:hover { opacity: 0.85; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+.loadingState,
+.emptyState {
+  text-align: center;
+  padding: $spacing-3xl $spacing-md;
+  color: var(--color-text-secondary);
+  font-size: $font-size-sm;
+
+  p { margin: 0; }
+}

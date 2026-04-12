@@ -20,3 +20,5 @@ export { BasicInfoForm } from './BasicInfoForm';
 export { ChangePasswordForm } from './ChangePasswordForm';
 export { NotificationSettings } from './NotificationSettings';
 export { AvatarEditor } from './AvatarEditor';
+export { BookingModal } from './BookingModal';
+export { TaskTypePicker } from './TaskTypePicker';

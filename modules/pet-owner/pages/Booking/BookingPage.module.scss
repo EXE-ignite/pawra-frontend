@@ -1,0 +1,734 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.page {
+  @include container;
+  padding-bottom: $spacing-3xl;
+}
+
+// ─── Header ────────────────────────────────────────────────────────────────────
+
+.header {
+  margin-bottom: $spacing-2xl;
+}
+
+.title {
+  @include heading-1;
+  margin-bottom: $spacing-sm;
+}
+
+.subtitle {
+  color: $text-secondary;
+  font-size: $font-size-lg;
+}
+
+// ─── Stepper ───────────────────────────────────────────────────────────────────
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: $spacing-3xl;
+  overflow-x: auto;
+  padding-bottom: $spacing-sm;
+}
+
+.stepItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-xs;
+  flex-shrink: 0;
+  color: $text-tertiary;
+  transition: color 0.2s;
+
+  &.active {
+    color: $primary-500;
+
+    .stepCircle {
+      background-color: $primary-500;
+      color: #fff;
+      border-color: $primary-500;
+    }
+  }
+
+  &.completed {
+    color: $color-success;
+
+    .stepCircle {
+      background-color: $color-success;
+      color: #fff;
+      border-color: $color-success;
+    }
+  }
+}
+
+.stepCircle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: $font-size-sm;
+  background-color: $bg-default;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.stepLabel {
+  font-size: $font-size-xs;
+  font-weight: 500;
+  white-space: nowrap;
+  text-align: center;
+  max-width: 90px;
+}
+
+.stepConnector {
+  flex: 1;
+  height: 2px;
+  background-color: $bg-muted;
+  margin-bottom: $spacing-xl;
+  min-width: 24px;
+  transition: background-color 0.2s;
+
+  &.connectorCompleted {
+    background-color: $color-success;
+  }
+}
+
+// ─── Error Banner ──────────────────────────────────────────────────────────────
+
+.errorBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fef2f2;
+  border: 1px solid #fca5a5;
+  border-radius: $radius-md;
+  padding: $spacing-md $spacing-lg;
+  margin-bottom: $spacing-xl;
+  color: #ef4444;
+  font-size: $font-size-sm;
+}
+
+.errorClose {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ef4444;
+  font-size: $font-size-base;
+  padding: 0 $spacing-xs;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+// ─── Step content wrapper ───────────────────────────────────────────────────────
+
+.stepContent {
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.stepNav {
+  display: flex;
+  align-items: center;
+  gap: $spacing-lg;
+  margin-bottom: $spacing-xl;
+}
+
+.stepTitle {
+  @include heading-2;
+  margin: 0;
+}
+
+.backBtn {
+  background: none;
+  border: 1px solid $primary-500;
+  color: $primary-500;
+  border-radius: $radius-md;
+  padding: $spacing-xs $spacing-md;
+  cursor: pointer;
+  font-size: $font-size-sm;
+  font-weight: 500;
+  flex-shrink: 0;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: $primary-100;
+  }
+}
+
+// ─── Search bar ────────────────────────────────────────────────────────────────
+
+.searchBar {
+  position: relative;
+  margin-bottom: $spacing-xl;
+}
+
+.searchIcon {
+  position: absolute;
+  left: $spacing-md;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: $font-size-base;
+}
+
+.searchInput {
+  width: 100%;
+  padding: $spacing-md $spacing-md $spacing-md $spacing-3xl;
+  border: 1px solid $bg-muted;
+  border-radius: $radius-md;
+  font-size: $font-size-base;
+  color: $text-primary;
+  background-color: $bg-default;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &:focus {
+    border-color: $primary-500;
+  }
+}
+
+// ─── Clinic grid ───────────────────────────────────────────────────────────────
+
+.clinicGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: $spacing-lg;
+}
+
+.clinicCard {
+  @include card;
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-md;
+  text-align: left;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  padding: $spacing-md $spacing-lg;
+  background: none;
+  width: 100%;
+
+  &:hover {
+    border-color: $primary-300;
+    box-shadow: 0 4px 16px rgba(177, 178, 255, 0.2);
+  }
+
+  &.selected {
+    border-color: $primary-500;
+    background-color: $primary-100;
+  }
+}
+
+.clinicImage {
+  width: 56px;
+  height: 56px;
+  border-radius: $radius-md;
+  overflow: hidden;
+  flex-shrink: 0;
+  background-color: $bg-muted;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.clinicPlaceholder {
+  font-size: 28px;
+}
+
+.clinicInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.clinicName {
+  font-size: $font-size-base;
+  font-weight: 600;
+  color: $text-primary;
+  margin: 0 0 $spacing-xs;
+}
+
+.clinicAddress,
+.clinicPhone {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.selectBadge {
+  font-size: $font-size-sm;
+  color: $primary-500;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+// ─── Service grid ──────────────────────────────────────────────────────────────
+
+.serviceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: $spacing-lg;
+}
+
+.serviceCard {
+  @include card;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $spacing-sm;
+  cursor: pointer;
+  border: 2px solid transparent;
+  text-align: left;
+  background: none;
+  padding: $spacing-md;
+  width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    border-color: $primary-300;
+    box-shadow: 0 4px 16px rgba(177, 178, 255, 0.15);
+  }
+
+  &.selected {
+    border-color: $primary-500;
+    background-color: $primary-100;
+  }
+}
+
+.serviceImageSlot {
+  width: 100%;
+  height: 100px;
+  background-color: $bg-muted;
+  border-radius: $radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.servicePlaceholder {
+  font-size: 40px;
+}
+
+.serviceInfo {
+  width: 100%;
+}
+
+.serviceName {
+  font-size: $font-size-base;
+  font-weight: 600;
+  color: $text-primary;
+  margin: 0 0 $spacing-xs;
+}
+
+.serviceDesc {
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  margin: 0 0 $spacing-sm;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.servicePrice {
+  font-size: $font-size-base;
+  font-weight: 700;
+  color: $primary-500;
+}
+
+// ─── Step 3 layout ─────────────────────────────────────────────────────────────
+
+.step3Layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-2xl;
+  margin-bottom: $spacing-xl;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.subSection {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.subSectionTitle {
+  font-size: $font-size-base;
+  font-weight: 600;
+  color: $text-primary;
+  margin: 0;
+
+  &.mt {
+    margin-top: $spacing-sm;
+  }
+}
+
+// ─── Vet list ──────────────────────────────────────────────────────────────────
+
+.vetList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.vetCard {
+  @include card;
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-md;
+  cursor: pointer;
+  border: 2px solid transparent;
+  text-align: left;
+  background: none;
+  width: 100%;
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: $primary-300;
+  }
+
+  &.selected {
+    border-color: $primary-500;
+    background-color: $primary-100;
+  }
+}
+
+.vetAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: $bg-muted;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.vetInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  strong {
+    font-size: $font-size-base;
+    color: $text-primary;
+  }
+}
+
+.vetLicense {
+  font-size: $font-size-xs;
+  color: $text-secondary;
+}
+
+.checkmark {
+  color: $color-success;
+  font-size: $font-size-lg;
+  font-weight: 700;
+}
+
+// ─── Date / Time inputs ────────────────────────────────────────────────────────
+
+.dateInput {
+  padding: $spacing-sm $spacing-md;
+  border: 1px solid $bg-muted;
+  border-radius: $radius-md;
+  font-size: $font-size-base;
+  color: $text-primary;
+  background-color: $bg-default;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: $primary-500;
+  }
+}
+
+.timeSlotGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: $spacing-sm;
+}
+
+.timeSlot {
+  padding: $spacing-sm;
+  border: 1px solid $bg-muted;
+  border-radius: $radius-md;
+  font-size: $font-size-sm;
+  color: $text-primary;
+  background-color: $bg-default;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.15s, border-color 0.15s;
+
+  &:hover {
+    border-color: $primary-500;
+    background-color: $primary-100;
+  }
+
+  &.selected {
+    background-color: $primary-500;
+    border-color: $primary-500;
+    color: #fff;
+    font-weight: 600;
+  }
+}
+
+.notesInput {
+  width: 100%;
+  padding: $spacing-sm $spacing-md;
+  border: 1px solid $bg-muted;
+  border-radius: $radius-md;
+  font-size: $font-size-sm;
+  color: $text-primary;
+  background-color: $bg-default;
+  resize: vertical;
+  outline: none;
+  box-sizing: border-box;
+  font-family: inherit;
+
+  &:focus {
+    border-color: $primary-500;
+  }
+}
+
+// ─── Step actions ──────────────────────────────────────────────────────────────
+
+.stepActions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: $spacing-lg;
+}
+
+.btnPrimary {
+  padding: $spacing-md $spacing-2xl;
+  background-color: $primary-500;
+  color: #fff;
+  border: none;
+  border-radius: $radius-md;
+  font-size: $font-size-base;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// ─── Summary card ──────────────────────────────────────────────────────────────
+
+.summaryCard {
+  @include card;
+  margin-bottom: $spacing-xl;
+  padding: $spacing-xl;
+}
+
+.summaryTitle {
+  font-size: $font-size-lg;
+  font-weight: 600;
+  color: $text-primary;
+  margin: 0 0 $spacing-lg;
+}
+
+.summaryGrid {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.summaryRow {
+  display: flex;
+  gap: $spacing-xl;
+  align-items: flex-start;
+}
+
+.summaryLabel {
+  width: 180px;
+  font-size: $font-size-sm;
+  color: $text-secondary;
+  flex-shrink: 0;
+}
+
+.summaryValue {
+  font-size: $font-size-sm;
+  color: $text-primary;
+  font-weight: 500;
+
+  &.price {
+    color: $primary-500;
+    font-weight: 700;
+    font-size: $font-size-base;
+  }
+}
+
+// ─── Pet section ───────────────────────────────────────────────────────────────
+
+.petSection {
+  margin-bottom: $spacing-xl;
+}
+
+.petList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  margin-top: $spacing-md;
+}
+
+.petCard {
+  @include card;
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding: $spacing-md;
+  cursor: pointer;
+  border: 2px solid transparent;
+  text-align: left;
+  background: none;
+  width: 100%;
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: $primary-300;
+  }
+
+  &.selected {
+    border-color: $primary-500;
+    background-color: $primary-100;
+  }
+}
+
+.petAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: $bg-muted;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.petInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  strong {
+    font-size: $font-size-base;
+    color: $text-primary;
+  }
+
+  span {
+    font-size: $font-size-sm;
+    color: $text-secondary;
+  }
+}
+
+// ─── Loading / Empty states ────────────────────────────────────────────────────
+
+.loadingState {
+  text-align: center;
+  color: $text-secondary;
+  padding: $spacing-2xl;
+  font-size: $font-size-base;
+}
+
+.emptyState {
+  @include card;
+  text-align: center;
+  padding: $spacing-2xl;
+  color: $text-secondary;
+
+  p {
+    margin: 0;
+  }
+}
+
+// ─── Success screen ────────────────────────────────────────────────────────────
+
+.successWrapper {
+  @include container;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.successCard {
+  @include card;
+  text-align: center;
+  max-width: 480px;
+  width: 100%;
+  padding: $spacing-3xl;
+}
+
+.successIcon {
+  font-size: 56px;
+  margin-bottom: $spacing-md;
+}
+
+.successTitle {
+  @include heading-2;
+  margin-bottom: $spacing-md;
+}
+
+.successText {
+  color: $text-secondary;
+  font-size: $font-size-base;
+  line-height: 1.6;
+  margin-bottom: $spacing-2xl;
+}

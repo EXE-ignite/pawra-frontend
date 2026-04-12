@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { RemindersPage } from '@/modules/pet-owner';
-import { AddReminderModal } from '@/modules/pet-owner/components';
+import { AddReminderModal, BookingModal, TaskTypePicker } from '@/modules/pet-owner/components';
 import { CalendarEvent, Task, HealthMilestone, Pet } from '@/modules/pet-owner/types';
-import { petService, reminderService } from '@/modules/pet-owner/services';
+import { petService, reminderService, appointmentService } from '@/modules/pet-owner/services';
 import { useTranslation } from '@/modules/shared/contexts';
 
 export default function RemindersPageRoute() {
@@ -14,38 +14,61 @@ export default function RemindersPageRoute() {
   const [milestones, setMilestones] = useState<HealthMilestone[]>([]);
   const [pets, setPets] = useState<Pet[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Reminder modal
   const [modalOpen, setModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [selectedDate, setSelectedDate] = useState<string | undefined>(undefined);
 
+  // Picker + Booking modal
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [bookingOpen, setBookingOpen] = useState(false);
+
   useEffect(() => {
-    async function loadReminders() {
-      try {
-        setLoading(true);
-        // 1. Lấy danh sách pet của user
-        const fetchedPets = await petService.getUserPets();
-        const petIds = fetchedPets.map(p => p.id);
-        setPets(fetchedPets);
-
-        if (petIds.length === 0) {
-          setLoading(false);
-          return;
-        }
-
-        // 2. Lấy tất cả reminders
-        const data = await reminderService.getAllUserReminders();
-        setTasks(data.tasks);
-        setEvents(data.events);
-        setMilestones(data.milestones);
-      } catch (err) {
-        console.error('Failed to load reminders:', err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadReminders();
+    loadAllData();
   }, []);
+
+  async function loadAllData() {
+    try {
+      setLoading(true);
+      const fetchedPets = await petService.getUserPets();
+      const petIds = fetchedPets.map(p => p.id);
+      setPets(fetchedPets);
+
+      if (petIds.length === 0) {
+        setLoading(false);
+        return;
+      }
+
+      // Fetch reminders + appointments in parallel
+      const [reminderData, appointments] = await Promise.allSettled([
+        reminderService.getAllUserReminders(),
+        appointmentService.getAllAppointments(),
+      ]);
+
+      if (reminderData.status === 'fulfilled') {
+        setTasks(reminderData.value.tasks);
+        setMilestones(reminderData.value.milestones);
+
+        // Merge appointment events (purple) with reminder events
+        const apptEvents: CalendarEvent[] = appointments.status === 'fulfilled'
+          ? appointments.value.map(a => ({
+              id: `appt-${a.id}`,
+              date: a.date,
+              title: `🏥 ${a.petName}`,
+              color: '#8b5cf6',
+              petId: a.petId,
+            }))
+          : [];
+
+        setEvents([...reminderData.value.events, ...apptEvents]);
+      }
+    } catch (err) {
+      console.error('Failed to load reminders:', err);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   async function handleToggleTask(taskId: string) {
     const task = tasks.find(t => t.id === taskId);
@@ -92,7 +115,17 @@ export default function RemindersPageRoute() {
 
   function handleAddTask() {
     setEditingTask(null);
+    setPickerOpen(true);
+  }
+
+  function handlePickerSelectTask() {
+    setPickerOpen(false);
     setModalOpen(true);
+  }
+
+  function handlePickerSelectBooking() {
+    setPickerOpen(false);
+    setBookingOpen(true);
   }
 
   function handleEditTask(taskId: string) {
@@ -109,15 +142,11 @@ export default function RemindersPageRoute() {
   async function handleReminderSaved() {
     setModalOpen(false);
     setEditingTask(null);
-    // Reload reminders
-    try {
-      const data = await reminderService.getAllUserReminders();
-      setTasks(data.tasks);
-      setEvents(data.events);
-      setMilestones(data.milestones);
-    } catch (err) {
-      console.error('Failed to reload reminders:', err);
-    }
+    await loadAllData();
+  }
+
+  async function handleBookingSuccess() {
+    await loadAllData();
   }
 
   if (loading) {
@@ -149,6 +178,20 @@ export default function RemindersPageRoute() {
         defaultDate={selectedDate}
         pets={pets}
         editTask={editingTask ?? undefined}
+      />
+
+      <TaskTypePicker
+        isOpen={pickerOpen}
+        onClose={() => setPickerOpen(false)}
+        onSelectTask={handlePickerSelectTask}
+        onSelectBooking={handlePickerSelectBooking}
+      />
+
+      <BookingModal
+        isOpen={bookingOpen}
+        onClose={() => setBookingOpen(false)}
+        onSuccess={handleBookingSuccess}
+        defaultDate={selectedDate}
       />
     </>
   );
