@@ -26,8 +26,8 @@ export default function PetProfilePageRoute() {
 
         router.replace(`/pet-owner/profile/${pets[0].id}`);
       } catch (err: any) {
-        console.error('Failed to load pets:', err);
-        setError(err?.message || t('common.loadError'));
+        // Không show lỗi — user chưa có pet / customer profile chưa tồn tại
+        console.warn('Could not load pets, treating as empty:', err);
         setLoaded(true);
       }
     }

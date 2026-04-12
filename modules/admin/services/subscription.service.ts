@@ -20,11 +20,12 @@ const ENABLE_MOCK = USE_MOCK || FORCE_MOCK;
 // ---------------------------------------------------------------------------
 
 // Subscription Status từ backend (enum number)
-// 0 - Active, 1 - Cancelled, 2 - Expired
+// 0 - Active, 1 - Cancelled, 2 - Expired, 3 - Pending
 const BACKEND_STATUS_MAP: Record<number, SubscriptionStatus> = {
   0: 'Active',
   1: 'Cancelled',
   2: 'Expired',
+  3: 'Pending',
 };
 
 const STATUS_TO_BACKEND: Record<SubscriptionStatus, number> = {
@@ -32,6 +33,7 @@ const STATUS_TO_BACKEND: Record<SubscriptionStatus, number> = {
   Cancelled: 1,
   Expired: 2,
   Trial: 0, // Trial không có trong backend, map về Active
+  Pending: 3,
 };
 
 interface BackendSubscriptionAccount {
@@ -536,6 +538,18 @@ class SubscriptionAdminService {
     }
 
     await apiService.delete(`${this.subscriptionEndpoint}/${subscriptionId}`);
+    this.invalidate();
+  }
+
+  async activateSubscription(subscriptionId: string): Promise<void> {
+    if (ENABLE_MOCK) {
+      await new Promise((r) => setTimeout(r, 300));
+      const sub = MOCK_SUBSCRIPTIONS.find((s) => s.id === subscriptionId);
+      if (sub) sub.status = 'Active';
+      return;
+    }
+
+    await apiService.put(`${this.subscriptionEndpoint}/update/${subscriptionId}`, { status: 0 });
     this.invalidate();
   }
 }

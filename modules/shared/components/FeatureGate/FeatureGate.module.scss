@@ -1,0 +1,67 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+// ── Locked state (default fallback) ─────────────────────────────────────────
+.locked {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  padding: $spacing-xl $spacing-lg;
+  border: 1px dashed $border-default;
+  border-radius: 12px;
+  background-color: $bg-subtle;
+  text-align: center;
+  color: $text-secondary;
+}
+
+.lockIcon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.message {
+  margin: 0;
+  font-size: $font-size-sm;
+  color: $text-secondary;
+
+  strong {
+    color: $text-primary;
+    font-weight: $font-weight-semibold;
+  }
+}
+
+.upgradeLink {
+  display: inline-block;
+  margin-top: $spacing-xs;
+  padding: $spacing-xs $spacing-md;
+  border-radius: 6px;
+  background-color: $primary-500;
+  color: $text-primary;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  text-decoration: none;
+  transition: opacity 0.15s ease;
+
+  &:hover {
+    opacity: 0.85;
+  }
+}
+
+// ── Dev override banner ───────────────────────────────────────────────────────
+.devBanner {
+  position: fixed;
+  bottom: $spacing-md;
+  right: $spacing-md;
+  z-index: 9999;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: 4px;
+  background-color: $color-warning;
+  color: #fff;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+  user-select: none;
+}

@@ -58,7 +58,7 @@ export function PlanCard({ plan, isCurrentPlan, onSelect, loading }: PlanCardPro
         ) : plan.price === 0 ? (
           'Bắt đầu miễn phí'
         ) : (
-          'Chọn gói này'
+          'Đăng ký'
         )}
       </button>
     </div>

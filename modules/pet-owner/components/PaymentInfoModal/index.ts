@@ -1,0 +1,1 @@
+export { PaymentInfoModal } from './PaymentInfoModal';

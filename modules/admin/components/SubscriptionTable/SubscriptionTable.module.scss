@@ -197,6 +197,15 @@
   }
 }
 
+.statusPending {
+  background: #fef3c7;
+  color: #d97706;
+
+  .statusDot {
+    background: #d97706;
+  }
+}
+
 // ---------- Price ----------
 .priceCell {
   white-space: nowrap;
@@ -241,7 +250,8 @@
 }
 
 .editButton,
-.deleteButton {
+.deleteButton,
+.approveButton {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -251,6 +261,15 @@
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s;
+}
+
+.approveButton {
+  background: #d1fae5;
+  color: #059669;
+
+  &:hover {
+    background: #a7f3d0;
+  }
 }
 
 .editButton {

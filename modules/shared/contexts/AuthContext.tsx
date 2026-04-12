@@ -36,8 +36,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   };
 
-  // Calculate isAuthenticated based on user state instead of calling the function
-  const authenticated = !!user;
+  // Calculate isAuthenticated based on BOTH user data AND a valid token
+  const authenticated = !!user && !!tokenService.getToken();
 
   return (
     <AuthContext.Provider

@@ -39,6 +39,7 @@ export function CurrentSubscription({
     active: { label: 'Đang hoạt động', className: styles.statusActive },
     cancelled: { label: 'Đã hủy', className: styles.statusCancelled },
     expired: { label: 'Đã hết hạn', className: styles.statusExpired },
+    pending: { label: 'Chờ duyệt', className: styles.statusPending },
   };
 
   const status = statusLabels[subscription.status] || statusLabels.expired;
@@ -108,6 +109,13 @@ export function CurrentSubscription({
           <button className={styles.upgradeButton} onClick={onUpgrade}>
             Gia hạn ngay
           </button>
+        </div>
+      )}
+
+      {subscription.status === 'pending' && (
+        <div className={styles.notice}>
+          <span className={styles.noticeIcon}>⏳</span>
+          Đang chờ admin xác nhận thanh toán. Gói sẽ được kích hoạt trong vòng 24 giờ.
         </div>
       )}
     </div>

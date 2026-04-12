@@ -5,8 +5,14 @@ export type { ButtonProps } from './components/Button';
 export type { MainLayoutProps } from './layouts/MainLayout';
 
 // Contexts
-export { AuthProvider, useAuth, ThemeProvider, useTheme, LanguageProvider, useTranslation } from './contexts';
+export { AuthProvider, useAuth, ThemeProvider, useTheme, LanguageProvider, useTranslation, SubscriptionProvider, useSubscription } from './contexts';
 export type { Locale } from './contexts';
+
+// Feature Gating
+export { FeatureGate } from './components/FeatureGate';
+export type { FeatureGateProps } from './components/FeatureGate';
+export type { FeatureKey, PlanTier } from './types/feature-gate.types';
+export { FEATURE_PLAN_MAP, PLAN_HIERARCHY } from './types/feature-gate.types';
 
 // API Service
 export { apiService, api, authService } from './services';

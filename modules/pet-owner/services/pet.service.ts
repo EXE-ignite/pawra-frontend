@@ -288,17 +288,22 @@ class PetService {
       return data.map(transformPetData);
     } catch (error: unknown) {
       const apiErr = error as any;
-      // Nếu BE trả lỗi do chưa có pet / không phải customer → trả [] thay vì crash
       const msg: string = apiErr?.message || '';
+      const status: number = apiErr?.status ?? 0;
+      // Nếu BE trả lỗi do chưa có pet / chưa có customer profile → trả []
+      // Các status phổ biến: 400 (validation), 404 (chưa có), 500 (BE chưa tạo customer)
       if (
-        apiErr?.status === 400 ||
+        status === 400 ||
+        status === 404 ||
+        status === 500 ||
         msg.includes('CustomerId') ||
-        msg.includes('khách hàng')
+        msg.includes('khách hàng') ||
+        msg.includes('An error occurred')
       ) {
-        console.warn('[PET-SERVICE] No pets for user:', msg);
+        console.warn('[PET-SERVICE] No pets for user (status', status, '):', msg);
         return [];
       }
-      console.error('Error fetching user pets:', { message: apiErr?.message, status: apiErr?.status });
+      console.error('Error fetching user pets:', { message: apiErr?.message, status });
       throw error;
     }
   }

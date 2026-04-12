@@ -71,6 +71,11 @@
   color: $color-error;
 }
 
+.statusPending {
+  background: rgba($color-warning, 0.15);
+  color: $color-warning;
+}
+
 .price {
   font-size: $font-size-2xl;
   font-weight: $font-weight-bold;

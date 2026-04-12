@@ -118,7 +118,7 @@ export interface HealthMilestone {
 }
 
 // Subscription Types for Pet Owner
-export type SubscriptionStatus = 'active' | 'cancelled' | 'expired';
+export type SubscriptionStatus = 'active' | 'cancelled' | 'expired' | 'pending';
 
 export interface SubscriptionPlan {
   id: string;
@@ -146,6 +146,7 @@ export interface UserSubscription {
 
 export interface SubscribePayload {
   subscriptionPlanId: string;
+  durationInDays?: number;
 }
 
 // Account Profile Types
