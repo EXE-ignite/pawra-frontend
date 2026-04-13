@@ -63,13 +63,15 @@ export function UserTable({
 
   const formatDate = (dateStr: string) => {
     try {
-      return new Date(dateStr).toLocaleDateString('vi-VN', {
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime()) || date.getFullYear() < 1900) return '—';
+      return date.toLocaleDateString('vi-VN', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
       });
     } catch {
-      return dateStr;
+      return '—';
     }
   };
 
@@ -110,8 +112,8 @@ export function UserTable({
               <th>Người dùng</th>
               <th>Vai trò</th>
               <th>Trạng thái</th>
-              <th>Ngày tham gia</th>
-              <th>Lần đăng nhập cuối</th>
+              <th style={{ minWidth: '120px' }}>Ngày tham gia</th>
+              <th style={{ minWidth: '140px' }}>Lần đăng nhập cuối</th>
               <th>Thao tác</th>
             </tr>
           </thead>

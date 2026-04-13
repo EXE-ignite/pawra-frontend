@@ -1,6 +1,9 @@
 import type { ApiError } from '../../types/api.types';
 
 export function handleApiError(error: any): ApiError {
+  if (!error || typeof error !== 'object') {
+    return { message: String(error) || 'An unexpected error occurred', status: 0 };
+  }
   console.log('🔍 [ERROR-HANDLER] Raw error:', error);
   console.log('🔍 [ERROR-HANDLER] Error type:', typeof error);
   console.log('🔍 [ERROR-HANDLER] Error keys:', Object.keys(error));
