@@ -50,3 +50,14 @@ export const FEATURE_PLAN_MAP = {
 } as const satisfies Record<string, PlanTier>;
 
 export type FeatureKey = keyof typeof FEATURE_PLAN_MAP;
+
+/**
+ * Maximum number of pets allowed per plan.
+ * Use Infinity for unlimited.
+ */
+export const PLAN_MAX_PETS: Record<PlanTier, number> = {
+  Free: 1,
+  Basic: 3,
+  Premium: 10,
+  VIP: Infinity,
+};

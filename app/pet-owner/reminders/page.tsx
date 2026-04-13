@@ -6,9 +6,12 @@ import { AddReminderModal, BookingModal, TaskTypePicker } from '@/modules/pet-ow
 import { CalendarEvent, Task, HealthMilestone, Pet } from '@/modules/pet-owner/types';
 import { petService, reminderService, appointmentService } from '@/modules/pet-owner/services';
 import { useTranslation } from '@/modules/shared/contexts';
+import { useSubscription } from '@/modules/shared/contexts';
 
 export default function RemindersPageRoute() {
   const { t } = useTranslation();
+  const { hasAccess } = useSubscription();
+  const canBook = hasAccess('booking.standard');
   const [tasks, setTasks] = useState<Task[]>([]);
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [milestones, setMilestones] = useState<HealthMilestone[]>([]);
@@ -185,6 +188,7 @@ export default function RemindersPageRoute() {
         onClose={() => setPickerOpen(false)}
         onSelectTask={handlePickerSelectTask}
         onSelectBooking={handlePickerSelectBooking}
+        canBook={canBook}
       />
 
       <BookingModal

@@ -9,7 +9,7 @@ import {
 } from 'react';
 import { useAuth } from './AuthContext';
 import type { PlanTier, FeatureKey } from '../types/feature-gate.types';
-import { PLAN_HIERARCHY, FEATURE_PLAN_MAP } from '../types/feature-gate.types';
+import { PLAN_HIERARCHY, FEATURE_PLAN_MAP, PLAN_MAX_PETS } from '../types/feature-gate.types';
 
 // ---------------------------------------------------------------------------
 // Dev override
@@ -34,6 +34,8 @@ interface SubscriptionContextType {
   isLoading: boolean;
   /** Returns true if the user's plan meets the minimum requirement for a feature */
   hasAccess: (feature: FeatureKey) => boolean;
+  /** Maximum number of pets allowed under the current plan (Infinity = unlimited) */
+  maxPets: number;
   /** True when plan is overridden by NEXT_PUBLIC_DEV_SUBSCRIPTION_OVERRIDE */
   isDevOverride: boolean;
 }
@@ -105,12 +107,15 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     return PLAN_HIERARCHY[currentPlan] >= PLAN_HIERARCHY[required];
   };
 
+  const maxPets = PLAN_MAX_PETS[currentPlan];
+
   return (
     <SubscriptionContext.Provider
       value={{
         currentPlan,
         isLoading,
         hasAccess,
+        maxPets,
         isDevOverride: !!EFFECTIVE_DEV_OVERRIDE,
       }}
     >

@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import styles from './TaskTypePicker.module.scss';
 
 interface TaskTypePickerProps {
@@ -7,13 +8,26 @@ interface TaskTypePickerProps {
   onClose: () => void;
   onSelectTask: () => void;
   onSelectBooking: () => void;
+  /** Pass false to show the booking option as locked (requires Basic+) */
+  canBook?: boolean;
 }
 
-export function TaskTypePicker({ isOpen, onClose, onSelectTask, onSelectBooking }: TaskTypePickerProps) {
+export function TaskTypePicker({ isOpen, onClose, onSelectTask, onSelectBooking, canBook = true }: TaskTypePickerProps) {
+  const router = useRouter();
+
   if (!isOpen) return null;
 
   function handleOverlayClick(e: React.MouseEvent<HTMLDivElement>) {
     if (e.target === e.currentTarget) onClose();
+  }
+
+  function handleBookingClick() {
+    if (!canBook) {
+      onClose();
+      router.push('/pet-owner/subscription');
+      return;
+    }
+    onSelectBooking();
   }
 
   return (
@@ -34,11 +48,15 @@ export function TaskTypePicker({ isOpen, onClose, onSelectTask, onSelectBooking 
             </div>
           </button>
 
-          <button className={styles.option} onClick={onSelectBooking}>
-            <span className={styles.optionIcon}>🏥</span>
+          <button
+            className={`${styles.option} ${!canBook ? styles.optionLocked : ''}`}
+            onClick={handleBookingClick}
+            title={!canBook ? 'Yêu cầu gói Basic trở lên' : undefined}
+          >
+            <span className={styles.optionIcon}>{canBook ? '🏥' : '🔒'}</span>
             <div className={styles.optionText}>
-              <strong>Đặt lịch hẹn</strong>
-              <span>Đặt lịch khám tại phòng khám thú y</span>
+              <strong>Đặt lịch hẹn {!canBook && <span className={styles.planBadge}>Basic+</span>}</strong>
+              <span>{canBook ? 'Đặt lịch khám tại phòng khám thú y' : 'Nâng cấp lên Basic để đặt lịch hẹn'}</span>
             </div>
           </button>
         </div>

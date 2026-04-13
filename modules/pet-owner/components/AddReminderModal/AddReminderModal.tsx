@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { reminderService, petService } from '../../services';
 import { Pet } from '../../types';
 import { useTranslation } from '@/modules/shared/contexts';
+import { useSubscription } from '@/modules/shared/contexts';
 import styles from './AddReminderModal.module.scss';
 import type {
   AddReminderModalProps,
@@ -76,6 +77,8 @@ export function AddReminderModal({
   editTask,
 }: AddReminderModalProps) {
   const { t } = useTranslation();
+  const { hasAccess, currentPlan } = useSubscription();
+  const canUseSmartReminders = hasAccess('reminder.smart');
   const isEditMode = !!editTask;
   const [form, setForm] = useState<AddReminderFormData>(() => buildInitialForm(defaultDate));
   const [pets, setPets] = useState<Pet[]>(propsPets || []);
@@ -309,22 +312,34 @@ export function AddReminderModal({
           </div>
 
           {/* Recurring toggle */}
-          <div className={styles.field}>
-            <div className={styles.toggleRow}>
-              <div className={styles.toggleLabel}>
-                <span className={styles.toggleTitle}>{t('addReminderModal.recurringReminder')}</span>
-                <span className={styles.toggleHint}>{t('addReminderModal.recurringHint')}</span>
+          {canUseSmartReminders ? (
+            <div className={styles.field}>
+              <div className={styles.toggleRow}>
+                <div className={styles.toggleLabel}>
+                  <span className={styles.toggleTitle}>{t('addReminderModal.recurringReminder')}</span>
+                  <span className={styles.toggleHint}>{t('addReminderModal.recurringHint')}</span>
+                </div>
+                <label className={styles.toggle}>
+                  <input
+                    type="checkbox"
+                    checked={form.isRecurring}
+                    onChange={e => handleField('isRecurring', e.target.checked)}
+                  />
+                  <span className={styles.toggleSlider} />
+                </label>
               </div>
-              <label className={styles.toggle}>
-                <input
-                  type="checkbox"
-                  checked={form.isRecurring}
-                  onChange={e => handleField('isRecurring', e.target.checked)}
-                />
-                <span className={styles.toggleSlider} />
-              </label>
             </div>
-          </div>
+          ) : (
+            <div className={styles.field}>
+              <div className={styles.lockedFeature}>
+                <span className={styles.lockIcon}>🔒</span>
+                <span>
+                  Nhắc nhở lặp lại yêu cầu gói <strong>Basic</strong> trở lên (hiện tại: {currentPlan}){' '}
+                  <a href="/pet-owner/subscription" className={styles.upgradeLink}>Nâng cấp</a>
+                </span>
+              </div>
+            </div>
+          )}
 
           {/* Recurring type + End Date (only when toggled on) */}
           {form.isRecurring && (

@@ -108,3 +108,25 @@
     color: var(--color-text-secondary);
   }
 }
+
+.optionLocked {
+  opacity: 0.65;
+  cursor: pointer;
+
+  &:hover {
+    border-color: $primary-300;
+    background-color: $bg-subtle;
+  }
+}
+
+.planBadge {
+  display: inline-block;
+  margin-left: $spacing-xs;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: $primary-100;
+  color: $primary-500;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  vertical-align: middle;
+}
