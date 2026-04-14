@@ -5,6 +5,10 @@ const USER_STORAGE_KEY = 'pawra_user';
 
 export async function login(credentials: LoginRequest): Promise<LoginResponse> {
   console.log('🔐 [AUTH] Starting login with:', credentials.email);
+
+  // Clear any stale token so the interceptor won't treat a 401 (bad credentials)
+  // as an expired session and redirect away mid-login.
+  apiService.clearToken();
   
   try {
     const response = await apiService.post<any>('/Auth/login', credentials);
@@ -47,14 +51,13 @@ export async function login(credentials: LoginRequest): Promise<LoginResponse> {
       };
     }
   } catch (error: any) {
-    console.error('❌ [AUTH] Login error:', error);
-    
-    // Error is already formatted by handleApiError in interceptor
+    // Ẩn log nếu là lỗi đăng nhập sai thông thường
     const errorMessage = error?.message || 'Đã có lỗi xảy ra';
-    
-    console.error('📊 [AUTH] Error message:', errorMessage);
-    console.error('📊 [AUTH] Error status:', error?.status);
-    
+    if (!(error?.status === 400 && errorMessage === 'Email hoặc password không đúng')) {
+      console.error('❌ [AUTH] Login error:', error);
+      console.error('📊 [AUTH] Error message:', errorMessage);
+      console.error('📊 [AUTH] Error status:', error?.status);
+    }
     return {
       success: false,
       message: errorMessage,
