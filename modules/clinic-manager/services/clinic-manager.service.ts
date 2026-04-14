@@ -1,5 +1,5 @@
 import { apiService } from '@/modules/shared/services';
-import type { Clinic, ClinicService, ClinicVaccine, Veterinarian } from '../types';
+import type { Clinic, ClinicService, ClinicVaccine, Veterinarian } from '../types/clinic-manager.types';
 
 // -------------------------------------------------------------------------
 // Backend response wrappers
