@@ -49,10 +49,10 @@ export function Header() {
               // ── Clinic Manager / Veterinarian nav ──────────────────────
               <>
                 <Link
-                  href="/vet"
-                  className={`${styles.navLink} ${pathname.startsWith('/vet') && pathname === '/vet' ? styles.active : ''}`}
+                  href={user?.role === 'ClinicManager' ? '/clinic-manager' : '/vet'}
+                  className={`${styles.navLink} ${pathname === (user?.role === 'ClinicManager' ? '/clinic-manager' : '/vet') ? styles.active : ''}`}
                 >
-                  Quản lý phòng khám
+                  {user?.role === 'ClinicManager' ? 'Quản lý phòng khám' : 'Bác sĩ thú y'}
                 </Link>
                 <Link
                   href="/blog"
