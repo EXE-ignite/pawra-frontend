@@ -24,6 +24,7 @@ export const vi = {
   nav: {
     petProfile: 'Hồ sơ thú cưng',
     blog: 'Blog',
+    booking: 'Đặt lịch hẹn',
     calendar: 'Lịch',
     subscription: 'Gói đăng ký',
     login: 'Đăng nhập',

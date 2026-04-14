@@ -24,6 +24,7 @@ export const en = {
   nav: {
     petProfile: 'Pet Profile',
     blog: 'Blog',
+    booking: 'Book Appointment',
     calendar: 'Calendar',
     subscription: 'Subscription',
     login: 'Sign In',

@@ -105,6 +105,11 @@ export function AdminSubscriptionPage({ initialStats = DEFAULT_STATS }: AdminSub
     await loadData(currentPage, search, planFilter, statusFilter);
   };
 
+  const handleActivate = async (subscriptionId: string) => {
+    await subscriptionAdminService.activateSubscription(subscriptionId);
+    await loadData(currentPage, search, planFilter, statusFilter);
+  };
+
   const formatRevenue = (amount: number) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
@@ -201,6 +206,7 @@ export function AdminSubscriptionPage({ initialStats = DEFAULT_STATS }: AdminSub
             onPageChange={handlePageChange}
             onEdit={(sub) => setEditingSub(sub)}
             onDelete={handleDelete}
+            onActivate={handleActivate}
           />
         </div>
       )}

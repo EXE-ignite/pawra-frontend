@@ -1,0 +1,164 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.container {
+  @include container;
+  padding-top: $spacing-xl;
+  padding-bottom: $spacing-xl;
+}
+
+.loading {
+  @include flex-column-center;
+  min-height: 400px;
+  gap: $spacing-md;
+  color: var(--color-text-secondary);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.header {
+  text-align: center;
+  margin-bottom: $spacing-2xl;
+}
+
+.title {
+  @include heading-1;
+  margin: 0 0 $spacing-sm;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: $font-size-lg;
+  color: var(--color-text-secondary);
+}
+
+.alert {
+  @include flex-start;
+  gap: $spacing-sm;
+  padding: $spacing-md $spacing-lg;
+  margin-bottom: $spacing-lg;
+  border-radius: $radius-lg;
+  font-size: $font-size-sm;
+}
+
+.alertError {
+  background: rgba($color-error, 0.1);
+  color: $color-error;
+  border: 1px solid rgba($color-error, 0.2);
+}
+
+.alertSuccess {
+  background: rgba($color-success, 0.1);
+  color: $color-success;
+  border: 1px solid rgba($color-success, 0.2);
+}
+
+.alertIcon {
+  flex-shrink: 0;
+}
+
+.alertClose {
+  margin-left: auto;
+  padding: 0;
+  background: none;
+  border: none;
+  font-size: $font-size-xl;
+  cursor: pointer;
+  opacity: 0.6;
+  color: inherit;
+  transition: opacity $transition-fast;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.currentSection {
+  margin-bottom: $spacing-2xl;
+}
+
+.sectionTitle {
+  @include heading-3;
+  margin: 0 0 $spacing-lg;
+}
+
+.plansSection {
+  margin-bottom: $spacing-2xl;
+}
+
+.plansNote {
+  margin: 0 0 $spacing-lg;
+  font-size: $font-size-sm;
+  color: $text-secondary;
+}
+
+.plansGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: $spacing-lg;
+}
+
+.faqSection {
+  background: var(--color-bg-secondary);
+  margin: 0 (-$spacing-md);
+  padding: $spacing-2xl $spacing-md;
+  border-radius: $radius-xl;
+
+  @include desktop {
+    margin: 0 (-$spacing-lg);
+    padding: $spacing-2xl $spacing-lg;
+  }
+}
+
+.faqList {
+  @include flex-column;
+  gap: $spacing-lg;
+}
+
+.faqItem {
+  @include card;
+}
+
+.faqQuestion {
+  margin: 0 0 $spacing-sm;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: var(--color-text-primary);
+}
+
+.faqAnswer {
+  margin: 0;
+  font-size: $font-size-sm;
+  color: var(--color-text-secondary);
+  line-height: $line-height-relaxed;
+}
+
+@include tablet {
+  .plansGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@include mobile {
+  .container {
+    padding-top: $spacing-lg;
+    padding-bottom: $spacing-lg;
+  }
+
+  .plansGrid {
+    grid-template-columns: 1fr;
+  }
+}

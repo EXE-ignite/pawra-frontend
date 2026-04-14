@@ -1,0 +1,132 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: $z-modal;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-md;
+}
+
+.panel {
+  background-color: var(--color-bg-primary);
+  border-radius: $radius-xl;
+  box-shadow: $shadow-xl;
+  width: 100%;
+  max-width: 400px;
+  padding: $spacing-xl;
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.header {
+  @include flex-between;
+  margin-bottom: $spacing-xs;
+}
+
+.title {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  font-size: $font-size-base;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: $spacing-xs;
+  border-radius: $radius-md;
+  line-height: 1;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: var(--color-bg-hover);
+    color: var(--color-text-primary);
+  }
+}
+
+.subtitle {
+  font-size: $font-size-sm;
+  color: var(--color-text-secondary);
+  margin: 0 0 $spacing-lg 0;
+}
+
+.options {
+  @include flex-column;
+  gap: $spacing-md;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  width: 100%;
+  text-align: left;
+  padding: $spacing-md $spacing-lg;
+  border: 2px solid var(--color-border);
+  border-radius: $radius-lg;
+  background: var(--color-bg-primary);
+  cursor: pointer;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary-lighter);
+    box-shadow: $shadow-sm;
+  }
+}
+
+.optionIcon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.optionText {
+  @include flex-column;
+  gap: 2px;
+
+  strong {
+    font-size: $font-size-base;
+    font-weight: $font-weight-semibold;
+    color: var(--color-text-primary);
+  }
+
+  span {
+    font-size: $font-size-xs;
+    color: var(--color-text-secondary);
+  }
+}
+
+.optionLocked {
+  opacity: 0.65;
+  cursor: pointer;
+
+  &:hover {
+    border-color: $primary-300;
+    background-color: $bg-subtle;
+  }
+}
+
+.planBadge {
+  display: inline-block;
+  margin-left: $spacing-xs;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: $primary-100;
+  color: $primary-500;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  vertical-align: middle;
+}

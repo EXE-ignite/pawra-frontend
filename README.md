@@ -26,6 +26,24 @@ A pet care management platform built with Next.js — helping pet owners track h
 
 ---
 
+### v1.0.8 — 2026-04-14
+
+> Booking, subscription gating, vet subscription và Clinic Manager
+
+#### New Features
+- **Booking + task picker:** Thêm `BookingModal` 4 bước và `TaskTypePicker` cho Reminders để người dùng có thể tạo booking dịch vụ hoặc personal task, đồng thời hiển thị appointment trên lịch reminders.
+- **Pending subscription flow:** Thêm `SubscriptionContext` và `PaymentInfoModal`, mở rộng luồng mua subscription sang trạng thái pending với chỉ dẫn chuyển khoản/ngân hàng và chờ admin duyệt.
+- **Vet subscription module:** Thêm module `/vet/subscription` dùng lại các thành phần subscription hiện có, bao gồm UI, routes, dịch vụ và thông báo lỗi/đang tải.
+- **Clinic Manager page:** Thêm trang quản lý Clinic Manager với CRUD cho clinics, vets, services và vaccines, cùng dịch vụ backend và route/role mapping dành cho user VET.
+
+#### Improvements
+- **Subscription gating & pet limits:** Thêm `FeatureGate` và giới hạn số pet theo gói, khoá booking hoặc thêm thú cưng khi vượt hạn mức, hiển thị upgrade CTA và xử lý UI locked state.
+- **API error handling:** Bắt lỗi các service clinic/subscription/booking, trả về array rỗng khi lỗi và cập nhật text empty state rõ ràng khi không có bác sĩ hoặc dịch vụ.
+- **Clinic Manager UX polish:** Thêm modal CRUD, action buttons, row actions, responsive layout và style mới cho ClinicManagerPage.
+- **Auth login cleanup:** Xóa token trước khi login để tránh interceptor redirect không mong muốn và giảm noisy logs khi credentials sai.
+
+---
+
 ### v1.0.6 — 2026-04-08
 
 > Account profile integration & UI fixes

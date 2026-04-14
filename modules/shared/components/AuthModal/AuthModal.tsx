@@ -32,8 +32,9 @@ export function AuthModal({ isOpen, onClose, initialMode = 'signin' }: AuthModal
     console.log('👤 [MODAL] User data:', userData);
     updateUser(userData);
     
-    // Admin và Staff vào dashboard, còn lại về home
-    const redirectRoute = userData.role === 'Admin' || userData.role === 'Staff' || userData.role === 'Vet' || userData.role === 'Receptionist'
+    // Redirect theo role
+    const managedRoles = ['Admin', 'Staff', 'Vet', 'Veterinarian', 'ClinicManager', 'Receptionist'];
+    const redirectRoute = managedRoles.includes(userData.role)
       ? getRouteByRole(userData.role)
       : '/';
     console.log('🚀 [MODAL] Redirecting to:', redirectRoute);

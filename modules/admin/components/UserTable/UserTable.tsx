@@ -6,10 +6,8 @@ import styles from './UserTable.module.scss';
 
 const ROLE_LABELS: Record<string, string> = {
   Admin: 'Admin',
-  Staff: 'Nhân viên',
-  Vet: 'Bác sĩ thú y',
-  Receptionist: 'Lễ tân',
-  PetOwner: 'Chủ thú cưng',
+  Veterinarian: 'Bác sĩ thú y',
+  ClinicManager: 'Quản lý phòng khám',
   Customer: 'Khách hàng',
 };
 
@@ -54,12 +52,10 @@ export function UserTable({
     switch (role) {
       case 'Admin':
         return styles.roleAdmin;
-      case 'Staff':
-        return styles.roleStaff;
-      case 'Vet':
+      case 'Veterinarian':
         return styles.roleVet;
-      case 'Receptionist':
-        return styles.roleReceptionist;
+      case 'ClinicManager':
+        return styles.roleClinicManager;
       default:
         return styles.roleDefault;
     }
@@ -67,13 +63,15 @@ export function UserTable({
 
   const formatDate = (dateStr: string) => {
     try {
-      return new Date(dateStr).toLocaleDateString('vi-VN', {
+      const date = new Date(dateStr);
+      if (isNaN(date.getTime()) || date.getFullYear() < 1900) return '—';
+      return date.toLocaleDateString('vi-VN', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
       });
     } catch {
-      return dateStr;
+      return '—';
     }
   };
 
@@ -114,8 +112,8 @@ export function UserTable({
               <th>Người dùng</th>
               <th>Vai trò</th>
               <th>Trạng thái</th>
-              <th>Ngày tham gia</th>
-              <th>Lần đăng nhập cuối</th>
+              <th style={{ minWidth: '120px' }}>Ngày tham gia</th>
+              <th style={{ minWidth: '140px' }}>Lần đăng nhập cuối</th>
               <th>Thao tác</th>
             </tr>
           </thead>

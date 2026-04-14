@@ -15,6 +15,7 @@ const STATUS_LABELS: Record<string, string> = {
   Expired: 'Het han',
   Cancelled: 'Da huy',
   Trial: 'Dung thu',
+  Pending: 'Cho duyet',
 };
 
 const PAYMENT_LABELS: Record<string, string> = {
@@ -32,6 +33,7 @@ export function SubscriptionTable({
   onPageChange,
   onEdit,
   onDelete,
+  onActivate,
 }: SubscriptionTableProps) {
   const safeSubs = subscriptions || [];
 
@@ -45,6 +47,8 @@ export function SubscriptionTable({
         return styles.statusCancelled;
       case 'Trial':
         return styles.statusTrial;
+      case 'Pending':
+        return styles.statusPending;
       default:
         return '';
     }
@@ -186,6 +190,17 @@ export function SubscriptionTable({
                   </td>
                   <td>
                     <div className={styles.actions}>
+                      {sub.status === 'Pending' && onActivate && (
+                        <button
+                          className={styles.approveButton}
+                          onClick={() => onActivate(sub.id)}
+                          title="Duyet"
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" fill="currentColor"/>
+                          </svg>
+                        </button>
+                      )}
                       <button
                         className={styles.editButton}
                         onClick={() => onEdit(sub)}

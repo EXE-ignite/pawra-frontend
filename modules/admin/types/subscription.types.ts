@@ -1,6 +1,6 @@
 export type SubscriptionPlan = 'Basic' | 'Premium' | 'VIP';
 
-export type SubscriptionStatus = 'Active' | 'Expired' | 'Cancelled' | 'Trial';
+export type SubscriptionStatus = 'Active' | 'Expired' | 'Cancelled' | 'Trial' | 'Pending';
 
 export type PaymentMethod = 'CreditCard' | 'BankTransfer' | 'Momo' | 'ZaloPay';
 

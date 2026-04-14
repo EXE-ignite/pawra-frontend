@@ -8,4 +8,5 @@ export interface SubscriptionTableProps {
   onPageChange: (page: number) => void;
   onEdit: (subscription: Subscription) => void;
   onDelete: (subscriptionId: string) => void;
+  onActivate?: (subscriptionId: string) => void;
 }

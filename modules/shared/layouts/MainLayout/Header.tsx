@@ -16,6 +16,9 @@ export function Header() {
   const { t } = useTranslation();
   const pathname = usePathname();
 
+  const isClinicRole = user?.role === 'ClinicManager' || user?.role === 'Veterinarian' || user?.role === 'Vet';
+  const isAdmin = user?.role === 'Admin';
+
   const openAuth = () => {
     setIsAuthModalOpen(true);
   };
@@ -42,30 +45,73 @@ export function Header() {
 
           {/* Right Side: Nav Links + Notification + Avatar */}
           <div className={styles.rightNav}>
-            <Link 
-              href="/pet-owner/profile" 
-              className={`${styles.navLink} ${pathname === '/pet-owner/profile' ? styles.active : ''}`}
-            >
-              {t('nav.petProfile')}
-            </Link>
-            <Link 
-              href="/blog" 
-              className={`${styles.navLink} ${pathname === '/blog' ? styles.active : ''}`}
-            >
-              {t('nav.blog')}
-            </Link>
-            <Link 
-              href="/pet-owner/reminders" 
-              className={`${styles.navLink} ${pathname === '/pet-owner/reminders' ? styles.active : ''}`}
-            >
-              {t('nav.calendar')}
-            </Link>
-            <Link 
-              href="/pet-owner/subscription" 
-              className={`${styles.navLink} ${pathname === '/pet-owner/subscription' ? styles.active : ''}`}
-            >
-              {t('nav.subscription')}
-            </Link>
+            {isClinicRole ? (
+              // ── Clinic Manager / Veterinarian nav ──────────────────────
+              <>
+                <Link
+                  href="/vet"
+                  className={`${styles.navLink} ${pathname.startsWith('/vet') && pathname === '/vet' ? styles.active : ''}`}
+                >
+                  Quản lý phòng khám
+                </Link>
+                <Link
+                  href="/blog"
+                  className={`${styles.navLink} ${pathname === '/blog' ? styles.active : ''}`}
+                >
+                  {t('nav.blog')}
+                </Link>
+                <Link
+                  href="/vet/subscription"
+                  className={`${styles.navLink} ${pathname === '/vet/subscription' ? styles.active : ''}`}
+                >
+                  {t('nav.subscription')}
+                </Link>
+              </>
+            ) : isAdmin ? (
+              // ── Admin nav ──────────────────────────────────────────────
+              <>
+                <Link
+                  href="/admin/dashboard"
+                  className={`${styles.navLink} ${pathname.startsWith('/admin') ? styles.active : ''}`}
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  href="/blog"
+                  className={`${styles.navLink} ${pathname === '/blog' ? styles.active : ''}`}
+                >
+                  {t('nav.blog')}
+                </Link>
+              </>
+            ) : (
+              // ── Default: Pet Owner / Customer nav ─────────────────────
+              <>
+                <Link
+                  href="/pet-owner/profile"
+                  className={`${styles.navLink} ${pathname === '/pet-owner/profile' ? styles.active : ''}`}
+                >
+                  {t('nav.petProfile')}
+                </Link>
+                <Link
+                  href="/blog"
+                  className={`${styles.navLink} ${pathname === '/blog' ? styles.active : ''}`}
+                >
+                  {t('nav.blog')}
+                </Link>
+                <Link
+                  href="/pet-owner/reminders"
+                  className={`${styles.navLink} ${pathname === '/pet-owner/reminders' ? styles.active : ''}`}
+                >
+                  {t('nav.calendar')}
+                </Link>
+                <Link
+                  href="/pet-owner/subscription"
+                  className={`${styles.navLink} ${pathname === '/pet-owner/subscription' ? styles.active : ''}`}
+                >
+                  {t('nav.subscription')}
+                </Link>
+              </>
+            )}
 
             <LanguageSwitcher />
             <ThemeToggle />

@@ -137,15 +137,24 @@ const STATUS_MAP: Record<number, SubscriptionStatus> = {
   0: 'active',
   1: 'cancelled',
   2: 'expired',
+  3: 'pending',
 };
 
 function mapPlan(plan: BackendSubscriptionPlan): SubscriptionPlan {
-  // Parse features from description (format: "Feature1|Feature2|Feature3")
-  const features = plan.description?.includes('|')
-    ? plan.description.split('|').map((f) => f.trim())
-    : plan.description
-      ? [plan.description]
-      : [];
+  // Parse features from description:
+  //   Preferred format: "Feature1|Feature2|Feature3" (pipe-separated)
+  //   Fallback format:  "Feature1. Feature2. Feature3." (sentence-separated)
+  let features: string[];
+  if (plan.description?.includes('|')) {
+    features = plan.description.split('|').map((f) => f.trim()).filter(Boolean);
+  } else if (plan.description) {
+    features = plan.description
+      .split(/\.\s+/)
+      .map((f) => f.replace(/\.$/, '').trim())
+      .filter(Boolean);
+  } else {
+    features = [];
+  }
 
   return {
     id: plan.id,
@@ -214,7 +223,8 @@ class UserSubscriptionService {
         })
         .catch((err) => {
           this._plansCache = null;
-          throw err;
+          console.warn('[SUBSCRIPTION] Could not load plans, returning empty list:', err?.message || err);
+          return [] as SubscriptionPlan[];
         });
 
       // Auto-expire cache after 60 seconds
@@ -284,7 +294,7 @@ class UserSubscriptionService {
 
       return mapUserSubscription(sub, plan);
     } catch (error) {
-      console.error('[SUBSCRIPTION] Error fetching current subscription:', error);
+      console.warn('[SUBSCRIPTION] Could not fetch current subscription (user may have none):', (error as any)?.status ?? error);
       return null;
     }
   }
@@ -316,20 +326,24 @@ class UserSubscriptionService {
       };
     }
 
-    // Get plan details for duration
-    const plan = await this.getPlanById(payload.subscriptionPlanId);
-    if (!plan) throw new Error('Plan not found');
+    // Get plan duration — use provided value if available to skip an extra API round-trip
+    let durationInDays = payload.durationInDays;
+    if (!durationInDays) {
+      const plan = await this.getPlanById(payload.subscriptionPlanId);
+      if (!plan) throw new Error('Không tìm thấy gói đăng ký. Vui lòng thử lại.');
+      durationInDays = plan.durationInDays;
+    }
 
     const startDate = new Date();
     const endDate = new Date();
-    endDate.setDate(endDate.getDate() + plan.durationInDays);
+    endDate.setDate(endDate.getDate() + durationInDays);
 
     const createDto: CreateSubscriptionAccountDto = {
       accountId,
       subscriptionPlanId: payload.subscriptionPlanId,
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
-      status: 0, // Active
+      status: 3, // Pending — admin sẽ kích hoạt sau khi xác nhận thanh toán
     };
 
     const response = await apiService.post<BackendSubscriptionAccount>(
@@ -338,7 +352,7 @@ class UserSubscriptionService {
     );
 
     const data = (response.data ?? response) as BackendSubscriptionAccount;
-    return mapUserSubscription(data, plan as unknown as BackendSubscriptionPlan);
+    return mapUserSubscription(data);
   }
 
   /**

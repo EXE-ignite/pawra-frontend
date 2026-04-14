@@ -3,7 +3,7 @@
 import { ReactNode, useState } from 'react';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AuthProvider, ThemeProvider, LanguageProvider } from '@/modules/shared';
+import { AuthProvider, ThemeProvider, LanguageProvider, SubscriptionProvider } from '@/modules/shared';
 
 export function Providers({ children }: { children: ReactNode }) {
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '';
@@ -29,12 +29,16 @@ export function Providers({ children }: { children: ReactNode }) {
           {googleClientId ? (
             <GoogleOAuthProvider clientId={googleClientId}>
               <AuthProvider>
-                {children}
+                <SubscriptionProvider>
+                  {children}
+                </SubscriptionProvider>
               </AuthProvider>
             </GoogleOAuthProvider>
           ) : (
             <AuthProvider>
-              {children}
+              <SubscriptionProvider>
+                {children}
+              </SubscriptionProvider>
             </AuthProvider>
           )}
         </LanguageProvider>

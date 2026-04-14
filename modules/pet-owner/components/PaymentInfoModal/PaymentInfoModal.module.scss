@@ -1,0 +1,393 @@
+@import '../../../../styles/variables';
+@import '../../../../styles/mixins';
+
+// ----------------------------------------------------------------
+// Overlay
+// ----------------------------------------------------------------
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: $z-modal-backdrop;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-md;
+}
+
+// ----------------------------------------------------------------
+// Modal
+// ----------------------------------------------------------------
+.modal {
+  background: var(--color-bg-primary);
+  border-radius: $radius-xl;
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-lg $spacing-lg $spacing-md;
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  background: var(--color-bg-primary);
+  z-index: 1;
+}
+
+.modalTitle {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: 0 $spacing-xs;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: var(--color-text-primary);
+  }
+}
+
+// ----------------------------------------------------------------
+// Plan summary banner
+// ----------------------------------------------------------------
+.planSummary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: $spacing-md $spacing-lg;
+  background: var(--color-primary-lighter);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.planName {
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-lg;
+  color: var(--color-text-primary);
+}
+
+.planPrice {
+  font-weight: $font-weight-bold;
+  font-size: $font-size-lg;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: baseline;
+  gap: $spacing-xs;
+}
+
+.planDuration {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-normal;
+  color: var(--color-text-secondary);
+}
+
+// ----------------------------------------------------------------
+// Sections
+// ----------------------------------------------------------------
+.section {
+  padding: $spacing-md $spacing-lg;
+
+  & + & {
+    border-top: 1px solid var(--color-border);
+  }
+}
+
+.sectionTitle {
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: var(--color-text-primary);
+  margin: 0 0 $spacing-sm;
+}
+
+// ----------------------------------------------------------------
+// Steps list
+// ----------------------------------------------------------------
+.steps {
+  margin: 0;
+  padding-left: $spacing-lg;
+  color: var(--color-text-secondary);
+  font-size: $font-size-sm;
+  line-height: $line-height-relaxed;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.transferContent {
+  display: inline-block;
+  margin-top: $spacing-xs;
+  padding: 2px $spacing-sm;
+  background: var(--color-bg-tertiary);
+  border-radius: $radius-sm;
+  font-family: $font-family-mono;
+  font-size: $font-size-sm;
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+}
+
+// ----------------------------------------------------------------
+// Bank info table — side-by-side with QR
+// ----------------------------------------------------------------
+.bankLayout {
+  display: flex;
+  gap: $spacing-lg;
+  align-items: flex-start;
+
+  @include mobile {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.qrWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-xs;
+  flex-shrink: 0;
+}
+
+.qrImage {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  border: 1px solid var(--color-border);
+  border-radius: $radius-md;
+  background: var(--color-bg-primary);
+}
+
+.qrCaption {
+  font-size: $font-size-xs;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.bankInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.bankRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: $spacing-sm;
+  font-size: $font-size-sm;
+}
+
+.bankLabel {
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+  min-width: 100px;
+}
+
+.bankValue {
+  font-weight: $font-weight-medium;
+  color: var(--color-text-primary);
+  text-align: right;
+}
+
+.amount {
+  color: var(--color-primary);
+  font-size: $font-size-base;
+  font-weight: $font-weight-bold;
+}
+
+// ----------------------------------------------------------------
+// Copy field
+// ----------------------------------------------------------------
+.copyField {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.copyValue {
+  font-family: $font-family-mono;
+  font-size: $font-size-sm;
+  color: var(--color-text-primary);
+  font-weight: $font-weight-medium;
+}
+
+.copyButton {
+  padding: 3px $spacing-sm;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  background: var(--color-primary-light);
+  border: none;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  transition: background $transition-fast;
+
+  &:hover {
+    background: var(--color-primary);
+  }
+}
+
+// ----------------------------------------------------------------
+// Contact list
+// ----------------------------------------------------------------
+.contactList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.contactLink {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  font-size: $font-size-sm;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color $transition-fast;
+
+  &:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+  }
+}
+
+.contactIcon {
+  font-size: $font-size-base;
+}
+
+// ----------------------------------------------------------------
+// Confirm transfer section (error / success only)
+// ----------------------------------------------------------------
+.confirmSection {
+  padding: $spacing-xs $spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.submitError {
+  font-size: $font-size-sm;
+  color: var(--color-error);
+  margin: 0;
+  padding: $spacing-xs $spacing-sm;
+  background: var(--color-error-light);
+  border-radius: $radius-sm;
+  border-left: 3px solid var(--color-error);
+}
+
+.confirmButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-xs;
+  width: 100%;
+  padding: $spacing-sm $spacing-lg;
+  background: var(--color-success-light);
+  color: var(--color-success);
+  border: 1.5px solid var(--color-success);
+  border-radius: $radius-lg;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  transition: background $transition-fast, color $transition-fast;
+
+  &:hover:not(:disabled) {
+    background: var(--color-success);
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.successMessage {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-md;
+  background: var(--color-success-light);
+  border: 1px solid var(--color-success);
+  border-radius: $radius-md;
+  font-size: $font-size-sm;
+  color: var(--color-success);
+  font-weight: $font-weight-medium;
+  line-height: $line-height-relaxed;
+}
+
+// ----------------------------------------------------------------
+// Modal footer — close (left) + confirm (right)
+// ----------------------------------------------------------------
+.modalFooter {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-md $spacing-lg $spacing-lg;
+  border-top: 1px solid var(--color-border);
+}
+
+.closeFooterButton {
+  flex: 1;
+  padding: $spacing-sm $spacing-lg;
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+  border: 1.5px solid var(--color-border);
+  border-radius: $radius-lg;
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  cursor: pointer;
+  transition: background $transition-fast, color $transition-fast;
+  white-space: nowrap;
+
+  &:hover {
+    background: var(--color-bg-hover);
+    color: var(--color-text-primary);
+  }
+}
+
+.confirmButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-xs;
+  padding: $spacing-sm $spacing-lg;
+  background: var(--color-primary);
+  color: var(--color-text-primary);
+  border: none;
+  border-radius: $radius-lg;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  transition: background $transition-fast;
+
+  &:hover:not(:disabled) {
+    background: var(--color-primary-dark);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+

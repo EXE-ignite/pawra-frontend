@@ -17,6 +17,7 @@ const STATUSES: { value: SubscriptionStatus; label: string }[] = [
   { value: 'Expired', label: 'Het han' },
   { value: 'Cancelled', label: 'Da huy' },
   { value: 'Trial', label: 'Dung thu' },
+  { value: 'Pending', label: 'Cho duyet' },
 ];
 
 export function SubscriptionEditModal({

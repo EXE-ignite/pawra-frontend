@@ -7,10 +7,8 @@ import styles from './UserSearchBar.module.scss';
 const ROLES = [
   { value: '', label: 'Tất cả vai trò' },
   { value: 'Admin', label: 'Admin' },
-  { value: 'Staff', label: 'Nhân viên' },
-  { value: 'Vet', label: 'Bác sĩ thú y' },
-  { value: 'Receptionist', label: 'Lễ tân' },
-  { value: 'PetOwner', label: 'Chủ thú cưng' },
+  { value: 'Veterinarian', label: 'Bác sĩ thú y' },
+  { value: 'ClinicManager', label: 'Quản lý phòng khám' },
   { value: 'Customer', label: 'Khách hàng' },
 ];
 

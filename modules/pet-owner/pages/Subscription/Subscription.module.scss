@@ -99,6 +99,12 @@
   margin-bottom: $spacing-2xl;
 }
 
+.plansNote {
+  margin: 0 0 $spacing-lg;
+  font-size: $font-size-sm;
+  color: $text-secondary;
+}
+
 .plansGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
