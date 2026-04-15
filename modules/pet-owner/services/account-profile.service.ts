@@ -20,6 +20,15 @@ interface BackendProfile {
   customer?: { id?: string; phone?: string };
 }
 
+function normalizeAvatarUrl(avatarUrl: string): string {
+  // Backend validates AvatarUrl as a full URL, so convert local preset paths.
+  if (/^https?:\/\//i.test(avatarUrl)) return avatarUrl;
+  if (avatarUrl.startsWith('/') && typeof window !== 'undefined') {
+    return `${window.location.origin}${avatarUrl}`;
+  }
+  return avatarUrl;
+}
+
 function mapProfile(data: BackendProfile): AccountProfile {
   return {
     accountId: data.id ?? data.accountId ?? '',
@@ -63,13 +72,14 @@ export async function updateAvatar(
   avatarUrl: string
 ): Promise<AccountProfile> {
   if (!current.accountId) throw new Error('Account ID không xác định');
+  const normalizedAvatarUrl = normalizeAvatarUrl(avatarUrl);
 
   await apiService.put(`/Account/${current.accountId}`, {
     fullName: current.fullName,
-    avatarUrl,
+    avatarUrl: normalizedAvatarUrl,
   });
 
-  return { ...current, avatarUrl };
+  return { ...current, avatarUrl: normalizedAvatarUrl };
 }
 
 export async function changePassword(data: ChangePasswordRequest): Promise<void> {
