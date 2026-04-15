@@ -20,6 +20,7 @@ export const ROUTES = {
 
   // Vet / Clinic Manager routes
   VET_DASHBOARD: '/vet',
+  CLINIC_MANAGER_DASHBOARD: '/clinic-manager',
 
   // Staff routes (vet, receptionist, etc)
   STAFF_DASHBOARD: '/staff/dashboard',
@@ -31,7 +32,7 @@ export const ROLE_ROUTES = {
   Staff: ROUTES.STAFF_DASHBOARD,
   Vet: ROUTES.VET_DASHBOARD,
   Veterinarian: ROUTES.VET_DASHBOARD,
-  ClinicManager: ROUTES.VET_DASHBOARD,
+  ClinicManager: ROUTES.CLINIC_MANAGER_DASHBOARD,
   Receptionist: ROUTES.STAFF_DASHBOARD,
 } as const;
 

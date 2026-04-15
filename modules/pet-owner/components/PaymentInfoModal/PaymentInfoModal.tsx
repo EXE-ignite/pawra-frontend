@@ -12,13 +12,13 @@ interface PaymentInfoModalProps {
   onClose: () => void;
 }
 
-const BANK_NAME = 'Vietcombank';           // ← đổi tên ngân hàng nếu cần
-const BANK_ACCOUNT = '1234567890';         // ← đổi số tài khoản
-const BANK_OWNER = 'PAWRA COMPANY';        // ← đổi tên chủ tài khoản
-const SUPPORT_ZALO = '0912345678';         // ← đổi số Zalo hỗ trợ
-const SUPPORT_EMAIL = 'support@pawra.io.vn'; // ← đổi email hỗ trợ
+const BANK_NAME = 'Techcombank';
+const BANK_ACCOUNT = '1903 8991 4390 11';
+const BANK_OWNER = 'TRAN THI PHUONG THAO';
+const SUPPORT_ZALO = '0912345678';
+const SUPPORT_EMAIL = 'support@pawra.io.vn';
 const ACTIVATION_HOURS = 24;
-const QR_IMAGE_PATH = '/qr-payment.png';   // ← đặt ảnh QR vào public/qr-payment.png
+const QR_IMAGE_PATH = '/qr-payment.png';
 
 export function PaymentInfoModal({ plan, userEmail, onConfirm, onClose }: PaymentInfoModalProps) {
   const [submitting, setSubmitting] = React.useState(false);

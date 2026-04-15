@@ -1,0 +1,113 @@
+@import '../../../../styles/variables';
+
+.dashboardPage {
+  padding: 2rem;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.subtitle {
+  margin: 0 0 0.5rem;
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.description {
+  margin: 0.75rem 0 0;
+  color: var(--color-text-secondary);
+  max-width: 680px;
+}
+
+.loading,
+.error,
+.emptyState {
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+.section {
+  margin-bottom: 2rem;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.sectionHeader h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.appointmentList,
+.petGrid {
+  display: grid;
+  gap: 1rem;
+}
+
+.appointmentCard,
+.petCard {
+  padding: 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: var(--color-bg-primary);
+}
+
+.cardHeader,
+.petHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.petHeader h3,
+.cardHeader h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.appointmentType,
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.cardBody,
+.petDetails {
+  display: grid;
+  gap: 0.5rem;
+  color: var(--color-text-secondary);
+}
+
+.petGrid {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
