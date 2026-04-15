@@ -7,10 +7,10 @@ import type { AvatarEditorProps, AvatarTab, PresetAvatar } from './AvatarEditor.
 import styles from './AvatarEditor.module.scss';
 
 const PRESET_AVATARS: PresetAvatar[] = [
-  { label: 'Bé Chó', path: '/avatar/MẪU BÉ CHÓ.png' },
-  { label: 'Bé Hamster', path: '/avatar/MẪU BÉ HAMSTER.png' },
-  { label: 'Bé Mèo', path: '/avatar/MẪU BÉ MÈO.png' },
-  { label: 'Bé Vẹt', path: '/avatar/MẪU BÉ VẸT.png' },
+  { label: 'Bé Chó', path: '/avatar/be-cho.png' },
+  { label: 'Bé Hamster', path: '/avatar/be-hamster.png' },
+  { label: 'Bé Mèo', path: '/avatar/be-meo.png' },
+  { label: 'Bé Vẹt', path: '/avatar/be-vet.png' },
 ];
 
 export function AvatarEditor({ currentAvatarUrl, userInitials, onAvatarChange, isSaving }: AvatarEditorProps) {
