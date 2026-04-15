@@ -9,7 +9,7 @@ import {
 } from 'react';
 import { useAuth } from './AuthContext';
 import type { PlanTier, FeatureKey } from '../types/feature-gate.types';
-import { PLAN_HIERARCHY, FEATURE_PLAN_MAP, PLAN_MAX_PETS } from '../types/feature-gate.types';
+import { PLAN_HIERARCHY, FEATURE_PLAN_MAP, PLAN_MAX_PETS, normalizePlanTier } from '../types/feature-gate.types';
 
 // ---------------------------------------------------------------------------
 // Dev override
@@ -87,7 +87,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         if (cancelled) return;
 
         if (sub && sub.status === 'active') {
-          const plan = sub.planName as PlanTier;
+          const plan = normalizePlanTier(sub.planName);
           setCurrentPlan(PLAN_HIERARCHY[plan] !== undefined ? plan : 'Free');
         } else {
           setCurrentPlan('Free');

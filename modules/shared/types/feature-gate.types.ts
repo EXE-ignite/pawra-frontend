@@ -61,3 +61,11 @@ export const PLAN_MAX_PETS: Record<PlanTier, number> = {
   Premium: 10,
   VIP: Infinity,
 };
+
+export function normalizePlanTier(planName: string): PlanTier {
+  const normalized = (planName || '').trim().toLowerCase();
+  if (normalized.includes('vip')) return 'VIP';
+  if (normalized.includes('premium')) return 'Premium';
+  if (normalized.includes('basic')) return 'Basic';
+  return 'Free';
+}
