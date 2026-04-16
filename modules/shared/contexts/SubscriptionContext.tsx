@@ -5,11 +5,12 @@ import {
   useContext,
   useState,
   useEffect,
+  useCallback,
   ReactNode,
 } from 'react';
 import { useAuth } from './AuthContext';
-import type { PlanTier, FeatureKey } from '../types/feature-gate.types';
-import { PLAN_HIERARCHY, FEATURE_PLAN_MAP, PLAN_MAX_PETS } from '../types/feature-gate.types';
+import type { PlanTier, FeatureKey, SubscriptionStatus } from '../types/feature-gate.types';
+import { PLAN_HIERARCHY, FEATURE_PLAN_MAP, PLAN_MAX_PETS, normalizePlanTier } from '../types/feature-gate.types';
 
 // ---------------------------------------------------------------------------
 // Dev override
@@ -31,6 +32,8 @@ const EFFECTIVE_DEV_OVERRIDE: PlanTier | undefined =
 interface SubscriptionContextType {
   /** The user's current effective plan tier */
   currentPlan: PlanTier;
+  /** Raw subscription status: 'none' when user has no subscription */
+  subscriptionStatus: SubscriptionStatus | 'none';
   isLoading: boolean;
   /** Returns true if the user's plan meets the minimum requirement for a feature */
   hasAccess: (feature: FeatureKey) => boolean;
@@ -38,6 +41,8 @@ interface SubscriptionContextType {
   maxPets: number;
   /** True when plan is overridden by NEXT_PUBLIC_DEV_SUBSCRIPTION_OVERRIDE */
   isDevOverride: boolean;
+  /** Re-fetch subscription from backend — call this after the user subscribes or admin activates */
+  refreshSubscription: () => Promise<void>;
 }
 
 const SubscriptionContext = createContext<SubscriptionContextType | undefined>(undefined);
@@ -48,11 +53,66 @@ const SubscriptionContext = createContext<SubscriptionContextType | undefined>(u
 export function SubscriptionProvider({ children }: { children: ReactNode }) {
   const { isAuthenticated } = useAuth();
   const [currentPlan, setCurrentPlan] = useState<PlanTier>('Free');
+  const [subscriptionStatus, setSubscriptionStatus] = useState<SubscriptionStatus | 'none'>('none');
   const [isLoading, setIsLoading] = useState(false);
+
+  const fetchSubscription = useCallback(async () => {
+    if (!isAuthenticated || EFFECTIVE_DEV_OVERRIDE) return;
+
+    setIsLoading(true);
+    try {
+      // 1. Get accountId from profile
+      const { getProfile } = await import('@/modules/pet-owner/services/account-profile.service');
+      const profile = await getProfile();
+      if (!profile.accountId) {
+        if (IS_DEV) console.warn('[FeatureGate] profile.accountId is empty — subscription not fetched.');
+        setCurrentPlan('Free');
+        setSubscriptionStatus('none');
+        return;
+      }
+
+      // 2. Get subscription + plan list in parallel (plan list used to enrich planName)
+      const { userSubscriptionService } = await import('@/modules/pet-owner/services/subscription.service');
+      const [sub, plans] = await Promise.all([
+        userSubscriptionService.getCurrentSubscription(profile.accountId),
+        userSubscriptionService.getAvailablePlans().catch(() => []),
+      ]);
+
+      if (!sub) {
+        setCurrentPlan('Free');
+        setSubscriptionStatus('none');
+        return;
+      }
+
+      setSubscriptionStatus(sub.status);
+
+      if (sub.status === 'active') {
+        // Enrich planName from plans list — handles cases where API doesn't embed plan details
+        const matchedPlan = plans.find((p) => p.id === sub.planId);
+        const resolvedPlanName = matchedPlan?.name || sub.planName;
+
+        const plan = normalizePlanTier(resolvedPlanName, sub.planId);
+        if (IS_DEV && plan === 'Free') {
+          console.warn(`[FeatureGate] planName "${resolvedPlanName}" / planId "${sub.planId}" could not be mapped — defaulting to Free.`);
+        }
+        setCurrentPlan(plan);
+      } else {
+        if (IS_DEV) console.warn(`[FeatureGate] Subscription status is "${sub.status}" — access set to Free.`);
+        setCurrentPlan('Free');
+      }
+    } catch (err) {
+      if (IS_DEV) console.warn('[FeatureGate] Failed to fetch subscription:', err);
+      setCurrentPlan('Free');
+      setSubscriptionStatus('none');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [isAuthenticated]);
 
   useEffect(() => {
     if (!isAuthenticated) {
       setCurrentPlan('Free');
+      setSubscriptionStatus('none');
       return;
     }
 
@@ -69,38 +129,10 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    // Fetch real subscription from backend
     let cancelled = false;
-    setIsLoading(true);
-
-    (async () => {
-      try {
-        // 1. Get accountId from profile
-        const { getProfile } = await import('@/modules/pet-owner/services/account-profile.service');
-        const profile = await getProfile();
-        if (cancelled || !profile.accountId) return;
-
-        // 2. Get current active subscription
-        const { userSubscriptionService } = await import('@/modules/pet-owner/services/subscription.service');
-        const sub = await userSubscriptionService.getCurrentSubscription(profile.accountId);
-
-        if (cancelled) return;
-
-        if (sub && sub.status === 'active') {
-          const plan = sub.planName as PlanTier;
-          setCurrentPlan(PLAN_HIERARCHY[plan] !== undefined ? plan : 'Free');
-        } else {
-          setCurrentPlan('Free');
-        }
-      } catch {
-        if (!cancelled) setCurrentPlan('Free');
-      } finally {
-        if (!cancelled) setIsLoading(false);
-      }
-    })();
-
-    return () => { cancelled = true; };
-  }, [isAuthenticated]);
+    fetchSubscription().then(() => {}).catch(() => {});
+    return () => { cancelled = true; void cancelled; };
+  }, [isAuthenticated, fetchSubscription]);
 
   const hasAccess = (feature: FeatureKey): boolean => {
     const required = FEATURE_PLAN_MAP[feature];
@@ -113,10 +145,12 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     <SubscriptionContext.Provider
       value={{
         currentPlan,
+        subscriptionStatus,
         isLoading,
         hasAccess,
         maxPets,
         isDevOverride: !!EFFECTIVE_DEV_OVERRIDE,
+        refreshSubscription: fetchSubscription,
       }}
     >
       {children}

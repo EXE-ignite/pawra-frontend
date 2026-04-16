@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '@/modules/shared/contexts';
+import { useAuth, useSubscription } from '@/modules/shared/contexts';
 import { PlanCard, CurrentSubscription, PaymentInfoModal } from '@/modules/pet-owner/components';
 import { userSubscriptionService } from '@/modules/pet-owner/services';
 import { getProfile } from '@/modules/pet-owner/services/account-profile.service';
@@ -10,6 +10,7 @@ import styles from './VetSubscriptionPage.module.scss';
 
 export function VetSubscriptionPage() {
   const { user } = useAuth();
+  const { refreshSubscription } = useSubscription();
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [currentSubscription, setCurrentSubscription] = useState<UserSubscription | null>(null);
   const [loading, setLoading] = useState(true);
@@ -100,9 +101,9 @@ export function VetSubscriptionPage() {
         subscriptionPlanId: plan.id,
         durationInDays: plan.durationInDays,
       });
-      await loadData();
+      await Promise.all([loadData(), refreshSubscription()]);
     },
-    [accountId, loadData],
+    [accountId, loadData, refreshSubscription],
   );
 
   if (loading) {

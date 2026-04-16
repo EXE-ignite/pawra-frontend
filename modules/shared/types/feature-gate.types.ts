@@ -8,6 +8,9 @@
  */
 export type PlanTier = 'Free' | 'Basic' | 'Premium' | 'VIP';
 
+/** Raw subscription status from the backend */
+export type SubscriptionStatus = 'active' | 'cancelled' | 'expired' | 'pending';
+
 /** Numeric rank — higher number = more access */
 export const PLAN_HIERARCHY: Record<PlanTier, number> = {
   Free: 0,
@@ -61,3 +64,15 @@ export const PLAN_MAX_PETS: Record<PlanTier, number> = {
   Premium: 10,
   VIP: Infinity,
 };
+
+export function normalizePlanTier(planName: string, planId?: string): PlanTier {
+  const check = (s: string): PlanTier | null => {
+    const n = (s || '').trim().toLowerCase();
+    if (n.includes('vip')) return 'VIP';
+    if (n.includes('premium') || n.includes('nâng cao') || n.includes('nang cao')) return 'Premium';
+    if (n.includes('basic') || n.includes('cơ bản') || n.includes('co ban')) return 'Basic';
+    if (n.includes('free') || n.includes('miễn phí') || n.includes('mien phi')) return 'Free';
+    return null;
+  };
+  return check(planName) ?? check(planId ?? '') ?? 'Free';
+}
