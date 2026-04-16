@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '@/modules/shared/contexts';
+import { useAuth, useSubscription } from '@/modules/shared/contexts';
 import { PlanCard, CurrentSubscription, PaymentInfoModal } from '../../components';
 import { userSubscriptionService } from '../../services';
 import { getProfile } from '../../services/account-profile.service';
@@ -10,6 +10,7 @@ import styles from './Subscription.module.scss';
 
 export function SubscriptionPage() {
   const { user } = useAuth();
+  const { refreshSubscription } = useSubscription();
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [currentSubscription, setCurrentSubscription] = useState<UserSubscription | null>(null);
   const [loading, setLoading] = useState(true);
@@ -102,8 +103,8 @@ export function SubscriptionPage() {
       subscriptionPlanId: plan.id,
       durationInDays: plan.durationInDays,
     });
-    await loadData();
-  }, [accountId, loadData]);
+    await Promise.all([loadData(), refreshSubscription()]);
+  }, [accountId, loadData, refreshSubscription]);
 
   if (loading) {
     return (

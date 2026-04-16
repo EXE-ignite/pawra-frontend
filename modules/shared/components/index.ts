@@ -16,3 +16,4 @@ export type { ConfirmModalProps } from './ConfirmModal';
 export { LanguageSwitcher } from './LanguageSwitcher';
 export { FeatureGate } from './FeatureGate';
 export type { FeatureGateProps } from './FeatureGate';
+export { PendingSubscriptionBanner } from './PendingSubscriptionBanner';
